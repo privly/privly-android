@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 public class PrivlyActivity extends Activity {
     /** Called when the activity is first created. */
@@ -17,19 +15,16 @@ public class PrivlyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+//        Checks if the base url is set, if not redirects to settings page else to the login page. 
+//        This can be extended to a splash screen 
         SharedPreferences settings = getSharedPreferences(prefs_name, 0);
-        //editor.putBoolean("silentMode", mSilentMode);
         String base_url = settings.getString("base_url", null);
+        
+        
         if(base_url == null)
         {
         	go_to_settings = new Intent(getApplicationContext(), settings.class );
-        	Log.d("ujdsjkfhs", go_to_settings.toString());
-        	Toast.makeText(getApplicationContext(), "yotyu"+go_to_settings, Toast.LENGTH_LONG).show();
-        	
-        		startActivity(go_to_settings);
-        	
-        	
-        		Toast.makeText(getApplicationContext(), "yo", Toast.LENGTH_SHORT).show();
+        	startActivity(go_to_settings);
         	
         }
         else

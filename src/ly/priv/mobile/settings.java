@@ -12,12 +12,13 @@ import android.widget.Toast;
 
 public class settings extends Activity {
     /** Called when the activity is first created. */
-	public static final String prefs_name = "prefs_file";
+	String prefs_name;
 	String base_url;
 	Button save;
 	Intent go_to_login;
 	EditText base_e;
 	SharedPreferences settings;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,11 +29,15 @@ public class settings extends Activity {
         save = (Button)findViewById(R.id.save);
 		base_e = (EditText)findViewById(R.id.base_);
 
+		Values values = new Values();
+		prefs_name = values.getPrefs_name();
         settings = getSharedPreferences(prefs_name, 0);
         base_url = settings.getString("base_url", null);
         
         if(base_url!=null)
         	base_e.setText(base_url);
+        
+//        Saves the base url to Shared Preferences on Save Button Click 
         
         save.setOnClickListener( new View.OnClickListener() {
 			
@@ -45,6 +50,8 @@ public class settings extends Activity {
 		        editor.putString("base_url", base_url );
 		        editor.commit();
 		        Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
+		        
+//		        Redirect to Login once saved
 		        startActivity(go_to_login);
 			}
 		});
