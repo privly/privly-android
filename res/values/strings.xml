@@ -3,7 +3,7 @@
 
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
-	<string name="uname_label">Username</string>
+	<string name="uname_label">EMail ID</string>
 	<string name="pwd_label">Password</string>
 	<string name="login_label">Login !</string>
 </resources>

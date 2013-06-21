@@ -34,11 +34,11 @@ import android.widget.Toast;
 public class login extends Activity {
     /** Called when the activity is first created. */
 	String uname, pwd; 
-	Button login;
+	Button login_button;
 	String login_response;
 	String base_url;
-	EditText uname_edit;
-	EditText pwd_e;
+	EditText uname_EditText;
+	EditText pwd_EditText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,8 @@ public class login extends Activity {
         SharedPreferences settings = getSharedPreferences(prefs_name, 0);
         base_url = settings.getString("base_url", null);
         
-//        If no base domain has been defined, the user is taken to the login screen where he needs to add it.     
+//        If no base domain has been defined, 
+//        the user is taken to the login screen where he needs to add it.     
         
         if(base_url == null)
         {
@@ -61,25 +62,40 @@ public class login extends Activity {
         	startActivity(settings_it);
         }
         
-        uname_edit = (EditText)findViewById(R.id.uname);
-        pwd_e = (EditText) findViewById(R.id.pwd);
-        login = (Button)findViewById(R.id.login);
+        uname_EditText = (EditText)findViewById(R.id.uname);
+        pwd_EditText = (EditText) findViewById(R.id.pwd);
+        login_button = (Button)findViewById(R.id.login);
 
         
 //        On Login Button Click, A POST Request is made to the server for authentication. 
-//        The Authentication Process is done using AsyncTask to prevent blocking of UI Thread. 
+//        The Authentication Process is done using AsyncTask to 
+//        prevent blocking of UI Thread. 
         
-        login.setOnClickListener( new View.OnClickListener() {
+        
+        login_button.setOnClickListener( new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				uname = uname_edit.getText().toString();
-				pwd = pwd_e.getText().toString();
-				CheckLoginTask task = new CheckLoginTask();
-				Log.d("url",base_url+"/token_authentications.json" );
-				task.execute(base_url+"/token_authentications.json");
-			}
+				uname = uname_EditText.getText().toString();
+				pwd = pwd_EditText.getText().toString();
+				
+//				Remove any unwanted spaces before and after the EmailID and Password
+				uname = uname.trim();
+				pwd = pwd.trim();
+				
+//				Check if Email is Valid using RegEx and Password is not blank 
+				if(!Utilities.isValidEmail(uname))
+					Utilities.showToast(getApplicationContext(), "Please Enter a valid EMail ID");
+				else if(pwd.equalsIgnoreCase(""))
+					Utilities.showToast(getApplicationContext(), "Please Enter a valid Password");
+				else
+				{
+					CheckLoginTask task = new CheckLoginTask();
+					Log.d("url",base_url+"/token_authentications.json" );
+					task.execute(base_url+"/token_authentications.json");
+				}
+			}		
 		});
               
     }
