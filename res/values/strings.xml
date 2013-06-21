@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
 	<string name="uname_label">EMail ID</string>
 	<string name="pwd_label">Password</string>
 	<string name="login_label">Login !</string>
+	<string name="save_pwd_label">Remember Me</string>	
 </resources>
