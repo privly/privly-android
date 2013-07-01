@@ -8,20 +8,20 @@ package ly.priv.mobile;
  */
 public final class Values {
 	
-	String prefs_name;
+	String prefsName;
 	
 	Values()
 	{
-		prefs_name = "prefs_file";
+		prefsName = "prefsFile";
 	}
 	
 	/**
 	 * 
 	 * @return prefs_name The name of the SharedPreference File
 	 */
-	String getPrefs_name()
+	String getPrefsName()
 	{
-		return prefs_name;
+		return prefsName;
 	}
 
 }

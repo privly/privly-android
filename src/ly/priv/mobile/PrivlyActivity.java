@@ -7,8 +7,8 @@ import android.os.Bundle;
 
 public class PrivlyActivity extends Activity {
     /** Called when the activity is first created. */
-	Intent go_to_settings, go_to_login;
-	String prefs_name; 
+	Intent gotoSettings, gotoLogin;
+	String prefsName; 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,20 +18,20 @@ public class PrivlyActivity extends Activity {
 //        Checks if the base url is set, if not redirects to settings page else to the login page. 
 //        This can be extended to a splash screen 
         Values values = new Values();
-        prefs_name = values.getPrefs_name();
-        SharedPreferences settings = getSharedPreferences(prefs_name, 0);
+        prefsName = values.getPrefsName();
+        SharedPreferences settings = getSharedPreferences(prefsName, 0);
         String base_url = settings.getString("base_url", null);
                 
         if(base_url == null)
         {
-        	go_to_settings = new Intent(getApplicationContext(), settings.class );
-        	startActivity(go_to_settings);
+        	gotoSettings = new Intent(getApplicationContext(), Settings.class );
+        	startActivity(gotoSettings);
         	
         }
         else
         {
-        	go_to_login = new Intent(getApplicationContext(), login.class);
-        	startActivity(go_to_login);
+        	gotoLogin = new Intent(getApplicationContext(), Login.class);
+        	startActivity(gotoLogin);
         }    
     }
     

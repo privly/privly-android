@@ -12,26 +12,29 @@ public class Utilities {
 	
 	/**
 	 * Check validity of an EMail address using RegEx
-	 * @param email_to_check
+	 * @param emailToCheck
 	 * @return boolean
 	 */
-	public static boolean isValidEmail(String email_to_check)
+	public static boolean isValidEmail(String emailToCheck)
 	{
-		String email_pattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-		if(email_to_check.matches(email_pattern))
+		String emailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		if(emailToCheck.matches(emailPattern))
 			return true;
 		else
 			return false;		
 	}
 	
 	/**
-	 * Show Toast on screen for Toast.LENGTH_SHORT time. 
+	 * Show Toast on screen. 
 	 * @param c Context of the class which calls this method. 
-	 * @param Text_to_toast 
+	 * @param textToToast
+	 * @param longToast
 	 */
-	public static void showToast(Context c, String Text_to_toast)
+	public static void showToast(Context c, String textToToast, Boolean longToast)
 	{
-		Toast.makeText(c, Text_to_toast, Toast.LENGTH_SHORT).show();
+		if (longToast)
+			Toast.makeText(c, textToToast, Toast.LENGTH_LONG).show();
+		else
+			Toast.makeText(c, textToToast, Toast.LENGTH_SHORT).show();
 	}
-
 }
