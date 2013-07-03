@@ -18,6 +18,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -31,7 +32,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class Login extends Activity {
     /** Called when the activity is first created. */
@@ -86,7 +86,6 @@ public class Login extends Activity {
 //	        On Login Button Click, A POST Request is made to the server for authentication. 
 //	        The Authentication Process is done using AsyncTask to 
 //	        prevent blocking of UI Thread. 
-	        
 	        
 	        loginButton.setOnClickListener( new View.OnClickListener() {
 				
@@ -186,7 +185,29 @@ public class Login extends Activity {
         protected void onPostExecute(String result) 
         {
         	Dialog.dismiss();
-        	Toast.makeText(getApplicationContext(),loginResponse , Toast.LENGTH_LONG).show();
+//        	Toast.makeText(getApplicationContext(),loginResponse , Toast.LENGTH_LONG).show();
+        	try
+        	{
+            	JSONObject jObject = new JSONObject(loginResponse);
+            	if(!jObject.has("error") && jObject.has("auth_key"))
+            	{
+	            	String authToken = jObject.getString("auth_key");
+	            	Log.d("auth_token", authToken);
+		            	Editor e = settings.edit();
+		            	e.putString("auth_token", authToken);
+		            	e.commit();           	
+	            	Intent gotoHome = new Intent(getApplicationContext(), Home.class);
+	            	startActivity(gotoHome);
+            	}
+            	else
+            		Utilities.showToast(getApplicationContext(), "Invalid Email Address or Password. Please Try Again!", true);
+            	
+        	}
+        	catch(Exception ex)
+        	{
+        		ex.printStackTrace();
+        	}
+        	
       }
 
     } 

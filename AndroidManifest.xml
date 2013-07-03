@@ -20,6 +20,9 @@
         </activity>
         <activity android:name=".Login"></activity>
         <activity android:name=".Settings"></activity>
+        <activity android:name=".Home"></activity>
+        <activity android:name=".NewPost"></activity>
+        
     </application>
 
 </manifest>

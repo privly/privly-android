@@ -31,4 +31,5 @@ Key Pair Values saved in shared preferences
 uname - email id of user
 pwd - password of the User
 base_url - domain_name to which the user authorizes 
+auth_token - authentication Key
 **/
