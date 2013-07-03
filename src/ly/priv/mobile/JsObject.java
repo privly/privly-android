@@ -1,6 +1,8 @@
 package ly.priv.mobile;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
@@ -24,6 +26,10 @@ public class JsObject {
     public void receiveNewPrivlyURL(String url)
     {
     	Log.d("androidJSBridge URL Received", url);
+    	Utilities.showToast(c, url, true);
+    	Intent gotoShare = new Intent(c, Share.class);
+    	gotoShare.putExtra("newPrivlyUrl", url);    
+    	c.startActivity(gotoShare);
     }
     
     @JavascriptInterface 
@@ -44,4 +50,13 @@ public class JsObject {
         return sharedPrefs.getString("auth_token", null);
     }
     
+    @JavascriptInterface 
+    public String fetchDomainName()
+    {
+    	SharedPreferences sharedPrefs;
+    	Values values = new Values();
+        String prefs_name = values.getPrefsName();
+        sharedPrefs = c.getSharedPreferences(prefs_name, 0);
+        return sharedPrefs.getString("base_url", null);
+    }
  }

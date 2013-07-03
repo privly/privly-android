@@ -8,4 +8,7 @@
 	<string name="save_pwd_label">Remember Me</string>	
 	<string name="read_listView_label">Read Privly Content</string>
 	<string name="create_listView_label"> Create New Privly Content </string>
+	<string name="newUrlLabel">Here\'s your new Privly Url</string>
+	<string name="shareButtonLabel">Share Url</string>
+	
 </resources>

@@ -22,7 +22,7 @@ public class NewPost extends Activity {
     		String JsAppName = bundle.getString("JsAppName");
         	 WebView w = (WebView)findViewById(R.id.webview_1);
              w.getSettings().setJavaScriptEnabled(true); 
-             w.addJavascriptInterface(new JsObject(getApplicationContext()), "androidJsBridge");
+             w.addJavascriptInterface(new JsObject(this), "androidJsBridge");
              if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) 
              	  w.getSettings().setAllowUniversalAccessFromFileURLs(true);
              w.setWebChromeClient(new WebChromeClient() {

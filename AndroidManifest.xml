@@ -3,7 +3,6 @@
     package="ly.priv.mobile"
     android:versionCode="1"
     android:versionName="0.0.0.1" >
-
     <uses-sdk android:minSdkVersion="9" />
 	<uses-permission android:name="android.permission.INTERNET" /> 
     <application
@@ -22,6 +21,7 @@
         <activity android:name=".Settings"></activity>
         <activity android:name=".Home"></activity>
         <activity android:name=".NewPost"></activity>
+        <activity android:name=".Share"></activity>
         
     </application>
 
