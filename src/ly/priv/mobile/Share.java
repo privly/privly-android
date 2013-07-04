@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * @author Shivam Verma
+ * Shows the newly generated Privly URL and allows the user it to various platfoms. 
+ */
 public class Share extends Activity {
     /** Called when the activity is first created. */
 	String newPrivlyUrl;
@@ -23,16 +27,16 @@ public class Share extends Activity {
         
         Button shareButton = (Button)findViewById(R.id.shareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
-			
+		
+        	//Shows all sharing options with the following intent. 
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				final Intent intent = new Intent(Intent.ACTION_SEND);
 		        intent.setType("text/plain");
 		        intent.putExtra(Intent.EXTRA_TEXT, newPrivlyUrl);
-
 		        try {
-		          startActivity(Intent.createChooser(intent, "Select an action"));
+		          startActivity(Intent.createChooser(intent, "Share Privly Url"));
 		        } catch (android.content.ActivityNotFoundException ex) {
 		          // (handle error)
 		        }

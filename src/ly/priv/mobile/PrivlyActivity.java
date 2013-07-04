@@ -5,6 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+/**
+ * 
+ * @author Shivam Verma
+ * 
+ * Redirects user to {@link ly.priv.mobile.Login} Login Screen or 
+ * {@link ly.priv.mobile} Settings Screen to setup the domain name with which the 
+ * application works. 
+ */
 public class PrivlyActivity extends Activity {
     /** Called when the activity is first created. */
 	Intent gotoSettings, gotoLogin;

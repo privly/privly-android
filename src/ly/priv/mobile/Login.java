@@ -33,6 +33,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+/**
+ * 
+ * @author Shivam Verma
+ * 
+ * This class displays the login screen. 
+ * Allows the user to authenticate to a Privly Web Server by fetching the auth_token.  
+ *
+ */
 public class Login extends Activity {
     /** Called when the activity is first created. */
 	String uname, pwd; 
@@ -83,10 +91,12 @@ public class Login extends Activity {
 	        	unameEditText.setText(fetched_user_name);
 	        	pwdEditText.setText(fetched_pwd);
 	        }
-//	        On Login Button Click, A POST Request is made to the server for authentication. 
-//	        The Authentication Process is done using AsyncTask to 
-//	        prevent blocking of UI Thread. 
 	        
+	        /**
+	         * On Login Button Click, A POST Request is made to the server for authentication. 
+	         * The Authentication Process is done using AsyncTask to 
+	         * prevent blocking of UI Thread. 
+	         **/
 	        loginButton.setOnClickListener( new View.OnClickListener() {
 				
 				@Override

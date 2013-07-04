@@ -1,7 +1,5 @@
 package ly.priv.mobile;
 
-import java.io.File;
-
 import android.content.Context;
 import android.widget.Toast;
 /**
@@ -40,17 +38,4 @@ public class Utilities {
 			Toast.makeText(c, textToToast, Toast.LENGTH_SHORT).show();
 	}
 	
-	public static Boolean isAPostingApplication(String assetName)
-	{
-		if(!assetName.equals("Shared"))
-		{	
-			File f = new File("file:///android_asset/PrivlyApplications/"+assetName);
-			if(f.list().length > 0)
-				return true;
-			else
-				return false;
-		}
-		else 
-			return false;
-	}
 }

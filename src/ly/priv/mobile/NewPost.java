@@ -9,6 +9,11 @@ import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+/**
+ * @author Shivam Verma
+ * This class allows the user to create new Privly Content. 
+ * Integrates the Posting Applications with the Android Application.
+ */
 public class NewPost extends Activity {
     /** Called when the activity is first created. */
 	
@@ -17,6 +22,11 @@ public class NewPost extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_post);
         Bundle bundle = getIntent().getExtras();
+        
+        /** 
+         * Fetch selected Js app's name and 
+         * load the respective JS app into WebView. 
+         */
         if(bundle.getString("JsAppName")!=null)
         {
     		String JsAppName = bundle.getString("JsAppName");
@@ -25,6 +35,10 @@ public class NewPost extends Activity {
              w.addJavascriptInterface(new JsObject(this), "androidJsBridge");
              if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) 
              	  w.getSettings().setAllowUniversalAccessFromFileURLs(true);
+             
+             /**
+              *Logs all Js Console messages on the logcat.               
+              */
              w.setWebChromeClient(new WebChromeClient() {
              	  public boolean onConsoleMessage(ConsoleMessage cm) {
              	    Log.d("JsApplication", cm.message() + " -- From line "

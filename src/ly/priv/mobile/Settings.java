@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * @author Shivam Verma
+ * This class shows the Settings Activity. 
+ * Currently, supports setting of the domainName 
+ * with which the application works. 
+ */
 public class Settings extends Activity {
     /** Called when the activity is first created. */
 	String prefsName;
@@ -37,7 +43,7 @@ public class Settings extends Activity {
         if(baseURL!=null)
         	urlEditText.setText(baseURL);
         
-//        Saves the base url to Shared Preferences on Save Button Click 
+//        Saves the base url to Shared Preferences
         
         save.setOnClickListener( new View.OnClickListener() {
 			

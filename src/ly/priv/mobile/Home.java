@@ -12,6 +12,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * 
+ * @author Shivam Verma
+ * 
+ * This class displays the Home Activity for a user after authentication. 
+ * Gives the user options to Create New Privly posts or 
+ * Read Privly Posts from his social / email feed.  
+ * 
+ * Read option has not been implemented yet. 
+ *
+ */
 public class Home extends Activity {
     /** Called when the activity is first created. */
 	ListView readListView;
@@ -21,6 +32,10 @@ public class Home extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
+        
+        /**
+         * Create two ListViews which display create/read options. 
+         */
         final String[] arrCreate = {"PlainPost", "ZeroBin"};        
         final String[] arrRead = {"GMail", "Facebook", "Twitter"};
         ArrayList createArrayList = new ArrayList<String>(Arrays.asList(arrCreate));
@@ -35,6 +50,11 @@ public class Home extends Activity {
         createListView.setAdapter(createArrayAdapter);
         readListView.setAdapter(readArrayAdapter);
         
+        /**
+         * OnItemClickListener for creating posts ListView.
+         * The name of the selected Posting app is sent with the intent 
+         * to {@link ly.priv.mobile.Home} 
+         */
         createListView.setOnItemClickListener(new OnItemClickListener() {
         	
         	@Override 
