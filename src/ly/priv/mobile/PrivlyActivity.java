@@ -6,41 +6,39 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 /**
+ * Redirects user to {@link ly.priv.mobile.Login} Login Screen or
+ * {@link ly.priv.mobile} Settings Screen to setup the domain name with which
+ * the application works.
  * 
  * @author Shivam Verma
  * 
- * Redirects user to {@link ly.priv.mobile.Login} Login Screen or 
- * {@link ly.priv.mobile} Settings Screen to setup the domain name with which the 
- * application works. 
  */
 public class PrivlyActivity extends Activity {
-    /** Called when the activity is first created. */
+	/** Called when the activity is first created. */
 	Intent gotoSettings, gotoLogin;
-	String prefsName; 
+	String prefsName;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-//        Checks if the base url is set, if not redirects to settings page else to the login page. 
-//        This can be extended to a splash screen 
-        Values values = new Values();
-        prefsName = values.getPrefsName();
-        SharedPreferences settings = getSharedPreferences(prefsName, 0);
-        String base_url = settings.getString("base_url", null);
-                
-        if(base_url == null)
-        {
-        	gotoSettings = new Intent(getApplicationContext(), Settings.class );
-        	startActivity(gotoSettings);
-        	
-        }
-        else
-        {
-        	gotoLogin = new Intent(getApplicationContext(), Login.class);
-        	startActivity(gotoLogin);
-        }    
-    }
-    
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		// Checks if the base url is set, if not redirects to settings page else
+		// to the login page.
+		// This can be extended to a splash screen
+		Values values = new Values();
+		prefsName = values.getPrefsName();
+		SharedPreferences settings = getSharedPreferences(prefsName, 0);
+		String base_url = settings.getString("base_url", null);
+
+		if (base_url == null) {
+			gotoSettings = new Intent(getApplicationContext(), Settings.class);
+			startActivity(gotoSettings);
+
+		} else {
+			gotoLogin = new Intent(getApplicationContext(), Login.class);
+			startActivity(gotoLogin);
+		}
+	}
+
 }

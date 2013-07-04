@@ -8,40 +8,44 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
+ * Shows the newly generated Privly URL and allows the user to share it to
+ * various platfoms.
+ * 
  * @author Shivam Verma
- * Shows the newly generated Privly URL and allows the user it to various platfoms. 
+ * 
  */
 public class Share extends Activity {
-    /** Called when the activity is first created. */
+	/** Called when the activity is first created. */
 	String newPrivlyUrl;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.share);
-        Utilities.showToast(this, "Share", false);
-        Bundle bundle = getIntent().getExtras();
-        newPrivlyUrl = bundle.getString("newPrivlyUrl");
-        EditText privlyUrlTextView = (EditText)findViewById(R.id.newUrlEditText);
-        privlyUrlTextView.setText(newPrivlyUrl); 
-        
-        Button shareButton = (Button)findViewById(R.id.shareButton);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-		
-        	//Shows all sharing options with the following intent. 
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.share);
+		Utilities.showToast(this, "Share", false);
+		Bundle bundle = getIntent().getExtras();
+		newPrivlyUrl = bundle.getString("newPrivlyUrl");
+		EditText privlyUrlTextView = (EditText) findViewById(R.id.newUrlEditText);
+		privlyUrlTextView.setText(newPrivlyUrl);
+
+		Button shareButton = (Button) findViewById(R.id.shareButton);
+		shareButton.setOnClickListener(new View.OnClickListener() {
+
+			// Shows all sharing options with the following intent.
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				final Intent intent = new Intent(Intent.ACTION_SEND);
-		        intent.setType("text/plain");
-		        intent.putExtra(Intent.EXTRA_TEXT, newPrivlyUrl);
-		        try {
-		          startActivity(Intent.createChooser(intent, "Share Privly Url"));
-		        } catch (android.content.ActivityNotFoundException ex) {
-		          // (handle error)
-		        }
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_TEXT, newPrivlyUrl);
+				try {
+					startActivity(Intent.createChooser(intent,
+							"Share Privly Url"));
+				} catch (android.content.ActivityNotFoundException ex) {
+					// (handle error)
+				}
 			}
 		});
-    } 
-    
+	}
+
 }
