@@ -7,11 +7,10 @@ import android.os.Bundle;
 
 /**
  * Redirects user to {@link ly.priv.mobile.Login} Login Screen or
- * {@link ly.priv.mobile} Settings Screen to setup the domain name with which
- * the application works.
+ * {@link ly.priv.mobile.Settings} Settings Screen to setup the domain name with
+ * which the application works.
  * 
  * @author Shivam Verma
- * 
  */
 public class PrivlyActivity extends Activity {
 	/** Called when the activity is first created. */
@@ -39,6 +38,8 @@ public class PrivlyActivity extends Activity {
 			startActivity(gotoLogin);
 		}
 
+		// finish current activity so that it doesn't remain in the history
+		// stack.
 		finish();
 	}
 

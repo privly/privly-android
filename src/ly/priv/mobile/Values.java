@@ -1,3 +1,4 @@
+
 package ly.priv.mobile;
 
 /**
@@ -5,23 +6,21 @@ package ly.priv.mobile;
  * classes throughout the application.
  * 
  * @author Shivam Verma
- * 
  */
 public final class Values {
 
-	String prefsName;
+    String prefsName;
 
-	Values() {
-		prefsName = "prefsFile";
-	}
+    Values() {
+        prefsName = "prefsFile";
+    }
 
-	/**
-	 * 
-	 * @return prefs_name The name of the SharedPreference File
-	 */
-	String getPrefsName() {
-		return prefsName;
-	}
+    /**
+     * @return prefs_name The name of the SharedPreference File
+     */
+    String getPrefsName() {
+        return prefsName;
+    }
 
 }
 
