@@ -1,0 +1,3 @@
+[submodule "assets/PrivlyApplications"]
+	path = assets/PrivlyApplications
+	url = https://github.com/vshivam/privly-applications.git
