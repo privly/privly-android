@@ -34,11 +34,12 @@ public class PrivlyActivity extends Activity {
 		if (base_url == null) {
 			gotoSettings = new Intent(getApplicationContext(), Settings.class);
 			startActivity(gotoSettings);
-
 		} else {
 			gotoLogin = new Intent(getApplicationContext(), Login.class);
 			startActivity(gotoLogin);
 		}
+
+		finish();
 	}
 
 }
