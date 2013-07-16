@@ -5,10 +5,13 @@
     android:versionName="0.0.0.1" >
 
     <uses-sdk android:minSdkVersion="9" />
-	<uses-permission android:name="android.permission.INTERNET" /> 
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:icon="@drawable/logo"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Light" >
         <activity
             android:name=".PrivlyActivity"
             android:label="@string/app_name" >
@@ -18,8 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login"></activity>
-        <activity android:name=".settings"></activity>
+        <activity android:name=".Login" >
+        </activity>
+        <activity android:name=".Settings" >
+        </activity>
+        <activity android:name=".Home" >
+        </activity>
+        <activity android:name=".NewPost" >
+        </activity>
+        <activity android:name=".Share" >
+        </activity>
     </application>
 
 </manifest>

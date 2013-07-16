@@ -36,11 +36,25 @@
 	        android:inputType="textPassword"
 	        android:hint="@string/pwd_label"/>
 	</LinearLayout>
-	
-    <Button
-        android:id="@+id/login"
-        android:layout_width="wrap_content"
+	<LinearLayout 
+	    android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_label"
-        android:layout_margin="20dp"></Button>
+        android:orientation="horizontal"
+        android:layout_margin="20dp"
+        android:gravity="center_horizontal">
+	    <CheckBox
+	        android:id="@+id/remember_me"
+	        android:layout_width="0dp"
+	        android:layout_weight="2"
+        	android:layout_height="wrap_content"
+	        android:text="@string/save_pwd_label">
+	    </CheckBox>
+	    <Button
+	        android:id="@+id/login"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:layout_height="wrap_content"
+	        android:text="@string/login_label"> 
+	    </Button>
+    </LinearLayout>
 </LinearLayout>
