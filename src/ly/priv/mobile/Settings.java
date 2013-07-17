@@ -39,10 +39,8 @@ public class Settings extends Activity {
         save = (Button)findViewById(R.id.save);
         urlEditText = (EditText)findViewById(R.id.base_);
 
-        Values values = new Values();
-        prefsName = values.getPrefsName();
-        settings = getSharedPreferences(prefsName, 0);
-        baseURL = settings.getString("base_url", null);
+        Values values = new Values(getApplicationContext());
+        baseURL = values.getBaseUrl();
 
         if (baseURL != null)
             urlEditText.setText(baseURL);

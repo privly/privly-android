@@ -45,9 +45,9 @@ public class Home extends Activity {
         readListView = (ListView)findViewById(R.id.read_listView);
 
         ArrayAdapter<String> createArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, createArrayList);
-        ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, readArrayList);
+                R.layout.list_item, createArrayList);
+        ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(this, R.layout.list_item,
+                readArrayList);
 
         createListView.setAdapter(createArrayAdapter);
         readListView.setAdapter(readArrayAdapter);

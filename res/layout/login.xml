@@ -2,59 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/headerDescription"
+        android:src="@drawable/privlyheader" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello" />
-    
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
-	    <EditText 
-	        android:id="@+id/uname"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	       	android:layout_weight="2"
-	       	android:hint="@string/uname_label"/>
+        <EditText
+            android:id="@+id/uname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="@string/uname_label" />
     </LinearLayout>
-    
-    <LinearLayout 
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-	    
-	    <EditText 
-	        android:id="@+id/pwd"
-	        android:layout_width="0dp"
-	        android:layout_weight="2"
-	        android:layout_height="wrap_content"
-	        android:inputType="textPassword"
-	        android:hint="@string/pwd_label"/>
-	</LinearLayout>
-	<LinearLayout 
-	    android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="20dp"
-        android:gravity="center_horizontal">
-	    <CheckBox
-	        android:id="@+id/remember_me"
-	        android:layout_width="0dp"
-	        android:layout_weight="2"
-        	android:layout_height="wrap_content"
-	        android:text="@string/save_pwd_label">
-	    </CheckBox>
-	    <Button
-	        android:id="@+id/login"
-	        android:layout_width="0dp"
-	        android:layout_weight="1"
-	        android:layout_height="wrap_content"
-	        android:text="@string/login_label"> 
-	    </Button>
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/pwd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="@string/pwd_label"
+            android:inputType="textPassword" />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <CheckBox
+            android:id="@+id/remember_me"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/save_pwd_label" >
+        </CheckBox>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/login_label" >
+        </Button>
+    </LinearLayout>
+
 </LinearLayout>

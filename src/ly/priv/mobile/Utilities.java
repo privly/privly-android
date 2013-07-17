@@ -41,4 +41,9 @@ public class Utilities {
             Toast.makeText(c, textToToast, Toast.LENGTH_SHORT).show();
     }
 
+    public static String getShareableHTML(String url){
+        String html = "<a href=\""+url+"\">"+url+"</a>";
+        return html;
+    }
+
 }
