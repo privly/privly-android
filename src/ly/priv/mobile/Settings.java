@@ -4,6 +4,7 @@ package ly.priv.mobile;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,8 @@ public class Settings extends Activity {
 
     SharedPreferences settings;
 
+    Values values;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +42,8 @@ public class Settings extends Activity {
         save = (Button)findViewById(R.id.save);
         urlEditText = (EditText)findViewById(R.id.base_);
 
-        Values values = new Values();
-        prefsName = values.getPrefsName();
-        settings = getSharedPreferences(prefsName, 0);
-        baseURL = settings.getString("base_url", null);
+        values = new Values(getApplicationContext());
+        baseURL = values.getBaseUrl();
 
         if (baseURL != null)
             urlEditText.setText(baseURL);
@@ -56,7 +57,9 @@ public class Settings extends Activity {
                 // TODO Auto-generated method stub
                 urlEditText = (EditText)findViewById(R.id.base_);
                 baseURL = urlEditText.getText().toString();
-                SharedPreferences.Editor editor = settings.edit();
+                String prefsName = values.getPrefsName();
+                settings = getSharedPreferences(prefsName, 0);
+                Editor editor = settings.edit();
                 editor.putString("base_url", baseURL);
                 editor.commit();
                 Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
@@ -67,5 +70,4 @@ public class Settings extends Activity {
         });
 
     }
-
 }

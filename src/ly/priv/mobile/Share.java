@@ -5,8 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebSettings.LayoutAlgorithm;
+import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.EditText;
 
 /**
  * Shows the newly generated Privly URL and allows the user to share it to
@@ -25,8 +26,10 @@ public class Share extends Activity {
         Utilities.showToast(this, "Share", false);
         Bundle bundle = getIntent().getExtras();
         newPrivlyUrl = bundle.getString("newPrivlyUrl");
-        EditText privlyUrlTextView = (EditText)findViewById(R.id.newUrlEditText);
-        privlyUrlTextView.setText(newPrivlyUrl);
+        WebView urlWebview = (WebView)findViewById(R.id.urlWebview);
+        urlWebview.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+        String html = Utilities.getShareableHTML(newPrivlyUrl);
+        urlWebview.loadData(html, "text/html", "utf-8");
 
         Button shareButton = (Button)findViewById(R.id.shareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
