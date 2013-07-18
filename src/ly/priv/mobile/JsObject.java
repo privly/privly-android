@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -20,7 +18,7 @@ import android.webkit.JavascriptInterface;
  */
 public class JsObject {
 
-    Context c;
+    Context context;
 
     SharedPreferences sharedPrefs;
 
@@ -31,7 +29,7 @@ public class JsObject {
      *            class.
      */
     JsObject(Context callingContext) {
-        c = callingContext;
+        context = callingContext;
     }
 
     /**
@@ -53,10 +51,10 @@ public class JsObject {
     @JavascriptInterface
     public void receiveNewPrivlyURL(String url) {
         Log.d("androidJSBridge URL Received", url);
-        Utilities.showToast(c, url, true);
-        Intent gotoShare = new Intent(c, Share.class);
+        Utilities.showToast(context, url, true);
+        Intent gotoShare = new Intent(context, Share.class);
         gotoShare.putExtra("newPrivlyUrl", url);
-        c.startActivity(gotoShare);
+        context.startActivity(gotoShare);
     }
 
     /**
@@ -77,7 +75,7 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchAuthToken() {
-        Values values = new Values(c);
+        Values values = new Values(context);
         String auth_token = values.getauthToken();
         return auth_token;
     }
@@ -89,14 +87,14 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchDomainName() {
-        Values values = new Values(c);
+        Values values = new Values(context);
         String domainName = values.getBaseUrl();
         return domainName;
     }
 
     @JavascriptInterface
     public void showWaitDialog(String message) {
-        dialog = new ProgressDialog(c);
+        dialog = new ProgressDialog(context);
         dialog.setMessage(message);
         dialog.show();
     }
@@ -108,11 +106,15 @@ public class JsObject {
 
     @JavascriptInterface
     public void showLoginActivity() {
-        Intent gotoLogin = new Intent(c, Login.class);
+        Intent gotoLogin = new Intent(context, Login.class);
         /**
          * Set authToken null so that the Login Activity does not redirect the
          * user to Home Activity.
          */
+
+        Values values = new Values(context);
+        String prefsName = values.getPrefsName();
+        sharedPrefs = context.getSharedPreferences(prefsName, 0);
         Editor e = sharedPrefs.edit();
         e.putString("auth_token", null);
         e.commit();
@@ -123,19 +125,28 @@ public class JsObject {
          * Activities.
          */
         gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        c.startActivity(gotoLogin);
+        context.startActivity(gotoLogin);
     }
 
     @JavascriptInterface
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)c
-                .getSystemService(c.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    public void showHomeActivity() {
+        Intent gotoHome = new Intent(context, Home.class);
+        gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(gotoHome);
+    }
+
+    @JavascriptInterface
+    public String isDataConnectionAvailable() {
+        Boolean dataConnectionAvailability = Utilities.isDataConnectionAvailable(context);
+
+        if (dataConnectionAvailability)
+            return "true";
+        else
+            return "false";
     }
 
     @JavascriptInterface
     public void showToast(String textToToast) {
-        Utilities.showToast(c, textToToast, true);
+        Utilities.showToast(context, textToToast, true);
     }
 }

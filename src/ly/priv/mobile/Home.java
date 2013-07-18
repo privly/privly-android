@@ -6,12 +6,17 @@ import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * This class displays the Home Activity for a user after authentication. Gives
@@ -28,6 +33,11 @@ public class Home extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
+        TextView createHeadingEditText = (TextView)findViewById(R.id.createNewHeadingTextView);
+        TextView readHeadingEditText = (TextView)findViewById(R.id.readPostsHeadingTextView);
+        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        createHeadingEditText.setTypeface(lobster);
+        readHeadingEditText.setTypeface(lobster);
 
         /**
          * Create two ListViews which display create/read options.
@@ -61,12 +71,38 @@ public class Home extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                Intent gotoCreateNewPost = new Intent(getApplicationContext(), NewPost.class);
-                gotoCreateNewPost.putExtra("JsAppName", arrCreate[position]);
-                startActivity(gotoCreateNewPost);
+                if (Utilities.isDataConnectionAvailable(getApplicationContext())) {
+                    Intent gotoCreateNewPost = new Intent(getApplicationContext(), NewPost.class);
+                    gotoCreateNewPost.putExtra("JsAppName", arrCreate[position]);
+                    startActivity(gotoCreateNewPost);
+                } else
+                    Utilities.showToast(getApplicationContext(),
+                            "Oops! Seems like there\'s no data connection.", true);
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.layout.menu_layout_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent gotoSettings = new Intent(this, Settings.class);
+                startActivity(gotoSettings);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

@@ -65,9 +65,12 @@ public class Login extends Activity {
 
         values = new Values(getApplicationContext());
         baseURL = values.getBaseUrl();
+
+        String prefsName = values.getPrefsName();
+        sharedPrefs = getSharedPreferences(prefsName, 0);
         // If no base domain has been defined,
         // the user is taken to the login screen where he needs to add it.
-
+        String authToken = values.getauthToken();
         if (baseURL == null) {
             Intent settings_it = new Intent(this, Settings.class);
             startActivity(settings_it);
@@ -75,7 +78,7 @@ public class Login extends Activity {
         } else {
             Boolean rememberMe = values.getRememberMe();
             Log.d("rememberMeValue", Boolean.toString(rememberMe));
-            if (rememberMe) {
+            if (rememberMe && authToken != null) {
                 Intent gotoHome = new Intent(getApplicationContext(), Home.class);
                 startActivity(gotoHome);
                 finish();
@@ -106,36 +109,50 @@ public class Login extends Activity {
                     @Override
                     public void onClick(View arg0) {
                         // TODO Auto-generated method stub
-                        userName = unameEditText.getText().toString();
-                        password = pwdEditText.getText().toString();
-                        rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me);
 
-                        // Remove any unwanted spaces before and after the
-                        // EmailID
-                        // and Password
-                        userName = userName.trim();
-                        password = password.trim();
+                        /**
+                         * Check for data connection availability before making
+                         * authentication request
+                         */
+                        if (Utilities.isDataConnectionAvailable(getApplicationContext())) {
+                            userName = unameEditText.getText().toString();
+                            password = pwdEditText.getText().toString();
+                            rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me);
 
-                        // Check if Email is Valid using RegEx and Password is
-                        // not
-                        // blank
-                        if (!Utilities.isValidEmail(userName))
-                            Utilities.showToast(getApplicationContext(),
-                                    "Please Enter a valid EMail ID", false);
-                        else if (password.equalsIgnoreCase(""))
-                            Utilities.showToast(getApplicationContext(),
-                                    "Please Enter a valid Password", false);
-                        else {
-                            CheckLoginTask task = new CheckLoginTask();
-                            Log.d("url", baseURL + "/token_authentications.json");
-                            task.execute(baseURL + "/token_authentications.json");
-                            if (rememberMeCheckBox.isChecked()) {
+                            // Remove any unwanted spaces before and after the
+                            // EmailID
+                            // and Password
+                            userName = userName.trim();
+                            password = password.trim();
+
+                            // Check if Email is Valid using RegEx and Password
+                            // is
+                            // not
+                            // blank
+                            if (!Utilities.isValidEmail(userName))
+                                Utilities.showToast(getApplicationContext(),
+                                        "Please Enter a valid EMail ID", false);
+                            else if (password.equalsIgnoreCase(""))
+                                Utilities.showToast(getApplicationContext(),
+                                        "Please Enter a valid Password", false);
+                            else {
+                                CheckLoginTask task = new CheckLoginTask();
+                                Log.d("url", baseURL + "/token_authentications.json");
+                                task.execute(baseURL + "/token_authentications.json");
+
                                 Editor editor = sharedPrefs.edit();
                                 editor.putString("uname", userName);
-                                editor.putBoolean("remember_me", true);
-                                editor.commit();
+                                if (rememberMeCheckBox.isChecked()) {
+                                    editor.putBoolean("remember_me", true);
+                                    editor.commit();
+                                } else {
+                                    editor.putBoolean("remember_me", true);
+                                    editor.commit();
+                                }
                             }
-                        }
+                        } else
+                            Utilities.showToast(getApplicationContext(),
+                                    "Oops! Seems like there\'s no connection.", true);
                     }
                 });
             }
