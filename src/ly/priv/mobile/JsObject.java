@@ -1,9 +1,11 @@
 
 package ly.priv.mobile;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -16,14 +18,18 @@ import android.webkit.JavascriptInterface;
  */
 public class JsObject {
 
-    Context c;
+    Context context;
+
+    SharedPreferences sharedPrefs;
+
+    static ProgressDialog dialog;
 
     /**
      * @param callingContext sets current context as the context of the calling
      *            class.
      */
     JsObject(Context callingContext) {
-        c = callingContext;
+        context = callingContext;
     }
 
     /**
@@ -45,10 +51,10 @@ public class JsObject {
     @JavascriptInterface
     public void receiveNewPrivlyURL(String url) {
         Log.d("androidJSBridge URL Received", url);
-        Utilities.showToast(c, url, true);
-        Intent gotoShare = new Intent(c, Share.class);
+        Utilities.showToast(context, url, true);
+        Intent gotoShare = new Intent(context, Share.class);
         gotoShare.putExtra("newPrivlyUrl", url);
-        c.startActivity(gotoShare);
+        context.startActivity(gotoShare);
     }
 
     /**
@@ -69,11 +75,8 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchAuthToken() {
-        SharedPreferences sharedPrefs;
-        Values values = new Values();
-        String prefs_name = values.getPrefsName();
-        sharedPrefs = c.getSharedPreferences(prefs_name, 0);
-        String auth_token = sharedPrefs.getString("auth_token", null);
+        Values values = new Values(context);
+        String auth_token = values.getauthToken();
         return auth_token;
     }
 
@@ -84,11 +87,66 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchDomainName() {
-        SharedPreferences sharedPrefs;
-        Values values = new Values();
-        String prefs_name = values.getPrefsName();
-        sharedPrefs = c.getSharedPreferences(prefs_name, 0);
-        String domainName = sharedPrefs.getString("base_url", null);
+        Values values = new Values(context);
+        String domainName = values.getBaseUrl();
         return domainName;
+    }
+
+    @JavascriptInterface
+    public void showWaitDialog(String message) {
+        dialog = new ProgressDialog(context);
+        dialog.setMessage(message);
+        dialog.show();
+    }
+
+    @JavascriptInterface
+    public void hideWaitDialog() {
+        dialog.dismiss();
+    }
+
+    @JavascriptInterface
+    public void showLoginActivity() {
+        Intent gotoLogin = new Intent(context, Login.class);
+        /**
+         * Set authToken null so that the Login Activity does not redirect the
+         * user to Home Activity.
+         */
+
+        Values values = new Values(context);
+        String prefsName = values.getPrefsName();
+        sharedPrefs = context.getSharedPreferences(prefsName, 0);
+        Editor e = sharedPrefs.edit();
+        e.putString("auth_token", null);
+        e.commit();
+        gotoLogin.putExtra("isRedirected", true);
+        /**
+         * Clear the history stack. Once the user is redirected to the Login
+         * Activity, there is no point in user being able to access previous
+         * Activities.
+         */
+        gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(gotoLogin);
+    }
+
+    @JavascriptInterface
+    public void showHomeActivity() {
+        Intent gotoHome = new Intent(context, Home.class);
+        gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(gotoHome);
+    }
+
+    @JavascriptInterface
+    public String isDataConnectionAvailable() {
+        Boolean dataConnectionAvailability = Utilities.isDataConnectionAvailable(context);
+
+        if (dataConnectionAvailability)
+            return "true";
+        else
+            return "false";
+    }
+
+    @JavascriptInterface
+    public void showToast(String textToToast) {
+        Utilities.showToast(context, textToToast, true);
     }
 }

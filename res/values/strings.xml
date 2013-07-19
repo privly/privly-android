@@ -10,5 +10,8 @@
 	<string name="create_listView_label"> Create New Privly Content </string>
 	<string name="newUrlLabel">Here\'s your new Privly Url</string>
 	<string name="shareButtonLabel">Share Url</string>
+    <string name="headerDescription">Privly</string>
+    <string name="settingsMenuLabel">Settings</string>
+    
 	
 </resources>
