@@ -30,6 +30,9 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -64,7 +67,7 @@ public class Login extends Activity {
         // Shared Preference File for storing the domain name, if not privly by
         // default.
         // Will be extended to store the username and password
-        TextView loginHeader = (TextView) findViewById(R.id.loginHeader);
+        TextView loginHeader = (TextView)findViewById(R.id.loginHeader);
         Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
         loginHeader.setTypeface(lobster);
         values = new Values(getApplicationContext());
@@ -160,6 +163,27 @@ public class Login extends Activity {
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.layout.menu_layout_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent gotoSettings = new Intent(this, Settings.class);
+                startActivity(gotoSettings);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

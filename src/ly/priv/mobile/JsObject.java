@@ -137,7 +137,6 @@ public class JsObject {
     @JavascriptInterface
     public String isDataConnectionAvailable() {
         Boolean dataConnectionAvailability = Utilities.isDataConnectionAvailable(context);
-
         if (dataConnectionAvailability)
             return "true";
         else
