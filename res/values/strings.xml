@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
-	<string name="uname_label">EMail ID</string>
-	<string name="pwd_label">Password</string>
-	<string name="login_label">Login !</string>
-	<string name="save_pwd_label">Remember Me</string>	
-	<string name="read_listView_label">Read Privly Content</string>
-	<string name="create_listView_label"> Create New Privly Content </string>
-	<string name="newUrlLabel">Here\'s your new Privly Url</string>
-	<string name="shareButtonLabel">Share Url</string>
+    <string name="unameHint">EMail ID</string>
+    <string name="pwdHint">Password</string>
+    <string name="loginButtonLabel">Login !</string>
+    <string name="rememberMeLabel">Remember Me</string>
+    <string name="readListViewLabel">Read Privly Content</string>
+    <string name="createListViewLabel"> Create New Privly Content </string>
+    <string name="newUrlLabel">Here\'s your new Privly Url</string>
+    <string name="shareButtonLabel">Share Url</string>
     <string name="headerDescription">Privly</string>
-    <string name="settingsMenuLabel">Settings</string>
-    
-	
+    <string name="settingsMenuLabel">Change Content Server</string>
+    <string name="logoutMenuLabel">Logout</string>
+    <string name="baseUrlHeading">Content Server Location</string>
+    <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
+    <string name="saveButtonLabel">Save</string>
 </resources>

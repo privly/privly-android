@@ -38,7 +38,6 @@ public class Home extends Activity {
         Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
         createHeadingEditText.setTypeface(lobster);
         readHeadingEditText.setTypeface(lobster);
-
         /**
          * Create two ListViews which display create/read options.
          */
@@ -87,7 +86,7 @@ public class Home extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.layout.menu_layout_login, menu);
+        menuInflater.inflate(R.layout.menu_layout_home, menu);
         return true;
     }
 
@@ -98,6 +97,15 @@ public class Home extends Activity {
             case R.id.settings:
                 Intent gotoSettings = new Intent(this, Settings.class);
                 startActivity(gotoSettings);
+                return true;
+
+            case R.id.logout:
+                Values values = new Values(getApplicationContext());
+                values.setAuthToken(null);
+                values.setRememberMe(false);
+                Intent gotoLogin = new Intent(this, Login.class);
+                gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(gotoLogin);
                 return true;
 
             default:

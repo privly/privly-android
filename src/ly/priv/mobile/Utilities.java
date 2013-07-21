@@ -43,17 +43,28 @@ public class Utilities {
             Toast.makeText(context, textToToast, Toast.LENGTH_SHORT).show();
     }
 
-    public static String getShareableHTML(String url){
-        String html = "<a href=\""+url+"\">"+url+"</a>";
+    /**
+     * Returns HTML string which will be loaded in the webview in Share
+     * Activity.
+     * 
+     * @param url
+     * @return html
+     */
+    public static String getShareableHTML(String url) {
+        String html = "<a href=\"" + url + "\">" + url + "</a>";
         return html;
     }
 
-    public static Boolean isDataConnectionAvailable( Context context)
-    {
+    /**
+     * Checks for data connection availability
+     * 
+     * @param context
+     * @return true/false
+     */
+    public static Boolean isDataConnectionAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager)context
                 .getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 

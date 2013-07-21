@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * This class displays the login screen. Allows the user to authenticate to a
@@ -62,7 +64,9 @@ public class Login extends Activity {
         // Shared Preference File for storing the domain name, if not privly by
         // default.
         // Will be extended to store the username and password
-
+        TextView loginHeader = (TextView) findViewById(R.id.loginHeader);
+        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        loginHeader.setTypeface(lobster);
         values = new Values(getApplicationContext());
         baseURL = values.getBaseUrl();
 
@@ -70,7 +74,7 @@ public class Login extends Activity {
         sharedPrefs = getSharedPreferences(prefsName, 0);
         // If no base domain has been defined,
         // the user is taken to the login screen where he needs to add it.
-        String authToken = values.getauthToken();
+        String authToken = values.getAuthToken();
         if (baseURL == null) {
             Intent settings_it = new Intent(this, Settings.class);
             startActivity(settings_it);
@@ -80,8 +84,8 @@ public class Login extends Activity {
             Log.d("rememberMeValue", Boolean.toString(rememberMe));
             if (rememberMe && authToken != null) {
                 Intent gotoHome = new Intent(getApplicationContext(), Home.class);
+                gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(gotoHome);
-                finish();
             } else {
                 unameEditText = (EditText)findViewById(R.id.uname);
                 pwdEditText = (EditText)findViewById(R.id.pwd);
@@ -146,7 +150,7 @@ public class Login extends Activity {
                                     editor.putBoolean("remember_me", true);
                                     editor.commit();
                                 } else {
-                                    editor.putBoolean("remember_me", true);
+                                    editor.putBoolean("remember_me", false);
                                     editor.commit();
                                 }
                             }
@@ -161,12 +165,12 @@ public class Login extends Activity {
 
     private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
-        private ProgressDialog Dialog = new ProgressDialog(Login.this);
+        private ProgressDialog dialog = new ProgressDialog(Login.this);
 
         @Override
         protected void onPreExecute() {
-            Dialog.setMessage("Verifying..");
-            Dialog.show();
+            dialog.setMessage("Logging in..");
+            dialog.show();
         }
 
         @Override
@@ -174,15 +178,12 @@ public class Login extends Activity {
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             Log.d("uname", userName);
             Log.d("pwd", password);
-
             // NameValuePairs for POST Request
-
             nameValuePairs.add(new BasicNameValuePair("email", userName));
             nameValuePairs.add(new BasicNameValuePair("password", password));
 
             try {
                 // Setting Up for a secure connection
-
                 HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
                 DefaultHttpClient client = new DefaultHttpClient();
                 SchemeRegistry registry = new SchemeRegistry();
@@ -192,10 +193,8 @@ public class Login extends Activity {
                 SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(),
                         registry);
                 DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
-
                 // Set verifier
                 HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-
                 // Send http request
                 HttpPost httpPost = new HttpPost(baseURL + "/token_authentications.json");
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -214,7 +213,7 @@ public class Login extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            Dialog.dismiss();
+            dialog.dismiss();
             // Toast.makeText(getApplicationContext(),loginResponse ,
             // Toast.LENGTH_LONG).show();
             try {
@@ -227,6 +226,7 @@ public class Login extends Activity {
                     e.commit();
                     Intent gotoHome = new Intent(getApplicationContext(), Home.class);
                     startActivity(gotoHome);
+                    finish();
                 } else
                     Utilities.showToast(getApplicationContext(),
                             "Invalid Email Address or Password. Please Try Again!", true);

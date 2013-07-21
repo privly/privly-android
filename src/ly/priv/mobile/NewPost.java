@@ -25,10 +25,9 @@ public class NewPost extends Activity {
         setContentView(R.layout.new_post);
         Bundle bundle = getIntent().getExtras();
 
-        /**
-         * Fetch selected Js app's name and load the respective JS app into
-         * WebView.
-         */
+        // Fetch selected Js app's name and load the respective JS app into
+        // WebView.
+
         if (bundle.getString("JsAppName") != null) {
             String JsAppName = bundle.getString("JsAppName");
             WebView w = (WebView)findViewById(R.id.webview_1);
@@ -37,9 +36,8 @@ public class NewPost extends Activity {
             if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
                 w.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
-            /**
-             * Logs all Js Console messages on the logcat.
-             */
+            // Logs all Js Console messages on the logcat.
+
             w.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public boolean onConsoleMessage(ConsoleMessage cm) {

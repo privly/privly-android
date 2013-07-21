@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--
+         Single menu item
+         Set id, icon and Title for each menu item
+    -->
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settingsMenuLabel"
+        android:icon="@drawable/settings"/>
+    
+    <item
+        android:id="@+id/logout"
+        android:title="@string/logoutMenuLabel"
+        android:icon="@drawable/settings"/>
+
+</menu>

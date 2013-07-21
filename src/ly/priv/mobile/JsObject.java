@@ -76,7 +76,7 @@ public class JsObject {
     @JavascriptInterface
     public String fetchAuthToken() {
         Values values = new Values(context);
-        String auth_token = values.getauthToken();
+        String auth_token = values.getAuthToken();
         return auth_token;
     }
 
@@ -119,11 +119,10 @@ public class JsObject {
         e.putString("auth_token", null);
         e.commit();
         gotoLogin.putExtra("isRedirected", true);
-        /**
-         * Clear the history stack. Once the user is redirected to the Login
-         * Activity, there is no point in user being able to access previous
-         * Activities.
-         */
+
+        // Clear the history stack. Once the user is redirected to the Login
+        // Activity. The user should not be able to access previous activities.
+
         gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(gotoLogin);
     }
