@@ -1,6 +1,7 @@
 
 package ly.priv.mobile;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +56,8 @@ public class JsObject {
         Intent gotoShare = new Intent(context, Share.class);
         gotoShare.putExtra("newPrivlyUrl", url);
         context.startActivity(gotoShare);
+        ((Activity)context).finish();
+
     }
 
     /**

@@ -47,7 +47,7 @@ import android.widget.TextView;
  */
 public class Login extends Activity {
     /** Called when the activity is first created. */
-    String userName, password, loginResponse, baseURL;
+    String userName, password, loginResponse, baseUrl;
 
     Button loginButton;
 
@@ -71,14 +71,14 @@ public class Login extends Activity {
         Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
         loginHeader.setTypeface(lobster);
         values = new Values(getApplicationContext());
-        baseURL = values.getBaseUrl();
+        baseUrl = values.getBaseUrl();
 
         String prefsName = values.getPrefsName();
         sharedPrefs = getSharedPreferences(prefsName, 0);
         // If no base domain has been defined,
         // the user is taken to the login screen where he needs to add it.
         String authToken = values.getAuthToken();
-        if (baseURL == null) {
+        if (baseUrl == null) {
             Intent settings_it = new Intent(this, Settings.class);
             startActivity(settings_it);
             finish();
@@ -144,8 +144,8 @@ public class Login extends Activity {
                                         "Please Enter a valid Password", false);
                             else {
                                 CheckLoginTask task = new CheckLoginTask();
-                                Log.d("url", baseURL + "/token_authentications.json");
-                                task.execute(baseURL + "/token_authentications.json");
+                                Log.d("url", baseUrl + "/token_authentications.json");
+                                task.execute(baseUrl + "/token_authentications.json");
 
                                 Editor editor = sharedPrefs.edit();
                                 editor.putString("uname", userName);
@@ -220,7 +220,7 @@ public class Login extends Activity {
                 // Set verifier
                 HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
                 // Send http request
-                HttpPost httpPost = new HttpPost(baseURL + "/token_authentications.json");
+                HttpPost httpPost = new HttpPost(baseUrl + "/token_authentications.json");
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpClient.execute(httpPost);
                 HttpEntity entity = response.getEntity();
@@ -245,12 +245,13 @@ public class Login extends Activity {
                 if (!jObject.has("error") && jObject.has("auth_key")) {
                     String authToken = jObject.getString("auth_key");
                     Log.d("auth_token", authToken);
-                    Editor e = sharedPrefs.edit();
-                    e.putString("auth_token", authToken);
-                    e.commit();
+                    Values values = new Values(getApplicationContext());
+                    values.setAuthToken(authToken);
+                    values.setUserVerifiedAtLogin(true);
                     Intent gotoHome = new Intent(getApplicationContext(), Home.class);
+                    gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(gotoHome);
-                    finish();
                 } else
                     Utilities.showToast(getApplicationContext(),
                             "Invalid Email Address or Password. Please Try Again!", true);
@@ -262,5 +263,6 @@ public class Login extends Activity {
         }
 
     }
+
 
 }

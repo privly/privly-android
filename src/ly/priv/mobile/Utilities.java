@@ -68,4 +68,18 @@ public class Utilities {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    public static String getGetRequestUrl(String url, Context context) {
+        Values values = new Values(context);
+        String authTokenString = "auth_token="+values.getAuthToken();
+        if (url.indexOf("?") >= 0
+                && (url.indexOf("?") < url.indexOf("#") || url.indexOf("#") == -1)) {
+            return url.replace("?", "?" + authTokenString + "&");
+            // else if there is an anchor
+        } else if (url.indexOf("#") >= 0) {
+            return url.replace("#", "?" + authTokenString + "#");
+        } else {
+            return url + "?" + authTokenString;
+        }
+    }
+
 }

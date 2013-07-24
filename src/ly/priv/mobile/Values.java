@@ -103,13 +103,27 @@ public final class Values {
         editor.commit();
     }
 
+    Boolean isUserVerifiedAtLogin() {
+        sharedPrefs = context.getSharedPreferences(prefsName, 0);
+        return sharedPrefs.getBoolean("verified_at_login", false);
+
+    }
+
+    void setUserVerifiedAtLogin(Boolean bool) {
+        sharedPrefs = context.getSharedPreferences(prefsName, 0);
+        Editor editor = sharedPrefs.edit();
+        editor.putBoolean("verified_at_login", bool);
+        editor.commit();
+    }
 }
 
 /**
  * Key Pair Values saved in shared preferences
- * uname - email id of user
- * pwd -password of the User
- * base_url - domain_name to which the user authorizes
- * auth_token - authentication Key
- * remember_me - flag to check if the user checked remember me check box
+ * uname : email id of user;
+ * pwd : password of the User;
+ * base_url : domain_name to which the user authorizes;
+ * auth_token : authentication Key;
+ * remember_me : flag to check if the user checked remember me check box;
+ * verified_at_login : flag to check if user has been authenticated at login.
+ * If true, the auth_token is not verified in Home Activity;
  **/
