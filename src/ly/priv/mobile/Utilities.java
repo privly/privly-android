@@ -43,18 +43,43 @@ public class Utilities {
             Toast.makeText(context, textToToast, Toast.LENGTH_SHORT).show();
     }
 
-    public static String getShareableHTML(String url){
-        String html = "<a href=\""+url+"\">"+url+"</a>";
+    /**
+     * Returns HTML string which will be loaded in the webview in Share
+     * Activity.
+     * 
+     * @param url
+     * @return html
+     */
+    public static String getShareableHTML(String url) {
+        String html = "<a href=\"" + url + "\">" + url + "</a>";
         return html;
     }
 
-    public static Boolean isDataConnectionAvailable( Context context)
-    {
+    /**
+     * Checks for data connection availability
+     * 
+     * @param context
+     * @return true/false
+     */
+    public static Boolean isDataConnectionAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager)context
                 .getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static String getGetRequestUrl(String url, Context context) {
+        Values values = new Values(context);
+        String authTokenString = "auth_token="+values.getAuthToken();
+        if (url.indexOf("?") >= 0
+                && (url.indexOf("?") < url.indexOf("#") || url.indexOf("#") == -1)) {
+            return url.replace("?", "?" + authTokenString + "&");
+            // else if there is an anchor
+        } else if (url.indexOf("#") >= 0) {
+            return url.replace("#", "?" + authTokenString + "#");
+        } else {
+            return url + "?" + authTokenString;
+        }
     }
 
 }

@@ -4,12 +4,16 @@ package ly.priv.mobile;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -20,7 +24,7 @@ import android.widget.Toast;
  */
 public class Settings extends Activity {
     /** Called when the activity is first created. */
-    String prefsName, baseURL;
+    String prefsName, baseUrl;
 
     Button save;
 
@@ -37,16 +41,20 @@ public class Settings extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.settings_layout);
+
+        TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
+        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        baseUrlHeading.setTypeface(lobster);
         Log.d("Settings", "Settings");
         gotoLogin = new Intent(this, Login.class);
         save = (Button)findViewById(R.id.save);
-        urlEditText = (EditText)findViewById(R.id.base_);
+        urlEditText = (EditText)findViewById(R.id.baseUrlEditText);
 
         values = new Values(getApplicationContext());
-        baseURL = values.getBaseUrl();
+        baseUrl = values.getBaseUrl();
 
-        if (baseURL != null)
-            urlEditText.setText(baseURL);
+        if (baseUrl != null)
+            urlEditText.setText(baseUrl);
 
         // Saves the base url to Shared Preferences
 
@@ -55,19 +63,47 @@ public class Settings extends Activity {
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                urlEditText = (EditText)findViewById(R.id.base_);
-                baseURL = urlEditText.getText().toString();
-                String prefsName = values.getPrefsName();
-                settings = getSharedPreferences(prefsName, 0);
-                Editor editor = settings.edit();
-                editor.putString("base_url", baseURL);
-                editor.commit();
-                Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
-
-                // Redirect to Login once saved
-                startActivity(gotoLogin);
+                baseUrl = urlEditText.getText().toString();
+                if (!baseUrl.equalsIgnoreCase("")) {
+                    values.setBaseUrl(baseUrl);
+                    Toast.makeText(getApplicationContext(), "Saved! Please login now",
+                            Toast.LENGTH_SHORT).show();
+                    // Set authToken as null and redirect to login. This'll make
+                    // sure that the user is authenticated with the new content
+                    // server.
+                    Values values = new Values(getApplicationContext());
+                    values.setAuthToken(null);
+                    startActivity(gotoLogin);
+                } else
+                    Utilities.showToast(getApplicationContext(), "Please enter a valid URL", true);
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.layout.menu_layout_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.logout:
+                Values values = new Values(getApplicationContext());
+                values.setAuthToken(null);
+                values.setRememberMe(false);
+                Intent gotoLogin = new Intent(this, Login.class);
+                gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(gotoLogin);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
