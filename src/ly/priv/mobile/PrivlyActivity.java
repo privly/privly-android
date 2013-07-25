@@ -1,8 +1,8 @@
+
 package ly.priv.mobile;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 /**
@@ -15,6 +15,7 @@ import android.os.Bundle;
 public class PrivlyActivity extends Activity {
     /** Called when the activity is first created. */
     Intent gotoSettings, gotoLogin;
+
     String prefsName;
 
     @Override
@@ -22,13 +23,11 @@ public class PrivlyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        // Checks if the base url is set, if not redirects to settings page else
+        // Checks if the content server is set, if not, redirects to settings
+        // page else
         // to the login page.
-        // This can be extended to a splash screen
         Values values = new Values(getApplicationContext());
-        prefsName = values.getPrefsName();
-        SharedPreferences settings = getSharedPreferences(prefsName, 0);
-        String base_url = settings.getString("base_url", null);
+        String base_url = values.getBaseUrl();
 
         if (base_url == null) {
             gotoSettings = new Intent(getApplicationContext(), Settings.class);

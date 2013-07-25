@@ -26,13 +26,18 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * This class displays the login screen. Allows the user to authenticate to a
@@ -42,7 +47,7 @@ import android.widget.EditText;
  */
 public class Login extends Activity {
     /** Called when the activity is first created. */
-    String userName, password, loginResponse, baseURL;
+    String userName, password, loginResponse, baseUrl;
 
     Button loginButton;
 
@@ -62,16 +67,18 @@ public class Login extends Activity {
         // Shared Preference File for storing the domain name, if not privly by
         // default.
         // Will be extended to store the username and password
-
+        TextView loginHeader = (TextView)findViewById(R.id.loginHeader);
+        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        loginHeader.setTypeface(lobster);
         values = new Values(getApplicationContext());
-        baseURL = values.getBaseUrl();
+        baseUrl = values.getBaseUrl();
 
         String prefsName = values.getPrefsName();
         sharedPrefs = getSharedPreferences(prefsName, 0);
         // If no base domain has been defined,
         // the user is taken to the login screen where he needs to add it.
-        String authToken = values.getauthToken();
-        if (baseURL == null) {
+        String authToken = values.getAuthToken();
+        if (baseUrl == null) {
             Intent settings_it = new Intent(this, Settings.class);
             startActivity(settings_it);
             finish();
@@ -80,8 +87,8 @@ public class Login extends Activity {
             Log.d("rememberMeValue", Boolean.toString(rememberMe));
             if (rememberMe && authToken != null) {
                 Intent gotoHome = new Intent(getApplicationContext(), Home.class);
+                gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(gotoHome);
-                finish();
             } else {
                 unameEditText = (EditText)findViewById(R.id.uname);
                 pwdEditText = (EditText)findViewById(R.id.pwd);
@@ -137,8 +144,8 @@ public class Login extends Activity {
                                         "Please Enter a valid Password", false);
                             else {
                                 CheckLoginTask task = new CheckLoginTask();
-                                Log.d("url", baseURL + "/token_authentications.json");
-                                task.execute(baseURL + "/token_authentications.json");
+                                Log.d("url", baseUrl + "/token_authentications.json");
+                                task.execute(baseUrl + "/token_authentications.json");
 
                                 Editor editor = sharedPrefs.edit();
                                 editor.putString("uname", userName);
@@ -146,7 +153,7 @@ public class Login extends Activity {
                                     editor.putBoolean("remember_me", true);
                                     editor.commit();
                                 } else {
-                                    editor.putBoolean("remember_me", true);
+                                    editor.putBoolean("remember_me", false);
                                     editor.commit();
                                 }
                             }
@@ -159,14 +166,35 @@ public class Login extends Activity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.layout.menu_layout_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent gotoSettings = new Intent(this, Settings.class);
+                startActivity(gotoSettings);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
-        private ProgressDialog Dialog = new ProgressDialog(Login.this);
+        private ProgressDialog dialog = new ProgressDialog(Login.this);
 
         @Override
         protected void onPreExecute() {
-            Dialog.setMessage("Verifying..");
-            Dialog.show();
+            dialog.setMessage("Logging in..");
+            dialog.show();
         }
 
         @Override
@@ -174,15 +202,12 @@ public class Login extends Activity {
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             Log.d("uname", userName);
             Log.d("pwd", password);
-
             // NameValuePairs for POST Request
-
             nameValuePairs.add(new BasicNameValuePair("email", userName));
             nameValuePairs.add(new BasicNameValuePair("password", password));
 
             try {
                 // Setting Up for a secure connection
-
                 HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
                 DefaultHttpClient client = new DefaultHttpClient();
                 SchemeRegistry registry = new SchemeRegistry();
@@ -192,12 +217,10 @@ public class Login extends Activity {
                 SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(),
                         registry);
                 DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
-
                 // Set verifier
                 HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-
                 // Send http request
-                HttpPost httpPost = new HttpPost(baseURL + "/token_authentications.json");
+                HttpPost httpPost = new HttpPost(baseUrl + "/token_authentications.json");
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 HttpResponse response = httpClient.execute(httpPost);
                 HttpEntity entity = response.getEntity();
@@ -214,7 +237,7 @@ public class Login extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            Dialog.dismiss();
+            dialog.dismiss();
             // Toast.makeText(getApplicationContext(),loginResponse ,
             // Toast.LENGTH_LONG).show();
             try {
@@ -222,10 +245,12 @@ public class Login extends Activity {
                 if (!jObject.has("error") && jObject.has("auth_key")) {
                     String authToken = jObject.getString("auth_key");
                     Log.d("auth_token", authToken);
-                    Editor e = sharedPrefs.edit();
-                    e.putString("auth_token", authToken);
-                    e.commit();
+                    Values values = new Values(getApplicationContext());
+                    values.setAuthToken(authToken);
+                    values.setUserVerifiedAtLogin(true);
                     Intent gotoHome = new Intent(getApplicationContext(), Home.class);
+                    gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(gotoHome);
                 } else
                     Utilities.showToast(getApplicationContext(),
@@ -238,5 +263,6 @@ public class Login extends Activity {
         }
 
     }
+
 
 }

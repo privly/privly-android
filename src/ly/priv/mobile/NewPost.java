@@ -2,10 +2,14 @@
 package ly.priv.mobile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -25,10 +29,9 @@ public class NewPost extends Activity {
         setContentView(R.layout.new_post);
         Bundle bundle = getIntent().getExtras();
 
-        /**
-         * Fetch selected Js app's name and load the respective JS app into
-         * WebView.
-         */
+        // Fetch selected Js app's name and load the respective JS app into
+        // WebView.
+
         if (bundle.getString("JsAppName") != null) {
             String JsAppName = bundle.getString("JsAppName");
             WebView w = (WebView)findViewById(R.id.webview_1);
@@ -37,9 +40,8 @@ public class NewPost extends Activity {
             if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
                 w.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
-            /**
-             * Logs all Js Console messages on the logcat.
-             */
+            // Logs all Js Console messages on the logcat.
+
             w.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -52,6 +54,37 @@ public class NewPost extends Activity {
             w.loadUrl("file:///android_asset/PrivlyApplications/" + JsAppName + "/new.html");
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.layout.menu_layout_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent gotoSettings = new Intent(this, Settings.class);
+                startActivity(gotoSettings);
+                return true;
+
+            case R.id.logout:
+                Values values = new Values(getApplicationContext());
+                values.setAuthToken(null);
+                values.setRememberMe(false);
+                Intent gotoLogin = new Intent(this, Login.class);
+                gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(gotoLogin);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
