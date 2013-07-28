@@ -41,7 +41,6 @@ public class NewPost extends Activity {
                 w.getSettings().setAllowUniversalAccessFromFileURLs(true);
 
             // Logs all Js Console messages on the logcat.
-
             w.setWebChromeClient(new WebChromeClient() {
                 @Override
                 public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -66,13 +65,11 @@ public class NewPost extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.settings:
                 Intent gotoSettings = new Intent(this, Settings.class);
                 startActivity(gotoSettings);
                 return true;
-
             case R.id.logout:
                 Values values = new Values(getApplicationContext());
                 values.setAuthToken(null);
@@ -81,7 +78,6 @@ public class NewPost extends Activity {
                 gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(gotoLogin);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
