@@ -64,6 +64,8 @@ public class Home extends Activity {
             VerifyAuthToken task = new VerifyAuthToken();
             task.execute(values.getBaseUrl() + "/token_authentications.json");
         }
+        else
+        	values.setUserVerifiedAtLogin(false);
         /**
          * Create two ListViews which display create/read options.
          */
