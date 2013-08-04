@@ -17,6 +17,13 @@ To contribute to the development of Privly-Android.
  * $ git submodule update
 * Contribute
 
+To drop in new posting-applications
+
+* Add the new posting-application folder to assets/PrivlyApplications
+* Add posting-application's name to String[] arrCreate. This should be the folder name of the posting application. 
+* The application folder must contain a new.html file. This new.html file will be loaded in the WebView when creating new Privly Posts. 
+
+
 ## Testing/Submitting Bugs ##
 
 If you have discovered a bug, only [open a public issue](https://github.com/privly/privly-android/issues) on GitHub if it could not possibly be a security related bug. If the bug affects the security of the system, please report it privately at [privly.org](http://www.privly.org/content/bug-report). We will then fix the bug and follow a process of responsible disclosure.
