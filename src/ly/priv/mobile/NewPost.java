@@ -37,9 +37,9 @@ public class NewPost extends Activity {
             WebView w = (WebView)findViewById(R.id.webview_1);
             w.getSettings().setJavaScriptEnabled(true);
             w.addJavascriptInterface(new JsObject(this), "androidJsBridge");
+           
             if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
-                w.getSettings().setAllowUniversalAccessFromFileURLs(true);
-
+            	w.getSettings().setAllowUniversalAccessFromFileURLs(true);
             // Logs all Js Console messages on the logcat.
             w.setWebChromeClient(new WebChromeClient() {
                 @Override
