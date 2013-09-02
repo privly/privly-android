@@ -1,4 +1,3 @@
-
 package ly.priv.mobile;
 
 import android.app.Activity;
@@ -14,140 +13,143 @@ import android.webkit.JavascriptInterface;
 /**
  * This class acts as a bridge between the Js of the Posting Applications and
  * the native Android functions.
- * 
+ *
  * @author Shivam Verma
  */
 public class JsObject {
 
-    Context context;
+	Context context;
+	SharedPreferences sharedPrefs;
+	static ProgressDialog dialog;
 
-    SharedPreferences sharedPrefs;
+	/**
+	 * sets current context as the context of the calling class.
+	 *
+	 * @param callingContext
+	 */
+	JsObject(Context callingContext) {
+		context = callingContext;
+	}
 
-    static ProgressDialog dialog;
+	/**
+	 * @return deviceVersion {String} Version of Android running on the device.
+	 */
+	@JavascriptInterface
+	public String getDeviceVersion() {
+		String deviceVersion = Build.VERSION.RELEASE;
+		Log.d("androidJSBridge Version Request", deviceVersion);
+		return deviceVersion;
+	}
 
-    /**
-     * @param callingContext sets current context as the context of the calling
-     *            class.
-     */
-    JsObject(Context callingContext) {
-        context = callingContext;
-    }
+	/**
+	 * Shows the Share screen {@link ly.priv.mobile.Share} to the user on
+	 * receiving a new Privly Url
+	 *
+	 * @param url
+	 *            The newly generated Privly Url
+	 */
+	@JavascriptInterface
+	public void receiveNewPrivlyURL(String url) {
+		Log.d("androidJSBridge URL Received", url);
+		Utilities.showToast(context, url, true);
+		Intent gotoShare = new Intent(context, Share.class);
+		gotoShare.putExtra("newPrivlyUrl", url);
+		context.startActivity(gotoShare);
+		((Activity) context).finish();
 
-    /**
-     * @return deviceVersion {String} Version of Android running on the device.
-     */
-    @JavascriptInterface
-    public String getDeviceVersion() {
-        String deviceVersion = Build.VERSION.RELEASE;
-        Log.d("androidJSBridge Version Request", deviceVersion);
-        return deviceVersion;
-    }
+	}
 
-    /**
-     * Shows the Share screen {@link ly.priv.mobile.Share} to the user on
-     * receiving a new Privly Url
-     * 
-     * @param url The newly generated Privly Url
-     */
-    @JavascriptInterface
-    public void receiveNewPrivlyURL(String url) {
-        Log.d("androidJSBridge URL Received", url);
-        Utilities.showToast(context, url, true);
-        Intent gotoShare = new Intent(context, Share.class);
-        gotoShare.putExtra("newPrivlyUrl", url);
-        context.startActivity(gotoShare);
-        ((Activity)context).finish();
+	/**
+	 * Identify the platform the Js is running on.
+	 *
+	 * @return "ANDROID"
+	 */
+	@JavascriptInterface
+	public String fetchPlatformName() {
+		Log.d("androidJSBridge Request", "Platform Identification");
+		return "ANDROID";
+	}
 
-    }
+	/**
+	 * Fetch logged in user's auth_token from the sharedPreferences
+	 *
+	 * @return auth_token {String}
+	 */
+	@JavascriptInterface
+	public String fetchAuthToken() {
+		Values values = new Values(context);
+		String auth_token = values.getAuthToken();
+		return auth_token;
+	}
 
-    /**
-     * Identify the platform the Js is running on.
-     * 
-     * @return "ANDROID"
-     */
-    @JavascriptInterface
-    public String fetchPlatformName() {
-        Log.d("androidJSBridge Request", "Platform Identification");
-        return "ANDROID";
-    }
+	/**
+	 * Fetch the domain name to which all Privly Requests are being made.
+	 *
+	 * @return domainName {String}
+	 */
+	@JavascriptInterface
+	public String fetchDomainName() {
+		Values values = new Values(context);
+		String domainName = values.getBaseUrl();
+		return domainName;
+	}
 
-    /**
-     * Fetch logged in user's auth_token from the sharedPreferences
-     * 
-     * @return auth_token {String}
-     */
-    @JavascriptInterface
-    public String fetchAuthToken() {
-        Values values = new Values(context);
-        String auth_token = values.getAuthToken();
-        return auth_token;
-    }
+	@JavascriptInterface
+	public void showWaitDialog(String message) {
+		dialog = new ProgressDialog(context);
+		dialog.setMessage(message);
+		dialog.show();
+	}
 
-    /**
-     * Fetch the domain name to which all Privly Requests are being made.
-     * 
-     * @return domainName {String}
-     */
-    @JavascriptInterface
-    public String fetchDomainName() {
-        Values values = new Values(context);
-        String domainName = values.getBaseUrl();
-        return domainName;
-    }
+	@JavascriptInterface
+	public void hideWaitDialog() {
+		dialog.dismiss();
+	}
 
-    @JavascriptInterface
-    public void showWaitDialog(String message) {
-        dialog = new ProgressDialog(context);
-        dialog.setMessage(message);
-        dialog.show();
-    }
+	@JavascriptInterface
+	public void showLoginActivity() {
+		Intent gotoLogin = new Intent(context, Login.class);
+		/**
+		 * Set authToken null so that the Login Activity does not redirect the
+		 * user to Home Activity.
+		 */
 
-    @JavascriptInterface
-    public void hideWaitDialog() {
-        dialog.dismiss();
-    }
+		Values values = new Values(context);
+		String prefsName = values.getPrefsName();
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor e = sharedPrefs.edit();
+		e.putString("auth_token", null);
+		e.commit();
+		gotoLogin.putExtra("isRedirected", true);
 
-    @JavascriptInterface
-    public void showLoginActivity() {
-        Intent gotoLogin = new Intent(context, Login.class);
-        /**
-         * Set authToken null so that the Login Activity does not redirect the
-         * user to Home Activity.
-         */
+		// Clear the history stack. Once the user is redirected to the Login
+		// Activity. The user should not be able to access previous activities.
 
-        Values values = new Values(context);
-        String prefsName = values.getPrefsName();
-        sharedPrefs = context.getSharedPreferences(prefsName, 0);
-        Editor e = sharedPrefs.edit();
-        e.putString("auth_token", null);
-        e.commit();
-        gotoLogin.putExtra("isRedirected", true);
+		gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		context.startActivity(gotoLogin);
+	}
 
-        // Clear the history stack. Once the user is redirected to the Login
-        // Activity. The user should not be able to access previous activities.
+	@JavascriptInterface
+	public void showHomeActivity() {
+		Intent gotoHome = new Intent(context, Home.class);
+		gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		context.startActivity(gotoHome);
+	}
 
-        gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(gotoLogin);
-    }
+	@JavascriptInterface
+	public String isDataConnectionAvailable() {
+		Boolean dataConnectionAvailability = Utilities
+				.isDataConnectionAvailable(context);
+		if (dataConnectionAvailability)
+			return "true";
+		else
+			return "false";
+	}
 
-    @JavascriptInterface
-    public void showHomeActivity() {
-        Intent gotoHome = new Intent(context, Home.class);
-        gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(gotoHome);
-    }
-
-    @JavascriptInterface
-    public String isDataConnectionAvailable() {
-        Boolean dataConnectionAvailability = Utilities.isDataConnectionAvailable(context);
-        if (dataConnectionAvailability)
-            return "true";
-        else
-            return "false";
-    }
-
-    @JavascriptInterface
-    public void showToast(String textToToast) {
-        Utilities.showToast(context, textToToast, true);
-    }
+	@JavascriptInterface
+	public void showToast(String textToToast) {
+		Utilities.showToast(context, textToToast, true);
+	}
 }
