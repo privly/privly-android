@@ -1,12 +1,6 @@
 
 package ly.priv.mobile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -36,11 +30,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * This class displays the Home Activity for a user after authentication. Gives
  * the user options to Create New Privly posts or Read Privly Posts from his
  * social / email feed. Read option has not been implemented yet.
- * 
+ *
  * @author Shivam Verma
  */
 public class Home extends Activity {
@@ -54,10 +54,10 @@ public class Home extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
         TextView createHeadingEditText = (TextView)findViewById(R.id.createNewHeadingTextView);
-        TextView readHeadingEditText = (TextView)findViewById(R.id.readPostsHeadingTextView);
+//        TextView readHeadingEditText = (TextView)findViewById(R.id.readPostsHeadingTextView);
         Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
         createHeadingEditText.setTypeface(lobster);
-        readHeadingEditText.setTypeface(lobster);
+//        readHeadingEditText.setTypeface(lobster);
 
         Values values = new Values(getApplicationContext());
         if (!values.isUserVerifiedAtLogin()) {
@@ -79,7 +79,7 @@ public class Home extends Activity {
         ArrayList readArrayList = new ArrayList<String>(Arrays.asList(arrRead));
 
         createListView = (ListView)findViewById(R.id.create_listView);
-        readListView = (ListView)findViewById(R.id.read_listView);
+//        readListView = (ListView)findViewById(R.id.read_listView);
 
         ArrayAdapter<String> createArrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.list_item, createArrayList);
@@ -87,7 +87,7 @@ public class Home extends Activity {
                 readArrayList);
 
         createListView.setAdapter(createArrayAdapter);
-        readListView.setAdapter(readArrayAdapter);
+//        readListView.setAdapter(readArrayAdapter);
 
         /**
          * OnItemClickListener for creating posts ListView. The name of the

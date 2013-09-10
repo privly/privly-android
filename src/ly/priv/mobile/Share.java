@@ -3,6 +3,7 @@ package ly.priv.mobile;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,11 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Shows the newly generated Privly URL and allows the user to share it to
  * various platfoms.
- * 
+ *
  * @author Shivam Verma
  */
 public class Share extends Activity {
@@ -25,6 +27,10 @@ public class Share extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.share);
+
+        TextView newUrlHeader = (TextView)findViewById(R.id.newUrlHeader);
+        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
+        newUrlHeader.setTypeface(lobster);
 
         // Receive new Privly URL from intent
 
