@@ -35,7 +35,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <EditText
-            android:text="@string/baseUrlHint"
+            android:text="@string/defaultContentServer"
             android:id="@+id/baseUrlEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
