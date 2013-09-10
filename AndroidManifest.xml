@@ -15,22 +15,33 @@
         android:theme="@style/customPrivlyTheme" >
         <activity
             android:name=".PrivlyActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:configChanges="orientation" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" >
+        <activity
+            android:name=".Login"
+            android:configChanges="orientation">
         </activity>
-        <activity android:name=".Settings" >
+        <activity
+            android:name=".Settings"
+            android:configChanges="orientation" >
         </activity>
-        <activity android:name=".Home" >
+        <activity
+            android:name=".Home"
+            android:configChanges="orientation" >
         </activity>
-        <activity android:name=".NewPost" >
+        <activity
+            android:name=".NewPost"
+            android:configChanges="orientation" >
         </activity>
-        <activity android:name=".Share" >
+        <activity
+            android:name=".Share"
+            android:configChanges="orientation" >
         </activity>
     </application>
 
