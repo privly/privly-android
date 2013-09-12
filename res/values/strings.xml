@@ -17,4 +17,5 @@
     <string name="baseUrlHeading">Content Server Location</string>
     <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
     <string name="saveButtonLabel">Save</string>
+    <string name="app_id">157708894428970</string>
 </resources>
