@@ -1,11 +1,6 @@
 
 package ly.priv.mobile;
 
-import java.util.ArrayList;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -39,10 +34,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * This class displays the login screen. Allows the user to authenticate to a
  * Privly Web Server by fetching the auth_token.
- * 
+ *
  * @author Shivam Verma
  */
 public class Login extends Activity {

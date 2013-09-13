@@ -19,5 +19,6 @@
     <string name="defaultContentServer">https://privlyalpha.org</string>
     <string name="saveButtonLabel">Save</string>
     <string name="loginUnsure">This is the web address of the server where your Privly data is stored. If you\'re unsure of what this means, please leave the default setting.</string>
+    <string name="app_id">157708894428970</string>
 
 </resources>

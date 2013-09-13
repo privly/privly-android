@@ -1,4 +1,3 @@
-
 package ly.priv.mobile;
 
 import android.app.Activity;
@@ -19,91 +18,90 @@ import android.widget.Toast;
 /**
  * This class shows the Settings Activity. Currently, supports setting of the
  * domainName with which the application works.
- * 
+ *
  * @author Shivam Verma
  */
 public class Settings extends Activity {
-    /** Called when the activity is first created. */
-    String prefsName, baseUrl;
+	/** Called when the activity is first created. */
+	String prefsName, baseUrl;
+	Button save;
+	Intent gotoLogin;
+	EditText urlEditText;
+	SharedPreferences settings;
+	Values values;
 
-    Button save;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    Intent gotoLogin;
+		setContentView(R.layout.settings_layout);
 
-    EditText urlEditText;
+		TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
+		Typeface lobster = Typeface.createFromAsset(getAssets(),
+				"fonts/Lobster.ttf");
+		baseUrlHeading.setTypeface(lobster);
+		Log.d("Settings", "Settings");
+		gotoLogin = new Intent(this, Login.class);
+		save = (Button) findViewById(R.id.save);
+		urlEditText = (EditText) findViewById(R.id.baseUrlEditText);
 
-    SharedPreferences settings;
+		values = new Values(getApplicationContext());
+		baseUrl = values.getBaseUrl();
 
-    Values values;
+		if (baseUrl != null)
+			urlEditText.setText(baseUrl);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+		// Saves the base url to Shared Preferences
 
-        setContentView(R.layout.settings_layout);
+		save.setOnClickListener(new View.OnClickListener() {
 
-        TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
-        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
-        baseUrlHeading.setTypeface(lobster);
-        Log.d("Settings", "Settings");
-        gotoLogin = new Intent(this, Login.class);
-        save = (Button)findViewById(R.id.save);
-        urlEditText = (EditText)findViewById(R.id.baseUrlEditText);
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				baseUrl = urlEditText.getText().toString();
+				if (!baseUrl.equalsIgnoreCase("")) {
+					values.setBaseUrl(baseUrl);
+					Toast.makeText(getApplicationContext(),
+							"Saved! Please login now", Toast.LENGTH_SHORT)
+							.show();
+					// Set authToken as null and redirect to login. This'll make
+					// sure that the user is authenticated with the new content
+					// server.
+					Values values = new Values(getApplicationContext());
+					values.setAuthToken(null);
+					startActivity(gotoLogin);
+				} else
+					Utilities.showToast(getApplicationContext(),
+							"Please enter a valid URL", true);
+			}
+		});
 
-        values = new Values(getApplicationContext());
-        baseUrl = values.getBaseUrl();
+	}
 
-        if (baseUrl != null)
-            urlEditText.setText(baseUrl);
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.layout.menu_layout_settings, menu);
+		return true;
+	}
 
-        // Saves the base url to Shared Preferences
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-        save.setOnClickListener(new View.OnClickListener() {
+		switch (item.getItemId()) {
+		case R.id.logout:
+			Values values = new Values(getApplicationContext());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(this, Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                baseUrl = urlEditText.getText().toString();
-                if (!baseUrl.equalsIgnoreCase("")) {
-                    values.setBaseUrl(baseUrl);
-                    Toast.makeText(getApplicationContext(), "Saved! Please login now",
-                            Toast.LENGTH_SHORT).show();
-                    // Set authToken as null and redirect to login. This'll make
-                    // sure that the user is authenticated with the new content
-                    // server.
-                    Values values = new Values(getApplicationContext());
-                    values.setAuthToken(null);
-                    startActivity(gotoLogin);
-                } else
-                    Utilities.showToast(getApplicationContext(), "Please enter a valid URL", true);
-            }
-        });
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.layout.menu_layout_settings, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.logout:
-                Values values = new Values(getApplicationContext());
-                values.setAuthToken(null);
-                values.setRememberMe(false);
-                Intent gotoLogin = new Intent(this, Login.class);
-                gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(gotoLogin);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }
