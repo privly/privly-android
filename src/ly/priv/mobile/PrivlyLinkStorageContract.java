@@ -15,5 +15,7 @@ public final class PrivlyLinkStorageContract {
 		public static final String TABLE_NAME = "links";
 		public static final String COLUMN_NAME_SOURCE = "source";
 		public static final String COLUMN_NAME_LINK = "privlyLink";
+		public static final String COLUMN_NAME_FROM = "userName";
+		public static final String COLUMN_NAME_SOURCE_ID = "sourceID";
 	}
 }

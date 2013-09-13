@@ -12,8 +12,6 @@ import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -41,33 +39,33 @@ public class ShowContent extends Activity {
 	public int swipeMaxOffPath;
 	WebView urlContentWebView;
 	Cursor cursor;
+	String contentSource;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_content);
-		Log.d("tag", "numuou");
-
+		Bundle bundle = this.getIntent().getExtras();
+		contentSource = bundle.getString("contentSource");
 		View webView = findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
-		Log.d("tag", "num1");
+
 		urlContentWebView.getSettings().setJavaScriptEnabled(true);
 		urlContentWebView.addJavascriptInterface(new JsObject(this),
 				"androidJsBridge");
 		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
 			urlContentWebView.getSettings()
 					.setAllowUniversalAccessFromFileURLs(true);
-		urlContentWebView.setWebChromeClient(new WebChromeClient() {
-			@Override
-			public boolean onConsoleMessage(ConsoleMessage cm) {
-				Log.d("JsApplication",
-						cm.message() + " -- From line " + cm.lineNumber()
-								+ " of " + cm.sourceId());
-				return true;
-			}
-		});
-		Log.d("tag", "num2");
+		// urlContentWebView.setWebChromeClient(new WebChromeClient() {
+		// @Override
+		// public boolean onConsoleMessage(ConsoleMessage cm) {
+		// Log.d("JsApplication",
+		// cm.message() + " -- From line " + cm.lineNumber()
+		// + " of " + cm.sourceId());
+		// return true;
+		// }
+		// });
 
 		// Setup WebView to detect swipes.
 		gestureDetector = new GestureDetector(this, new SwipeGestureDetector());
@@ -78,33 +76,36 @@ public class ShowContent extends Activity {
 			}
 		};
 		webView.setOnTouchListener(gestureListener);
-		Log.d("tag", "num3");
 
 		LinksDbHelper mDbHelper = new LinksDbHelper(getApplicationContext());
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		Log.d("tag", "num4");
+
 		File database = getApplicationContext().getDatabasePath(
 				"PrivlyLinks.db");
 
 		if (!database.exists()) {
-			// Database does not exist so copy it from assets here
+
 			Log.i("Database", "Not Found");
 		} else {
 			Log.i("Database", "Found");
 		}
 
-		String[] projection = { LinksDb._ID, LinksDb.COLUMN_NAME_LINK,
-				LinksDb.COLUMN_NAME_SOURCE };
+		String[] projection = {LinksDb._ID, LinksDb.COLUMN_NAME_LINK,
+				LinksDb.COLUMN_NAME_SOURCE};
 
-				cursor = db.query(LinksDb.TABLE_NAME, // The table to query
-				projection, // The columns to return
-				null, // The columns for the WHERE clause
-				null, // The values for the WHERE clause
-				null, // don't group the rows
-				null, // don't filter by row groups
-				null // The sort order
-				);
-		Log.d("tag", "after cursor");
+		// cursor = db.query(LinksDb.TABLE_NAME, // The table to query
+		// projection, // The columns to return
+		// null, // The columns for the WHERE clause
+		// null, // The values for the WHERE clause
+		// null, // don't group the rows
+		// null, // don't filter by row groups
+		// null // The sort order
+		// );
+
+		cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME + " WHERE "
+				+ LinksDb.COLUMN_NAME_SOURCE + "= '" + contentSource + "'",
+				null);
+
 		int numRows = cursor.getCount();
 		if (numRows > 0) {
 			cursor.moveToFirst();
@@ -132,11 +133,9 @@ public class ShowContent extends Activity {
 			url = URLEncoder.encode(url, "utf-8");
 			Log.d("encode once", url);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Log.d("encoded URL", url);
 		String urlForExtension = "";
 		if (url.indexOf("privlyInjectableApplication=ZeroBin") > 0 || // deprecated
 				url.indexOf("privlyApp=ZeroBin") > 0) {
@@ -150,8 +149,6 @@ public class ShowContent extends Activity {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
 		}
-
-		Log.d("urlForExtension", urlForExtension);
 
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 
@@ -168,13 +165,13 @@ public class ShowContent extends Activity {
 				if (Math.abs(e1.getY() - e2.getY()) > valuesForSwipe
 						.get("swipeMaxOffPath"))
 					return false;
-				// right to left swipe
 				if (e1.getX() - e2.getX() > valuesForSwipe
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-					Toast.makeText(getApplicationContext(), "Left Swipe",
-							Toast.LENGTH_SHORT).show();
+					if (!cursor.isLast())
+						Toast.makeText(getApplicationContext(),
+								"Loading Next Post", Toast.LENGTH_SHORT).show();
 
 					if (cursor.moveToNext()) {
 						loadUrlInWebview();
@@ -184,21 +181,23 @@ public class ShowContent extends Activity {
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-					Toast.makeText(getApplicationContext(), "Right Swipe",
-							Toast.LENGTH_SHORT).show();
+					if (!cursor.isFirst())
+						Toast.makeText(getApplicationContext(),
+								"Loading Previous Post", Toast.LENGTH_SHORT)
+								.show();
 					if (cursor.moveToPrevious()) {
 						loadUrlInWebview();
 					}
 				}
 			} catch (Exception e) {
-				// nothing
+				e.printStackTrace();
 			}
 			return false;
 		}
 
+		// This method should always return true to detect swipes.
 		@Override
 		public boolean onDown(MotionEvent event) {
-			Log.d("tag", "onDown: " + event.toString());
 			return true;
 		}
 

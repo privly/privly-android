@@ -3,6 +3,7 @@ package ly.priv.mobile;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
@@ -18,7 +19,9 @@ public class LinksDbHelper extends SQLiteOpenHelper {
 	private static final String SQL_CREATE_ENTRIES = "CREATE TABLE "
 			+ LinksDb.TABLE_NAME + " (" + LinksDb._ID + " INTEGER PRIMARY KEY,"
 			+ LinksDb.COLUMN_NAME_SOURCE + TEXT_TYPE + COMMA_SEP
-			+ LinksDb.COLUMN_NAME_LINK + TEXT_TYPE + " )";
+			+ LinksDb.COLUMN_NAME_LINK + TEXT_TYPE + COMMA_SEP
+			+ LinksDb.COLUMN_NAME_SOURCE_ID + TEXT_TYPE + COMMA_SEP
+			+ LinksDb.COLUMN_NAME_FROM + TEXT_TYPE + " );";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS "
 			+ LinksDb.TABLE_NAME;
@@ -29,6 +32,7 @@ public class LinksDbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.d("CREATE STATEMENT", SQL_CREATE_ENTRIES);
 		db.execSQL(SQL_CREATE_ENTRIES);
 	}
 
