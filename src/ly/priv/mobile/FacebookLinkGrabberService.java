@@ -19,9 +19,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -50,6 +49,7 @@ public class FacebookLinkGrabberService extends Activity {
 		setContentView(R.layout.link_grabber_service);
 		context = getApplicationContext();
 		Utilities.copyDb();
+		Log.d("OnCreate", "OnCreate");
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
 		Session session = Session.getActiveSession();
@@ -67,23 +67,19 @@ public class FacebookLinkGrabberService extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Session.getActiveSession().addCallback(statusCallback);
-		Exception exception = new Exception();
-		statusCallback.call(Session.getActiveSession(), Session
-				.getActiveSession().getState(), exception);
+		Session.getActiveSession().addCallback(statusCallback);
+		Log.d("OnResume", "OnResume");
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		Session.getActiveSession().addCallback(statusCallback);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		Session.getActiveSession().removeCallback(statusCallback);
-		finish();
 	}
 
 	@Override
@@ -125,170 +121,146 @@ public class FacebookLinkGrabberService extends Activity {
 		return null;
 	}
 
-	/**
-	 * Handles for the new thread spawned. Maintains progressDialog while
-	 * fetching inbox messages from Facebook.
-	 */
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-				case THREAD_STARTING :
-					progressDialog
-							.setMessage("Retrieving new Privly links from your Facebook inbox");
-					progressDialog.show();
-					break;
-
-				case THREAD_COMPLETE :
-					progressDialog.dismiss();
-					Bundle bundle = new Bundle();
-					bundle.putString("contentSource", "FACEBOOK");
-					Intent showContentIntent = new Intent(
-							FacebookLinkGrabberService.this, ShowContent.class);
-					showContentIntent.putExtras(bundle);
-					startActivity(showContentIntent);
-					// Clear this activity from stack so that the user is taken
-					// to the Home Screen on back press
-					FacebookLinkGrabberService.this.finish();
-
-			}
-		}
-	};
-
 	private class SessionStatusCallback implements Session.StatusCallback {
 		@Override
 		public void call(Session session, SessionState state,
 				Exception exception) {
 			globalSession = session;
-			Log.d("accesstoken", session.getAccessToken().toString());
 
 			if (session.getAccessToken() != null) {
 
 				// Since fetching of data from Facebook server and parsing it to
 				// find Privly links is a high latency procedure, a new thread
 				// is spawned
-				new Thread(new Runnable() {
+				FetchFbMessages task = new FetchFbMessages();
+				task.execute();
 
-					@Override
-					public void run() {
-						Message msg = Message.obtain();
-						msg.what = THREAD_STARTING;
-						handler.sendMessage(msg);
-						try {
-							String messageId = null;
-							HttpClient client = new DefaultHttpClient();
+			}
+		}
+	}
 
-							HttpGet get = new HttpGet(URL_PREFIX_FRIENDS
-									+ globalSession.getAccessToken());
-							HttpResponse responseGet = client.execute(get);
-							HttpEntity resEntityGet = responseGet.getEntity();
+	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
-							if (resEntityGet != null) {
-								fbResponse = EntityUtils.toString(resEntityGet);
-							}
-							JSONArray messagesArray = fetchJsonMessagesArrayFromFacebookResponse(fbResponse);
-							Log.d("messagesArray", messagesArray.toString());
-							int lengthMessagesArray = messagesArray.length();
-							Log.d("lengthMessagesArray",
-									String.valueOf(lengthMessagesArray));
-							for (int j = 0; j < lengthMessagesArray; j++) {
-								JSONObject messageObject = messagesArray
-										.getJSONObject(j);
-								Log.d("messageObject", messageObject.toString());
-								String message = null;
-								if (messageObject.has("message")) {
-									message = messageObject
-											.getString("message");
-									messageId = messageObject.getString("id");
-								}
+		ProgressDialog dialog = new ProgressDialog(
+				FacebookLinkGrabberService.this);
+		@Override
+		protected void onPreExecute() {
+			dialog.setMessage("Logging in..");
+			dialog.show();
+		}
 
-								if (messageObject.has("from")) {
-									JSONObject fromObject = messageObject
-											.getJSONObject("from");
-									String userName = fromObject
-											.getString("name");
-									Log.d("message", message);
-									ArrayList<String> listOfUrls = Utilities
-											.fetchPrivlyUrls(message);
+		@Override
+		protected String doInBackground(String... urls) {
+			try {
+				HttpClient client = new DefaultHttpClient();
+				HttpGet get = new HttpGet(URL_PREFIX_FRIENDS
+						+ globalSession.getAccessToken());
+				HttpResponse responseGet = client.execute(get);
+				HttpEntity resEntityGet = responseGet.getEntity();
+				if (resEntityGet != null) {
+					fbResponse = EntityUtils.toString(resEntityGet);
 
-									if (!listOfUrls.isEmpty()) {
-										Iterator<String> iter = listOfUrls
-												.iterator();
-										while (iter.hasNext()) {
-											String url = iter.next();
-											Log.d("URL", url);
-											if (!Utilities.ifLinkExistsInDb(
-													getApplicationContext(),
-													url, SOURCE_FACEBOOK)) {
+				}
 
-												Utilities.insertIntoDb(context,
-														SOURCE_FACEBOOK, url,
-														messageId, userName);
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return fbResponse;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			dialog.dismiss();
+			// Toast.makeText(getApplicationContext(),loginResponse ,
+			// Toast.LENGTH_LONG).show();
+			try {
+				JSONArray fbDataArray = null;
+				JSONObject fbInbox = null;
+				fbInbox = new JSONObject(fbResponse);
+				Log.d("fbInbox", fbInbox.toString());
+				if (fbInbox.has("data")) {
+					fbDataArray = fbInbox.getJSONArray("data");
+					Log.d("fbDataArray", fbDataArray.toString());
+					for (int i = 0; i < fbDataArray.length(); i++) {
+						JSONObject allMessagesObject = fbDataArray
+								.getJSONObject(i);
+						if (allMessagesObject.has("comments")) {
+							JSONObject commentsObject = new JSONObject(
+									allMessagesObject.get("comments")
+											.toString());
+							Log.d("commentsObject", commentsObject.toString());
+							if (commentsObject.has("data")) {
+								JSONArray chatArray = commentsObject
+										.getJSONArray("data");
+								Log.d("chatArray", chatArray.toString());
+								for (int j = 0; j < chatArray.length(); j++) {
+									JSONObject messageObject = chatArray
+											.getJSONObject(j);
+									Log.d("messageObject",
+											messageObject.toString());
+									if (messageObject.has("message")) {
+										String message = messageObject
+												.getString("message");
+										Log.d("message", message);
+										String messageId = messageObject
+												.getString("id");
+										if (messageObject.has("from")) {
+											JSONObject from = messageObject
+													.getJSONObject("from");
+											String userName = from
+													.getString("name");
+											ArrayList<String> listOfUrls = Utilities
+													.fetchPrivlyUrls(message);
+
+											if (!listOfUrls.isEmpty()) {
+												Iterator<String> iter = listOfUrls
+														.iterator();
+												while (iter.hasNext()) {
+													String url = iter.next();
+													Log.d("URL", url);
+													if (!Utilities
+															.ifLinkExistsInDb(
+																	getApplicationContext(),
+																	url,
+																	SOURCE_FACEBOOK)) {
+
+														Utilities
+																.insertIntoDb(
+																		context,
+																		SOURCE_FACEBOOK,
+																		url,
+																		messageId,
+																		userName);
+													}
+
+												}
 											}
-
 										}
+
 									}
 
 								}
-
 							}
-
-							Message msgFinal = Message.obtain();
-							msgFinal.what = THREAD_COMPLETE;
-							handler.sendMessage(msgFinal);
-
-						}
-
-						catch (Exception e) {
-							e.printStackTrace();
 						}
 					}
-				}).start();
-
-			}
-		}
-
-		/**
-		 * Parse theFacebook response to a JSONArray containing messages.
-		 *
-		 * @param {String} response Facebook reply on making a GET Request for
-		 *        inbox
-		 * @return {JSONArray} messagesArray
-		 */
-		JSONArray fetchJsonMessagesArrayFromFacebookResponse(String response) {
-			try {
-				Log.d("TAG", response);
-				JSONArray fbDataArray = null;
-				JSONArray messagesArray = null;
-				JSONObject conversation = null;
-				JSONObject comments = null;
-				JSONObject fbInbox = new JSONObject(response);
-
-				if (fbInbox.has("data")) {
-					fbDataArray = fbInbox.getJSONArray("data");
-					Log.d("DataArray", fbDataArray.toString());
-					return fbDataArray;
-					/*
-					 * int lengthDataArray = fbDataArray.length(); for (int i =
-					 * 0; i < lengthDataArray; i++) { conversation =
-					 * fbDataArray.getJSONObject(i); if
-					 * (conversation.has("comments")) { comments = new
-					 * JSONObject(conversation.get( "comments").toString()); if
-					 * (comments.has("data")) { messagesArray =
-					 * comments.getJSONArray("data"); return messagesArray; }
-					 *
-					 * }
-					 *
-					 * }
-					 */
-
 				}
-				return messagesArray;
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
 			}
-		}
+			Bundle bundle = new Bundle();
 
+			bundle.putString("contentSource", "FACEBOOK");
+			Intent showContentIntent = new Intent(
+					FacebookLinkGrabberService.this, ShowContent.class);
+			showContentIntent.putExtras(bundle);
+			startActivity(showContentIntent); // Clear this activity
+			// from stack so that the user is taken
+			// to the Home Screen on back press
+			FacebookLinkGrabberService.this.finish();
+		}
 	}
+
 }
