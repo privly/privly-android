@@ -134,10 +134,13 @@ public final class Values {
 }
 
 /**
- * Key Pair Values saved in shared preferences uname : email id of user; pwd :
- * password of the User; base_url : domain_name to which the user authorizes;
- * auth_token : authentication Key; remember_me : flag to check if the user
- * checked remember me check box; verified_at_login : flag to check if user has
+ * Key Pair Values saved in shared preferences
+ * uname : email id of user;
+ * pwd : password of the User;
+ * base_url : domain_name to which the user authorises;
+ * auth_token : authentication Key;
+ * remember_me : flag to check if the user checked remember me check box;
+ * verified_at_login : flag to check if user has
  * been authenticated at login. If true, the auth_token is not verified in Home
  * Activity;
  **/

@@ -47,10 +47,11 @@ public class FacebookLinkGrabberService extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.facebook_link_grabber_service);
+		setContentView(R.layout.link_grabber_service);
 		context = getApplicationContext();
+		Utilities.copyDb();
 		progressDialog = new ProgressDialog(this);
-
+		progressDialog.setCanceledOnTouchOutside(false);
 		Session session = Session.getActiveSession();
 
 		if (session == null) {
@@ -63,13 +64,14 @@ public class FacebookLinkGrabberService extends Activity {
 					.setCallback(statusCallback));
 		}
 	}
-	 @Override
-	 public void onResume() {
-	 super.onResume();
-	// Session.getActiveSession().addCallback(statusCallback);
+	@Override
+	public void onResume() {
+		super.onResume();
+		// Session.getActiveSession().addCallback(statusCallback);
 		Exception exception = new Exception();
-		statusCallback.call(Session.getActiveSession(),Session.getActiveSession().getState(), exception);
-	 }
+		statusCallback.call(Session.getActiveSession(), Session
+				.getActiveSession().getState(), exception);
+	}
 
 	@Override
 	public void onStart() {
@@ -143,10 +145,10 @@ public class FacebookLinkGrabberService extends Activity {
 					bundle.putString("contentSource", "FACEBOOK");
 					Intent showContentIntent = new Intent(
 							FacebookLinkGrabberService.this, ShowContent.class);
-					// showContentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-					// | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					showContentIntent.putExtras(bundle);
 					startActivity(showContentIntent);
+					// Clear this activity from stack so that the user is taken
+					// to the Home Screen on back press
 					FacebookLinkGrabberService.this.finish();
 
 			}
@@ -171,7 +173,7 @@ public class FacebookLinkGrabberService extends Activity {
 					public void run() {
 						Message msg = Message.obtain();
 						msg.what = THREAD_STARTING;
-						handler.sendMessage(msg);;
+						handler.sendMessage(msg);
 						try {
 							String messageId = null;
 							HttpClient client = new DefaultHttpClient();
@@ -185,39 +187,48 @@ public class FacebookLinkGrabberService extends Activity {
 								fbResponse = EntityUtils.toString(resEntityGet);
 							}
 							JSONArray messagesArray = fetchJsonMessagesArrayFromFacebookResponse(fbResponse);
+							Log.d("messagesArray", messagesArray.toString());
 							int lengthMessagesArray = messagesArray.length();
+							Log.d("lengthMessagesArray",
+									String.valueOf(lengthMessagesArray));
 							for (int j = 0; j < lengthMessagesArray; j++) {
 								JSONObject messageObject = messagesArray
 										.getJSONObject(j);
+								Log.d("messageObject", messageObject.toString());
 								String message = null;
 								if (messageObject.has("message")) {
 									message = messageObject
 											.getString("message");
 									messageId = messageObject.getString("id");
-									Log.d("messageId", messageId);
 								}
 
-								JSONObject fromObject = messageObject
-										.getJSONObject("from");
-								String userName = fromObject.getString("name");
-								ArrayList<String> listOfUrls = Utilities
-										.fetchPrivlyUrls(message);
+								if (messageObject.has("from")) {
+									JSONObject fromObject = messageObject
+											.getJSONObject("from");
+									String userName = fromObject
+											.getString("name");
+									Log.d("message", message);
+									ArrayList<String> listOfUrls = Utilities
+											.fetchPrivlyUrls(message);
 
-								if (!listOfUrls.isEmpty()) {
-									Iterator<String> iter = listOfUrls
-											.iterator();
-									while (iter.hasNext()) {
-										String url = iter.next();
-										if (!Utilities.ifLinkExists(
-												getApplicationContext(), url,
-												SOURCE_FACEBOOK)) {
+									if (!listOfUrls.isEmpty()) {
+										Iterator<String> iter = listOfUrls
+												.iterator();
+										while (iter.hasNext()) {
+											String url = iter.next();
+											Log.d("URL", url);
+											if (!Utilities.ifLinkExistsInDb(
+													getApplicationContext(),
+													url, SOURCE_FACEBOOK)) {
 
-											Utilities.insertIntoDb(context,
-													SOURCE_FACEBOOK, url,
-													messageId, userName);
+												Utilities.insertIntoDb(context,
+														SOURCE_FACEBOOK, url,
+														messageId, userName);
+											}
+
 										}
-
 									}
+
 								}
 
 							}
@@ -246,6 +257,7 @@ public class FacebookLinkGrabberService extends Activity {
 		 */
 		JSONArray fetchJsonMessagesArrayFromFacebookResponse(String response) {
 			try {
+				Log.d("TAG", response);
 				JSONArray fbDataArray = null;
 				JSONArray messagesArray = null;
 				JSONObject conversation = null;
@@ -254,20 +266,21 @@ public class FacebookLinkGrabberService extends Activity {
 
 				if (fbInbox.has("data")) {
 					fbDataArray = fbInbox.getJSONArray("data");
-					int lengthDataArray = fbDataArray.length();
-					for (int i = 0; i < lengthDataArray; i++) {
-						conversation = fbDataArray.getJSONObject(i);
-						if (conversation.has("comments")) {
-							comments = new JSONObject(conversation.get(
-									"comments").toString());
-							if (comments.has("data")) {
-								messagesArray = comments.getJSONArray("data");
-								return messagesArray;
-							}
-
-						}
-
-					}
+					Log.d("DataArray", fbDataArray.toString());
+					return fbDataArray;
+					/*
+					 * int lengthDataArray = fbDataArray.length(); for (int i =
+					 * 0; i < lengthDataArray; i++) { conversation =
+					 * fbDataArray.getJSONObject(i); if
+					 * (conversation.has("comments")) { comments = new
+					 * JSONObject(conversation.get( "comments").toString()); if
+					 * (comments.has("data")) { messagesArray =
+					 * comments.getJSONArray("data"); return messagesArray; }
+					 *
+					 * }
+					 *
+					 * }
+					 */
 
 				}
 				return messagesArray;

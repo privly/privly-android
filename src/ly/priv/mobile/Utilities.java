@@ -136,7 +136,7 @@ public class Utilities {
 	 * @param sourceOfLink
 	 * @return exists
 	 */
-	public static Boolean ifLinkExists(Context context, String url,
+	public static Boolean ifLinkExistsInDb(Context context, String url,
 			String sourceOfLink) {
 		Boolean exists = false;
 		LinksDbHelper mDbHelper = new LinksDbHelper(context);

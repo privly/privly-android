@@ -2,6 +2,7 @@ package ly.priv.mobile;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -57,15 +58,6 @@ public class ShowContent extends Activity {
 		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
 			urlContentWebView.getSettings()
 					.setAllowUniversalAccessFromFileURLs(true);
-		// urlContentWebView.setWebChromeClient(new WebChromeClient() {
-		// @Override
-		// public boolean onConsoleMessage(ConsoleMessage cm) {
-		// Log.d("JsApplication",
-		// cm.message() + " -- From line " + cm.lineNumber()
-		// + " of " + cm.sourceId());
-		// return true;
-		// }
-		// });
 
 		// Setup WebView to detect swipes.
 		gestureDetector = new GestureDetector(this, new SwipeGestureDetector());
@@ -90,18 +82,6 @@ public class ShowContent extends Activity {
 			Log.i("Database", "Found");
 		}
 
-		String[] projection = {LinksDb._ID, LinksDb.COLUMN_NAME_LINK,
-				LinksDb.COLUMN_NAME_SOURCE};
-
-		// cursor = db.query(LinksDb.TABLE_NAME, // The table to query
-		// projection, // The columns to return
-		// null, // The columns for the WHERE clause
-		// null, // The values for the WHERE clause
-		// null, // don't group the rows
-		// null, // don't filter by row groups
-		// null // The sort order
-		// );
-
 		cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME + " WHERE "
 				+ LinksDb.COLUMN_NAME_SOURCE + "= '" + contentSource + "'",
 				null);
@@ -112,6 +92,13 @@ public class ShowContent extends Activity {
 			Log.d("num_rows_2", Long.toString(numRows));
 
 			loadUrlInWebview();
+		} else {
+			Toast.makeText(getApplicationContext(),
+					"No Privly Links found for" + contentSource,
+					Toast.LENGTH_LONG).show();
+			Intent goToHome = new Intent(this, Home.class);
+			startActivity(goToHome);
+			finish();
 		}
 
 	}

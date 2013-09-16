@@ -123,7 +123,9 @@ public class Home extends Activity {
 							FacebookLinkGrabberService.class);
 					startActivity(facebookLinkGrabberIntent);
 				} else if (position == 2) {
-
+					Intent twitterLinkGrabberIntent = new Intent(Home.this,
+							TwitterLinkGrabberService.class);
+					startActivity(twitterLinkGrabberIntent);
 				}
 
 			}
