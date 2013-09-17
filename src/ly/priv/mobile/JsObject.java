@@ -90,7 +90,7 @@ public class JsObject {
 	@JavascriptInterface
 	public String fetchDomainName() {
 		Values values = new Values(context);
-		String domainName = values.getBaseUrl();
+		String domainName = values.getContentServerDomain();
 		return domainName;
 	}
 

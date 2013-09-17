@@ -46,7 +46,7 @@ public class Settings extends Activity {
 		urlEditText = (EditText) findViewById(R.id.baseUrlEditText);
 
 		values = new Values(getApplicationContext());
-		baseUrl = values.getBaseUrl();
+		baseUrl = values.getContentServerDomain();
 
 		if (baseUrl != null)
 			urlEditText.setText(baseUrl);

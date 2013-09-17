@@ -26,7 +26,7 @@ public class PrivlyActivity extends Activity {
 		// page else
 		// to the login page.
 		Values values = new Values(getApplicationContext());
-		String base_url = values.getBaseUrl();
+		String base_url = values.getContentServerDomain();
 
 		if (base_url == null) {
 			gotoSettings = new Intent(getApplicationContext(), Settings.class);

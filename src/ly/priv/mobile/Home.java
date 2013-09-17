@@ -27,6 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,19 +36,15 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * This class displays the Home Activity for a user after authentication. Gives
- * the user options to Create New Privly posts or Read Privly Posts from his
- * social / email feed. Read option has not been implemented yet.
+ * Displays the Home Activity for a user after authentication. Gives the user
+ * options to Create New Privly posts or Read Privly Posts from his social /
+ * email feed.
  *
  * @author Shivam Verma
  */
 public class Home extends Activity {
 
-	/** Called when the activity is first created. */
-
-	/** Called when the activity is first created. */
 	ListView readListView, createListView;
-
 	String loginResponse;
 
 	@Override
@@ -62,14 +59,17 @@ public class Home extends Activity {
 		readHeadingEditText.setTypeface(lobster);
 
 		Values values = new Values(getApplicationContext());
+		// Checks if the User has already been verified at the Login Screen. If
+		// yes, prevents double authentication. If not, creates and executes a
+		// VerifyAuthToken task.
 		if (!values.isUserVerifiedAtLogin()) {
 			VerifyAuthToken task = new VerifyAuthToken();
-			task.execute(values.getBaseUrl() + "/token_authentications.json");
+			task.execute(values.getContentServerDomain()
+					+ "/token_authentications.json");
 		} else
 			values.setUserVerifiedAtLogin(false);
-		/**
-		 * Create two ListViews which display create/read options.
-		 */
+
+		// Create two ListViews which display create/read options.
 		final String[] arrCreate = {"PlainPost", "ZeroBin"};
 		final String[] arrRead = {"GMail", "Facebook", "Twitter"};
 		ArrayList<String> createArrayList = new ArrayList<String>(
@@ -88,10 +88,8 @@ public class Home extends Activity {
 		createListView.setAdapter(createArrayAdapter);
 		readListView.setAdapter(readArrayAdapter);
 
-		/**
-		 * OnItemClickListener for creating posts ListView. The name of the
-		 * selected Posting app is sent with the intent to ly.priv.mobile.Home
-		 */
+		// OnItemClickListener for creating posts ListView. The name of the
+		// selected Posting app is sent with the intent to Home Screen.
 		createListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -111,13 +109,17 @@ public class Home extends Activity {
 			}
 		});
 
+		// OnItemClickListener for Reading posts ListView. Redirects User to
+		// LinkGrabber Service of the respective platform.
 		readListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 				if (position == 0) {
-					// bundle.putString("contentSource", "GMAIL");
+					Toast.makeText(getApplicationContext(),
+							"Sorry, Gmail hasn't been integrated yet.",
+							Toast.LENGTH_LONG).show();
 				} else if (position == 1) {
 					Intent facebookLinkGrabberIntent = new Intent(Home.this,
 							FacebookLinkGrabberService.class);
@@ -132,7 +134,6 @@ public class Home extends Activity {
 		});
 
 	}
-
 	/**
 	 * Inflate options menu with the layout
 	 */
@@ -157,6 +158,7 @@ public class Home extends Activity {
 				return true;
 
 			case R.id.logout :
+				// Logs out User from Privly Application
 				Values values = new Values(getApplicationContext());
 				values.setAuthToken(null);
 				values.setRememberMe(false);
@@ -200,9 +202,7 @@ public class Home extends Activity {
 						client.getParams(), registry);
 				DefaultHttpClient httpClient = new DefaultHttpClient(mgr,
 						client.getParams());
-				// Set verifier
 				HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-				// Send http request
 				HttpGet httpget = new HttpGet(authenticatedUrl);
 				HttpResponse response = httpClient.execute(httpget);
 				HttpEntity entity = response.getEntity();
@@ -240,7 +240,6 @@ public class Home extends Activity {
 							true);
 				}
 			} catch (Exception ex) {
-				ex.printStackTrace();
 			}
 		}
 	}

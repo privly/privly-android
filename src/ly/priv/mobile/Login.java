@@ -1,4 +1,3 @@
-
 package ly.priv.mobile;
 
 import org.apache.http.HttpEntity;
@@ -40,229 +39,239 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * This class displays the login screen. Allows the user to authenticate to a
- * Privly Web Server by fetching the auth_token.
+ * Displays the login screen. Allows the user to authenticate to a Privly Web
+ * Server by fetching the auth_token.
  *
  * @author Shivam Verma
  */
 public class Login extends Activity {
-    /** Called when the activity is first created. */
-    String userName, password, loginResponse, baseUrl;
+	/** Called when the activity is first created. */
+	String userName, password, loginResponse, contentServerDomain;
+	Button loginButton;
+	EditText unameEditText, pwdEditText;
+	SharedPreferences sharedPrefs;
+	CheckBox rememberMeCheckBox;
+	Values values;
 
-    Button loginButton;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.login);
 
-    EditText unameEditText, pwdEditText;
+		// Shared Preference File for storing the domain name, if not
+		// https://privlyalpha.org by
+		// default.
+		TextView loginHeader = (TextView) findViewById(R.id.loginHeader);
+		Typeface lobster = Typeface.createFromAsset(getAssets(),
+				"fonts/Lobster.ttf");
+		loginHeader.setTypeface(lobster);
+		values = new Values(getApplicationContext());
+		contentServerDomain = values.getContentServerDomain();
 
-    SharedPreferences sharedPrefs;
+		String prefsName = values.getPrefsName();
+		sharedPrefs = getSharedPreferences(prefsName, 0);
 
-    CheckBox rememberMeCheckBox;
+		// If no content server has been defined,
+		// the user is taken to the settings screen where he needs to add it.
+		String authToken = values.getAuthToken();
+		if (contentServerDomain == null) {
+			Intent settings_it = new Intent(this, Settings.class);
+			startActivity(settings_it);
+			finish();
+		} else {
 
-    Values values;
+			// Checks if the user selected the Remember Me option while loggin
+			// in. If Yes, Redirect to Home Screen.
+			Boolean rememberMe = values.getRememberMe();
+			Log.d("rememberMeValue", Boolean.toString(rememberMe));
+			if (rememberMe && authToken != null) {
+				Intent gotoHome = new Intent(getApplicationContext(),
+						Home.class);
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+				// Clear activities stack. User wont be able to access Login
+				// Screen on back button press. Since he is already logged in.
+				gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(gotoHome);
+			} else {
+				unameEditText = (EditText) findViewById(R.id.uname);
+				pwdEditText = (EditText) findViewById(R.id.pwd);
+				loginButton = (Button) findViewById(R.id.login);
 
-        // Shared Preference File for storing the domain name, if not privly by
-        // default.
-        // Will be extended to store the username and password
-        TextView loginHeader = (TextView)findViewById(R.id.loginHeader);
-        Typeface lobster = Typeface.createFromAsset(getAssets(), "fonts/Lobster.ttf");
-        loginHeader.setTypeface(lobster);
-        values = new Values(getApplicationContext());
-        baseUrl = values.getBaseUrl();
+				// Set OnClickListener for Login Button. Executes a new
+				// CheckLoginTask()
+				loginButton.setOnClickListener(new View.OnClickListener() {
 
-        String prefsName = values.getPrefsName();
-        sharedPrefs = getSharedPreferences(prefsName, 0);
-        // If no base domain has been defined,
-        // the user is taken to the login screen where he needs to add it.
-        String authToken = values.getAuthToken();
-        if (baseUrl == null) {
-            Intent settings_it = new Intent(this, Settings.class);
-            startActivity(settings_it);
-            finish();
-        } else {
-            Boolean rememberMe = values.getRememberMe();
-            Log.d("rememberMeValue", Boolean.toString(rememberMe));
-            if (rememberMe && authToken != null) {
-                Intent gotoHome = new Intent(getApplicationContext(), Home.class);
-                gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(gotoHome);
-            } else {
-                unameEditText = (EditText)findViewById(R.id.uname);
-                pwdEditText = (EditText)findViewById(R.id.pwd);
-                loginButton = (Button)findViewById(R.id.login);
+					@Override
+					public void onClick(View arg0) {
 
-                // Fetch saved username and password and set it to respective
-                // text
-                // boxes
+						// Check for data connection availability before making
+						// authentication request
+						if (Utilities
+								.isDataConnectionAvailable(getApplicationContext())) {
+							userName = unameEditText.getText().toString();
+							password = pwdEditText.getText().toString();
+							rememberMeCheckBox = (CheckBox) findViewById(R.id.remember_me);
 
-                String fetchedUserName = values.getUserName();
-                // String fetchedPassword = settings.getString("pwd", null);
+							// Remove any unwanted spaces before and after the
+							// EmailID and Password
+							userName = userName.trim();
+							password = password.trim();
 
-                if (fetchedUserName != null) {
-                    Log.d("uname", fetchedUserName);
-                    unameEditText.setText(fetchedUserName);
-                }
+							// Check if Email is Valid using RegEx and Password
+							// and is not null
+							if (!Utilities.isValidEmail(userName))
+								Utilities.showToast(getApplicationContext(),
+										"Please Enter a valid EMail ID", false);
+							else if (password.equalsIgnoreCase(""))
+								Utilities.showToast(getApplicationContext(),
+										"Please Enter a valid Password", false);
+							else {
+								CheckLoginTask task = new CheckLoginTask();
+								task.execute(contentServerDomain
+										+ "/token_authentications.json");
 
-                /**
-                 * On Login Button Click, A POST Request is made to the server
-                 * for authentication. The Authentication Process is done using
-                 * AsyncTask to prevent blocking of UI Thread.
-                 **/
-                loginButton.setOnClickListener(new View.OnClickListener() {
+								// Flag to check if Remember me option was
+								// selected
+								Editor editor = sharedPrefs.edit();
+								editor.putString("uname", userName);
+								if (rememberMeCheckBox.isChecked()) {
+									editor.putBoolean("remember_me", true);
+									editor.commit();
+								} else {
+									editor.putBoolean("remember_me", false);
+									editor.commit();
+								}
+							}
+						} else
+							Utilities
+									.showToast(
+											getApplicationContext(),
+											"Oops! Seems like there\'s no Data connection.",
+											true);
+					}
+				});
+			}
+		}
+	}
 
-                    @Override
-                    public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.layout.menu_layout_login, menu);
+		return true;
+	}
 
-                        /**
-                         * Check for data connection availability before making
-                         * authentication request
-                         */
-                        if (Utilities.isDataConnectionAvailable(getApplicationContext())) {
-                            userName = unameEditText.getText().toString();
-                            password = pwdEditText.getText().toString();
-                            rememberMeCheckBox = (CheckBox)findViewById(R.id.remember_me);
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 
-                            // Remove any unwanted spaces before and after the
-                            // EmailID
-                            // and Password
-                            userName = userName.trim();
-                            password = password.trim();
+		switch (item.getItemId()) {
+			case R.id.settings :
+				Intent gotoSettings = new Intent(this, Settings.class);
+				startActivity(gotoSettings);
+				return true;
+			default :
+				return super.onOptionsItemSelected(item);
+		}
+	}
 
-                            // Check if Email is Valid using RegEx and Password
-                            // is
-                            // not
-                            // blank
-                            if (!Utilities.isValidEmail(userName))
-                                Utilities.showToast(getApplicationContext(),
-                                        "Please Enter a valid EMail ID", false);
-                            else if (password.equalsIgnoreCase(""))
-                                Utilities.showToast(getApplicationContext(),
-                                        "Please Enter a valid Password", false);
-                            else {
-                                CheckLoginTask task = new CheckLoginTask();
-                                Log.d("url", baseUrl + "/token_authentications.json");
-                                task.execute(baseUrl + "/token_authentications.json");
+	/**
+	 * Verify user credentials and login
+	 *
+	 * @author Shivam Verma
+	 *
+	 */
+	private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
-                                Editor editor = sharedPrefs.edit();
-                                editor.putString("uname", userName);
-                                if (rememberMeCheckBox.isChecked()) {
-                                    editor.putBoolean("remember_me", true);
-                                    editor.commit();
-                                } else {
-                                    editor.putBoolean("remember_me", false);
-                                    editor.commit();
-                                }
-                            }
-                        } else
-                            Utilities.showToast(getApplicationContext(),
-                                    "Oops! Seems like there\'s no connection.", true);
-                    }
-                });
-            }
-        }
-    }
+		private ProgressDialog dialog = new ProgressDialog(Login.this);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.layout.menu_layout_login, menu);
-        return true;
-    }
+		@Override
+		protected void onPreExecute() {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+			// Show Progress dialog
+			dialog.setMessage("Logging in..");
+			dialog.show();
+		}
 
-        switch (item.getItemId()) {
-            case R.id.settings:
-                Intent gotoSettings = new Intent(this, Settings.class);
-                startActivity(gotoSettings);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+		@Override
+		protected String doInBackground(String... urls) {
+			for (String url : urls) {
+				ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-    private class CheckLoginTask extends AsyncTask<String, Void, String> {
+				// NameValuePairs for POST Request
+				nameValuePairs.add(new BasicNameValuePair("email", userName));
+				nameValuePairs
+						.add(new BasicNameValuePair("password", password));
 
-        private ProgressDialog dialog = new ProgressDialog(Login.this);
+				try {
 
-        @Override
-        protected void onPreExecute() {
-            dialog.setMessage("Logging in..");
-            dialog.show();
-        }
+					// Setting Up for a secure connection
+					HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+					DefaultHttpClient client = new DefaultHttpClient();
+					SchemeRegistry registry = new SchemeRegistry();
+					SSLSocketFactory socketFactory = SSLSocketFactory
+							.getSocketFactory();
+					socketFactory
+							.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+					registry.register(new Scheme("https", socketFactory, 443));
+					SingleClientConnManager mgr = new SingleClientConnManager(
+							client.getParams(), registry);
+					DefaultHttpClient httpClient = new DefaultHttpClient(mgr,
+							client.getParams());
+					// Set verifier
+					HttpsURLConnection
+							.setDefaultHostnameVerifier(hostnameVerifier);
+					// Send http request
+					HttpPost httpPost = new HttpPost(url);
+					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+					HttpResponse response = httpClient.execute(httpPost);
+					HttpEntity entity = response.getEntity();
+					loginResponse = EntityUtils.toString(entity);
+				} catch (Exception e) {
+				}
+			}
+			return loginResponse;
+		}
 
-        @Override
-        protected String doInBackground(String... urls) {
-            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            Log.d("uname", userName);
-            Log.d("pwd", password);
-            // NameValuePairs for POST Request
-            nameValuePairs.add(new BasicNameValuePair("email", userName));
-            nameValuePairs.add(new BasicNameValuePair("password", password));
+		/**
+		 * Saves auth_token to the SharedPreferences and redirects to Home
+		 * Screen.
+		 */
+		@Override
+		protected void onPostExecute(String result) {
 
-            try {
-                // Setting Up for a secure connection
-                HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                DefaultHttpClient client = new DefaultHttpClient();
-                SchemeRegistry registry = new SchemeRegistry();
-                SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-                socketFactory.setHostnameVerifier((X509HostnameVerifier)hostnameVerifier);
-                registry.register(new Scheme("https", socketFactory, 443));
-                SingleClientConnManager mgr = new SingleClientConnManager(client.getParams(),
-                        registry);
-                DefaultHttpClient httpClient = new DefaultHttpClient(mgr, client.getParams());
-                // Set verifier
-                HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-                // Send http request
-                HttpPost httpPost = new HttpPost(baseUrl + "/token_authentications.json");
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse response = httpClient.execute(httpPost);
-                HttpEntity entity = response.getEntity();
-                loginResponse = EntityUtils.toString(entity);
-                Log.d("entity", loginResponse);
-            } catch (Exception e) {
-                Log.d("http_error", e.toString());
-            } finally {
+			// Dismiss progress dialog
+			dialog.dismiss();
+			try {
+				JSONObject jObject = new JSONObject(loginResponse);
+				if (!jObject.has("error") && jObject.has("auth_key")) {
+					String authToken = jObject.getString("auth_key");
+					Log.d("auth_token", authToken);
+					Values values = new Values(getApplicationContext());
+					// Save auth_token
+					values.setAuthToken(authToken);
+					// Set flag that the user has been verified at the Login
+					// Screen
+					values.setUserVerifiedAtLogin(true);
+					Intent gotoHome = new Intent(getApplicationContext(),
+							Home.class);
+					gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+					startActivity(gotoHome);
+				} else
+					Utilities
+							.showToast(
+									getApplicationContext(),
+									"Invalid Email Address or Password. Please Try Again!",
+									true);
 
-            }
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 
-            return loginResponse;
-        }
+		}
 
-        @Override
-        protected void onPostExecute(String result) {
-            dialog.dismiss();
-            // Toast.makeText(getApplicationContext(),loginResponse ,
-            // Toast.LENGTH_LONG).show();
-            try {
-                JSONObject jObject = new JSONObject(loginResponse);
-                if (!jObject.has("error") && jObject.has("auth_key")) {
-                    String authToken = jObject.getString("auth_key");
-                    Log.d("auth_token", authToken);
-                    Values values = new Values(getApplicationContext());
-                    values.setAuthToken(authToken);
-                    values.setUserVerifiedAtLogin(true);
-                    Intent gotoHome = new Intent(getApplicationContext(), Home.class);
-                    gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(gotoHome);
-                } else
-                    Utilities.showToast(getApplicationContext(),
-                            "Invalid Email Address or Password. Please Try Again!", true);
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
-        }
-
-    }
-
+	}
 
 }

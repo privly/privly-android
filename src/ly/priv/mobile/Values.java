@@ -34,7 +34,7 @@ public final class Values {
 	/**
 	 * @return baseUrl The content server URL
 	 */
-	String getBaseUrl() {
+	String getContentServerDomain() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
 		String baseUrl = sharedPrefs.getString("base_url", null);
 		return baseUrl;
