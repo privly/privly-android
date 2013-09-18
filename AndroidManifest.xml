@@ -4,7 +4,9 @@
     android:versionCode="1"
     android:versionName="0.0.0.1" >
 
-    <uses-sdk android:minSdkVersion="11" />
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,12 +14,13 @@
     </uses-permission>
 
     <application
+        android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/customPrivlyTheme" >
         <activity
             android:name=".PrivlyActivity"
-            android:configChanges="orientation"
+            android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,51 +30,46 @@
         </activity>
         <activity
             android:name=".Login"
-            android:configChanges="orientation" >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".Settings"
-            android:configChanges="orientation" >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".Home"
-            android:configChanges="orientation" >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".NewPost"
-            android:configChanges="orientation" >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".Share"
-            android:configChanges="orientation" >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".ShowContent"
-            android:configChanges="orientation" >
-            >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity android:name=".LinkGrabber" >
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"
-            android:configChanges="orientation" >
-            >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".FacebookLinkGrabberService"
-            android:configChanges="orientation" >
-            >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".LoginUsingActivityActivity"
-            android:configChanges="orientation" >
-            >
+            android:configChanges="keyboardHidden|orientation" >
         </activity>
         <activity
             android:name=".TwitterLinkGrabberService"
-            android:configChanges="orientation"
+            android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleInstance" >
-            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

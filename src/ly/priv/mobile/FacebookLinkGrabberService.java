@@ -55,7 +55,7 @@ public class FacebookLinkGrabberService extends Activity {
 	boolean pendingRequest;
 	String contentServerDomain;
 	Context context;
-
+	Session session;
 	final String SOURCE_FACEBOOK = "FACEBOOK";
 
 	@Override
@@ -64,20 +64,23 @@ public class FacebookLinkGrabberService extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.link_grabber_service);
 		context = getApplicationContext();
-		Utilities.copyDb();
 		Log.d("OnCreate", "OnCreate");
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
-		Session session = Session.getActiveSession();
+		session = Session.getActiveSession();
 
 		if (session == null) {
+			// Set the permissions required for facebook access. 'read_mailbox'
+			// in this case.
+			Log.d("session = null", "true");
 			session = openActiveSession(this, true, statusCallback,
 					Arrays.asList("read_mailbox"));
-		}
-		Session.setActiveSession(session);
-		if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
-			session.openForRead(new Session.OpenRequest(this)
-					.setCallback(statusCallback));
+			Session.setActiveSession(session);
+
+		} else {
+			Log.d("session", "not null");
+			FetchFbMessages task = new FetchFbMessages();
+			task.execute();
 		}
 	}
 	@Override
@@ -139,15 +142,11 @@ public class FacebookLinkGrabberService extends Activity {
 
 	/**
 	 * Callback method. Executed on any change in session.
-	 *
-	 * @author Shivam Verma
-	 *
 	 */
 	private class SessionStatusCallback implements Session.StatusCallback {
 		@Override
 		public void call(Session session, SessionState state,
 				Exception exception) {
-			globalSession = session;
 
 			if (session.getAccessToken() != null) {
 
@@ -172,16 +171,15 @@ public class FacebookLinkGrabberService extends Activity {
 	 * </ul>
 	 * </p>
 	 *
-	 * @author shivam
 	 *
 	 */
 	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
-		ProgressDialog dialog = new ProgressDialog(
-				FacebookLinkGrabberService.this);
+		volatile ProgressDialog dialog = new ProgressDialog(
+				getApplicationContext());
 		@Override
 		protected void onPreExecute() {
-			dialog.setMessage("Logging in..");
+			dialog.setMessage("Checking for new Privly links from your Facebook inbox..");
 			dialog.show();
 		}
 
@@ -191,7 +189,7 @@ public class FacebookLinkGrabberService extends Activity {
 				// Make GET Request
 				HttpClient client = new DefaultHttpClient();
 				HttpGet get = new HttpGet(URL_PREFIX_FRIENDS
-						+ globalSession.getAccessToken());
+						+ session.getAccessToken());
 				HttpResponse responseGet = client.execute(get);
 				HttpEntity resEntityGet = responseGet.getEntity();
 				if (resEntityGet != null) {
@@ -217,10 +215,8 @@ public class FacebookLinkGrabberService extends Activity {
 				JSONArray fbDataArray = null;
 				JSONObject fbInbox = null;
 				fbInbox = new JSONObject(fbResponse);
-				Log.d("fbInbox", fbInbox.toString());
 				if (fbInbox.has("data")) {
 					fbDataArray = fbInbox.getJSONArray("data");
-					Log.d("fbDataArray", fbDataArray.toString());
 					for (int i = 0; i < fbDataArray.length(); i++) {
 						JSONObject allMessagesObject = fbDataArray
 								.getJSONObject(i);
@@ -228,20 +224,15 @@ public class FacebookLinkGrabberService extends Activity {
 							JSONObject commentsObject = new JSONObject(
 									allMessagesObject.get("comments")
 											.toString());
-							Log.d("commentsObject", commentsObject.toString());
 							if (commentsObject.has("data")) {
 								JSONArray chatArray = commentsObject
 										.getJSONArray("data");
-								Log.d("chatArray", chatArray.toString());
 								for (int j = 0; j < chatArray.length(); j++) {
 									JSONObject messageObject = chatArray
 											.getJSONObject(j);
-									Log.d("messageObject",
-											messageObject.toString());
 									if (messageObject.has("message")) {
 										String message = messageObject
 												.getString("message");
-										Log.d("message", message);
 										String messageId = messageObject
 												.getString("id");
 										if (messageObject.has("from")) {
@@ -257,7 +248,6 @@ public class FacebookLinkGrabberService extends Activity {
 														.iterator();
 												while (iter.hasNext()) {
 													String url = iter.next();
-													Log.d("URL", url);
 													if (!Utilities
 															.ifLinkExistsInDb(
 																	getApplicationContext(),
@@ -291,7 +281,7 @@ public class FacebookLinkGrabberService extends Activity {
 			Toast.makeText(
 					getApplicationContext(),
 					String.valueOf(numOfLinksAdded)
-							+ " new Privly links fetched from Facebook",
+							+ " new Privly links fetched from your Facebook inbox",
 					Toast.LENGTH_LONG).show();
 			dialog.dismiss();
 			Bundle bundle = new Bundle();

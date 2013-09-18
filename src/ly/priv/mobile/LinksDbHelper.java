@@ -7,6 +7,12 @@ import android.util.Log;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
+/**
+ * Helper class for managing the database.
+ *
+ * @author Shivam Verma
+ *
+ */
 public class LinksDbHelper extends SQLiteOpenHelper {
 	/**
 	 * Change Database version on upgrading the schema

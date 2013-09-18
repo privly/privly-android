@@ -28,11 +28,31 @@ import java.util.List;
  * Grabs Privly links from a twitter user's timeline and stores them in the
  * local database.
  *
+ * <p>
+ * Dependencies :
+ * <ul>
+ * <li>/privly-android/libs/signpost-commonshttp4-1.2.1.2.jar</li>
+ * <li>/privly-android/libs/signpost-core-1.2.1.2.jar</li>
+ * <li>/privly-android/libs/twitter4j-core-3.0.3.jar</li>
+ * </ul>
+ * </p>
+ *
+ * <p>
+ * <ul>
+ * <li>Checks if a user has already granted permissions to the application.</li>
+ * <li>If yes, fetch the Access Token data using TwitterHelperMethods Class. If
+ * not, Redirect user to authentication link</li>
+ * <li>Setup the Twitter Object using Access Token and Consumer Data : Consumer
+ * Key and Consumer Secret</li>
+ * </ul>
+ * </p>
+ *
  * @author Shivam Verma
  *
  */
 public class TwitterLinkGrabberService extends Activity {
 
+	int numberOfLinks = 0;
 	// TwitterProperties
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
 	private OAuthProvider httpOauthprovider;
@@ -41,8 +61,11 @@ public class TwitterLinkGrabberService extends Activity {
 	// credentials
 	public final static String consumerKey = "9C0j9rlHFXvnNVeoNnbA";
 	public final static String consumerSecret = "mHw3TWz63Eemq9Jk8SoIBLeYyGWGWmsgHs7KIkA";
-	protected static final String SOURCE_TWITTER = "TWITTER";
 
+	private static final String SOURCE_TWITTER = "TWITTER";
+
+	// this custom callback url launches the Privly android application after
+	// twitter authorisation
 	private final String CALLBACKURL = "x-oauthflow-twitter://privlyT4JCallback";
 	final int THREAD_STARTING = 0;
 	final int THREAD_COMPLETE = 1;
@@ -61,6 +84,7 @@ public class TwitterLinkGrabberService extends Activity {
 		context = getApplicationContext();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
+
 		// Checks if the user has already authenticated with the application. If
 		// not, start authentication process, else fetch Twitter Token from
 		// TwitterHelperMethods
@@ -79,6 +103,7 @@ public class TwitterLinkGrabberService extends Activity {
 					.getTwitterTokenSecret(getApplicationContext());
 			Log.d("tokenSecret", twitterTokenSecret);
 			if (twitterToken != null && twitterTokenSecret != null) {
+
 				// This sets up the twitter object which can successfully make
 				// requests to the twitter api.
 				setUpTwitter(twitterToken, twitterTokenSecret);
@@ -136,7 +161,7 @@ public class TwitterLinkGrabberService extends Activity {
 						httpOauthprovider.retrieveAccessToken(
 								httpOauthConsumer, verifier);
 
-						if (TwitterHelperMethods.setTwitterAccessTokenValues(
+						if (TwitterHelperMethods.saveTwitterAccessTokenValues(
 								context, httpOauthConsumer.getToken(),
 								httpOauthConsumer.getTokenSecret())) {
 							TwitterHelperMethods.setTwitterUserLoggedInStatus(
@@ -159,7 +184,7 @@ public class TwitterLinkGrabberService extends Activity {
 
 	/**
 	 * Creates a new twitter AccessToken Object and then sets up the twitter
-	 * object with AccessToken and ConsumerKey and Consumer Secret.
+	 * object with AccessToken, ConsumerKey and Consumer Secret.
 	 *
 	 * @param {String} token
 	 * @param {String} tokenSecret
@@ -176,18 +201,23 @@ public class TwitterLinkGrabberService extends Activity {
 	 * Handler for the new thread spawned. Maintains progressDialog while
 	 * fetching inbox messages from Facebook.
 	 */
-	Handler handler = new Handler() {
+	volatile Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case THREAD_STARTING :
 					progressDialog
-							.setMessage("Fetching new Privly links from your Twitter timeline");
+							.setMessage("Checking for new Privly links from your Twitter timeline..");
 					progressDialog.show();
 					break;
 
 				case THREAD_COMPLETE :
 					progressDialog.dismiss();
+					Toast.makeText(
+							getApplicationContext(),
+							String.valueOf(numberOfLinks)
+									+ " new Privly links fetched from your Twitter timeline",
+							Toast.LENGTH_LONG).show();
 					Bundle bundle = new Bundle();
 					bundle.putString("contentSource", "TWITTER");
 					Intent showContentIntent = new Intent(
@@ -245,6 +275,7 @@ public class TwitterLinkGrabberService extends Activity {
 											SOURCE_TWITTER, url,
 											String.valueOf(status.getId()),
 											status.getUser().getScreenName());
+									numberOfLinks++;
 								}
 
 							}

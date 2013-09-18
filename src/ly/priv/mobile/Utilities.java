@@ -227,7 +227,6 @@ public class Utilities {
 		contentValues.put(LinksDb.COLUMN_NAME_FROM, userName);
 		try {
 			long newRowId = db.insert(LinksDb.TABLE_NAME, null, contentValues);
-			Log.d("newrowid", String.valueOf(newRowId));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

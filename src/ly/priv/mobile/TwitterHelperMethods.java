@@ -5,13 +5,26 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+/**
+ * Provides access to methods required by the TwitterLinkGrabberService
+ *
+ * @author Shivam Verma
+ *
+ */
 public class TwitterHelperMethods {
 
-	public Boolean isTwitterUserLoggedIn() {
-
-		return true;
-	}
-
+	/**
+	 * Saves the login status of a twitter user into SharedPreferences.
+	 *
+	 * Example :
+	 * <p>
+	 * To Logout a user :
+	 * TwitterHelperMethods.setTwitterUserLoggedInStatus(getApplicationContext
+	 * (), false);
+	 *
+	 * @param {Context} context Context of the calling Activity
+	 * @param {Boolean} status Logged in status to be set.
+	 */
 	public static void setTwitterUserLoggedInStatus(Context context,
 			Boolean status) {
 		Values values = new Values(context);
@@ -22,6 +35,12 @@ public class TwitterHelperMethods {
 		editor.commit();
 	}
 
+	/**
+	 * Returns the login status of a twitter user.
+	 *
+	 * @param {Context} context Context of the calling Activity
+	 * @return {Boolean}
+	 */
 	public static Boolean isTwitterUserLoggedIn(Context context) {
 		Values values = new Values(context);
 		SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -29,7 +48,18 @@ public class TwitterHelperMethods {
 		return sharedPreferences.getBoolean("twitter_login_status", false);
 	}
 
-	public static Boolean setTwitterAccessTokenValues(Context context,
+	/**
+	 * Save the twitter access token and token secret values to
+	 * SharedPreferences
+	 *
+	 * @param {Context} context Context of the Calling Activit
+	 * @param {String} token Token value fetched after making a request to the
+	 *        twitter api.
+	 * @param {String} tokenSecret Token Secret value fetched after making a
+	 *        request to twitter api.
+	 * @return
+	 */
+	public static Boolean saveTwitterAccessTokenValues(Context context,
 			String token, String tokenSecret) {
 		Values values = new Values(context);
 		SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -43,6 +73,12 @@ public class TwitterHelperMethods {
 		return true;
 	}
 
+	/**
+	 * Returns the token string after fetching it from SharedPreferences
+	 *
+	 * @param {Context} context Context of the calling Activity
+	 * @return {String} Token string
+	 */
 	public static String getTwitterToken(Context context) {
 		Values values = new Values(context);
 		SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -51,6 +87,12 @@ public class TwitterHelperMethods {
 
 	}
 
+	/**
+	 * Returns the token secret string after fetching it from SharedPreferences
+	 *
+	 * @param {Context} context Context of the calling Activity
+	 * @return {String} Token secret string
+	 */
 	public static String getTwitterTokenSecret(Context context) {
 		Values values = new Values(context);
 		SharedPreferences sharedPreferences = context.getSharedPreferences(

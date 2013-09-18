@@ -175,7 +175,7 @@ public class Home extends Activity {
 
 	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog dialog = new ProgressDialog(Home.this);
+		volatile ProgressDialog dialog = new ProgressDialog(getApplication());
 
 		@Override
 		protected void onPreExecute() {

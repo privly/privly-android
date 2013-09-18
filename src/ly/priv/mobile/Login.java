@@ -23,7 +23,6 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -83,7 +82,6 @@ public class Login extends Activity {
 			// Checks if the user selected the Remember Me option while loggin
 			// in. If Yes, Redirect to Home Screen.
 			Boolean rememberMe = values.getRememberMe();
-			Log.d("rememberMeValue", Boolean.toString(rememberMe));
 			if (rememberMe && authToken != null) {
 				Intent gotoHome = new Intent(getApplicationContext(),
 						Home.class);
@@ -245,7 +243,6 @@ public class Login extends Activity {
 				JSONObject jObject = new JSONObject(loginResponse);
 				if (!jObject.has("error") && jObject.has("auth_key")) {
 					String authToken = jObject.getString("auth_key");
-					Log.d("auth_token", authToken);
 					Values values = new Values(getApplicationContext());
 					// Save auth_token
 					values.setAuthToken(authToken);
