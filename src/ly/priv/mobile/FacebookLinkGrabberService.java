@@ -176,7 +176,7 @@ public class FacebookLinkGrabberService extends Activity {
 	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
 		volatile ProgressDialog dialog = new ProgressDialog(
-				getApplicationContext());
+				FacebookLinkGrabberService.this);
 		@Override
 		protected void onPreExecute() {
 			dialog.setMessage("Checking for new Privly links from your Facebook inbox..");

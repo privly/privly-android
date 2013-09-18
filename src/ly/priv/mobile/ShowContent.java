@@ -1,6 +1,5 @@
 package ly.priv.mobile;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,7 +25,7 @@ import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 /**
  * This class displays the Home Activity for a user after authentication. Gives
  * the user options to Create New Privly posts or Read Privly Posts from his
- * social / email feed. Read option has not been implemented yet.
+ * social / email feed.
  *
  * @author Shivam Verma
  */
@@ -42,7 +41,6 @@ public class ShowContent extends Activity {
 	Cursor cursor;
 	String contentSource;
 
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -89,8 +87,6 @@ public class ShowContent extends Activity {
 		int numRows = cursor.getCount();
 		if (numRows > 0) {
 			cursor.moveToFirst();
-			Log.d("num_rows_2", Long.toString(numRows));
-
 			loadUrlInWebview();
 		} else {
 			Toast.makeText(getApplicationContext(),
@@ -118,7 +114,6 @@ public class ShowContent extends Activity {
 		String url = privlyLink;
 		try {
 			url = URLEncoder.encode(url, "utf-8");
-			Log.d("encode once", url);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -136,7 +131,7 @@ public class ShowContent extends Activity {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
 		}
-
+		Log.d("url for extension", url);
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 
 	}
