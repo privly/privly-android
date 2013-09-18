@@ -2,6 +2,13 @@ package ly.priv.mobile;
 
 import android.provider.BaseColumns;
 
+/**
+ * Defines Table and Column Names for the Privly Db.
+ *
+ * @author Shivam Verma
+ *
+ */
+
 public final class PrivlyLinkStorageContract {
 
 	/**

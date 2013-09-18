@@ -8,7 +8,7 @@ import android.view.ViewConfiguration;
 import java.util.HashMap;
 
 /**
- * Values class is used to access values that should be accessible to all
+ * Values class is used to set/get values that should be accessible to all
  * classes throughout the application.
  *
  * @author Shivam Verma
@@ -25,14 +25,18 @@ public final class Values {
 	}
 
 	/**
-	 * @return prefs_name The name of the SharedPreference File
+	 * The name of the SharedPreference File
+	 *
+	 * @return {String} prefs_name
 	 */
 	String getPrefsName() {
 		return prefsName;
 	}
 
 	/**
-	 * @return baseUrl The content server URL
+	 * The content server URL
+	 *
+	 * @return {String} baseUrl
 	 */
 	String getContentServerDomain() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
@@ -41,7 +45,9 @@ public final class Values {
 	}
 
 	/**
-	 * @return authToken Authentication token for user's session
+	 * Returns Authentication token for user's session
+	 *
+	 * @return {String} authToken
 	 */
 	String getAuthToken() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
@@ -50,7 +56,7 @@ public final class Values {
 	}
 
 	/**
-	 * @return rememberMe Flag
+	 * @return {Boolean} rememberMe
 	 */
 	Boolean getRememberMe() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
@@ -103,12 +109,23 @@ public final class Values {
 		editor.commit();
 	}
 
+	/**
+	 * Returns value of verified_at_login flag. Use this to prevent re
+	 * authentication at Home Screen.
+	 *
+	 * @return {Boolean}
+	 */
 	Boolean isUserVerifiedAtLogin() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
 		return sharedPrefs.getBoolean("verified_at_login", false);
 
 	}
 
+	/**
+	 * Sets the value of verified_at_login Flag.
+	 *
+	 * @param {Boolean} bool
+	 */
 	void setUserVerifiedAtLogin(Boolean bool) {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
 		Editor editor = sharedPrefs.edit();
@@ -134,13 +151,10 @@ public final class Values {
 }
 
 /**
- * Key Pair Values saved in shared preferences
- * uname : email id of user;
- * pwd : password of the User;
- * base_url : domain_name to which the user authorises;
- * auth_token : authentication Key;
- * remember_me : flag to check if the user checked remember me check box;
- * verified_at_login : flag to check if user has
+ * Key Pair Values saved in shared preferences uname : email id of user; pwd :
+ * password of the User; base_url : domain_name to which the user authorises;
+ * auth_token : authentication Key; remember_me : flag to check if the user
+ * checked remember me check box; verified_at_login : flag to check if user has
  * been authenticated at login. If true, the auth_token is not verified in Home
  * Activity;
  **/
