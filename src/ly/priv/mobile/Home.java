@@ -179,6 +179,7 @@ public class Home extends Activity {
 
 		@Override
 		protected void onPreExecute() {
+			dialog.setCanceledOnTouchOutside(false);
 			dialog.setMessage("Verifying session..");
 			dialog.show();
 		}
@@ -232,6 +233,8 @@ public class Home extends Activity {
 					values.setAuthToken(null);
 					Intent gotoLogin = new Intent(getApplicationContext(),
 							Login.class);
+					// Clear history stack. User should not be able to access
+					// any activity since his session has expired.
 					gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					startActivity(gotoLogin);
@@ -239,7 +242,7 @@ public class Home extends Activity {
 							"Your session has expired. Please login again.",
 							true);
 				}
-			} catch (Exception ex) {
+			} catch (Exception e) {
 			}
 		}
 	}

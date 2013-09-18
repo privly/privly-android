@@ -79,7 +79,7 @@ public class Utilities {
 	 */
 	public static Boolean isDataConnectionAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context
-				.getSystemService(context.CONNECTIVITY_SERVICE);
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager
 				.getActiveNetworkInfo();
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
@@ -114,7 +114,6 @@ public class Utilities {
 	 *         string.
 	 */
 	public static ArrayList<String> fetchPrivlyUrls(String message) {
-		String url = null;
 		ArrayList<String> listOfUrls = new ArrayList<String>();
 		String regEx = "(https?://)?[^ ]*privlyInject1[^ ]*";
 		Pattern pattern = Pattern.compile(regEx);
@@ -175,23 +174,34 @@ public class Utilities {
 				String backupDBPath = "PrivlyLinks.db";
 				File currentDB = new File(data, currentDBPath);
 				File backupDB = new File(sd, backupDBPath);
-
+				FileChannel src = null;
+				FileChannel dst = null;
 				if (currentDB.exists()) {
-					Log.d("exists", "exists");
-					FileChannel src = new FileInputStream(currentDB)
-							.getChannel();
-					FileChannel dst = new FileOutputStream(backupDB)
-							.getChannel();
-					dst.transferFrom(src, 0, src.size());
-					src.close();
-					dst.close();
+					try {
+						src = new FileInputStream(currentDB).getChannel();
+						dst = new FileOutputStream(backupDB).getChannel();
+						dst.transferFrom(src, 0, src.size());
+						src.close();
+						dst.close();
+					} catch (Exception e) {
+
+					} finally {
+						try {
+							src.close();
+						} catch (Exception e) {
+						}
+						try {
+							dst.close();
+						} catch (Exception e) {
+						}
+					}
+
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 	/**
 	 * Insert Links into the Database.
 	 *

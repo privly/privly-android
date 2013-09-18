@@ -190,6 +190,7 @@ public class Login extends Activity {
 		protected void onPreExecute() {
 
 			// Show Progress dialog
+			dialog.setCanceledOnTouchOutside(false);
 			dialog.setMessage("Logging in..");
 			dialog.show();
 		}
@@ -203,7 +204,6 @@ public class Login extends Activity {
 				nameValuePairs.add(new BasicNameValuePair("email", userName));
 				nameValuePairs
 						.add(new BasicNameValuePair("password", password));
-
 				try {
 
 					// Setting Up for a secure connection
@@ -219,10 +219,8 @@ public class Login extends Activity {
 							client.getParams(), registry);
 					DefaultHttpClient httpClient = new DefaultHttpClient(mgr,
 							client.getParams());
-					// Set verifier
 					HttpsURLConnection
 							.setDefaultHostnameVerifier(hostnameVerifier);
-					// Send http request
 					HttpPost httpPost = new HttpPost(url);
 					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 					HttpResponse response = httpClient.execute(httpPost);
@@ -256,6 +254,9 @@ public class Login extends Activity {
 					values.setUserVerifiedAtLogin(true);
 					Intent gotoHome = new Intent(getApplicationContext(),
 							Home.class);
+					// Clear history stack. You dont want the user to be able to
+					// access the Login Scren again, since he's already logged
+					// in.
 					gotoHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					startActivity(gotoHome);

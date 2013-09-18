@@ -22,12 +22,28 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Authenticates user with Facebook and grabs Privly links from message inbox.
+ * <p>
+ * <ul>
+ * <li>Creates a new Facebook Session.</li>
+ * <li>Needs 'read_mailbox' permission from the user.</li>
+ * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
+ * <li>Parses the received json response and inserts any new Privly links to the
+ * local database.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Shivam Verma
+ *
+ */
 public class FacebookLinkGrabberService extends Activity {
 	private static final String URL_PREFIX_FRIENDS = "https://graph.facebook.com/me/inbox?access_token=";
 	String fbResponse = "";
@@ -98,13 +114,13 @@ public class FacebookLinkGrabberService extends Activity {
 
 	/**
 	 * Custom implementation of openActiveSession to ask for Read Permissions
-	 * programatically. Skips the usage of Facebook Login button
+	 * programatically. Skips the usage of Facebook Login button.
 	 *
 	 * @param activity
 	 * @param allowLoginUI
 	 * @param callback
 	 * @param permissions
-	 * @return
+	 * @return null
 	 */
 	private static Session openActiveSession(Activity activity,
 			boolean allowLoginUI, StatusCallback callback,
@@ -121,6 +137,12 @@ public class FacebookLinkGrabberService extends Activity {
 		return null;
 	}
 
+	/**
+	 * Callback method. Executed on any change in session.
+	 *
+	 * @author Shivam Verma
+	 *
+	 */
 	private class SessionStatusCallback implements Session.StatusCallback {
 		@Override
 		public void call(Session session, SessionState state,
@@ -130,8 +152,8 @@ public class FacebookLinkGrabberService extends Activity {
 			if (session.getAccessToken() != null) {
 
 				// Since fetching of data from Facebook server and parsing it to
-				// find Privly links is a high latency procedure, a new thread
-				// is spawned
+				// find Privly links is a high latency procedure, we use an
+				// AsyncTask.
 				FetchFbMessages task = new FetchFbMessages();
 				task.execute();
 
@@ -139,6 +161,20 @@ public class FacebookLinkGrabberService extends Activity {
 		}
 	}
 
+	/**
+	 * Fetches new Privly links from message inbox.
+	 * <p>
+	 * <ul>
+	 * <li>Make a get request to the Facebook Graph API with the session's
+	 * access token to retrieve the last 25 inbox messages.</li>
+	 * <li>Parse JSON response to search for Privly links.</li>
+	 * <li>Insert new links into the local Db.</li>
+	 * </ul>
+	 * </p>
+	 *
+	 * @author shivam
+	 *
+	 */
 	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
 		ProgressDialog dialog = new ProgressDialog(
@@ -152,6 +188,7 @@ public class FacebookLinkGrabberService extends Activity {
 		@Override
 		protected String doInBackground(String... urls) {
 			try {
+				// Make GET Request
 				HttpClient client = new DefaultHttpClient();
 				HttpGet get = new HttpGet(URL_PREFIX_FRIENDS
 						+ globalSession.getAccessToken());
@@ -173,9 +210,9 @@ public class FacebookLinkGrabberService extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			dialog.dismiss();
-			// Toast.makeText(getApplicationContext(),loginResponse ,
-			// Toast.LENGTH_LONG).show();
+			// Parse JSON to search for Privly links and then insert into Db if
+			// new links found
+			int numOfLinksAdded = 0;
 			try {
 				JSONArray fbDataArray = null;
 				JSONObject fbInbox = null;
@@ -234,6 +271,7 @@ public class FacebookLinkGrabberService extends Activity {
 																		url,
 																		messageId,
 																		userName);
+														numOfLinksAdded++;
 													}
 
 												}
@@ -250,14 +288,21 @@ public class FacebookLinkGrabberService extends Activity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			Toast.makeText(
+					getApplicationContext(),
+					String.valueOf(numOfLinksAdded)
+							+ " new Privly links fetched from Facebook",
+					Toast.LENGTH_LONG).show();
+			dialog.dismiss();
 			Bundle bundle = new Bundle();
-
 			bundle.putString("contentSource", "FACEBOOK");
+
+			// Redirect user to ShowContent Class
 			Intent showContentIntent = new Intent(
 					FacebookLinkGrabberService.this, ShowContent.class);
 			showContentIntent.putExtras(bundle);
-			startActivity(showContentIntent); // Clear this activity
-			// from stack so that the user is taken
+			startActivity(showContentIntent);
+			// Clear this activity from stack so that the user is taken
 			// to the Home Screen on back press
 			FacebookLinkGrabberService.this.finish();
 		}

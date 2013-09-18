@@ -24,12 +24,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Grabs Privly links from a twitter user's timeline and stores them in the
+ * local database.
+ *
+ * @author Shivam Verma
+ *
+ */
 public class TwitterLinkGrabberService extends Activity {
 
 	// TwitterProperties
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
 	private OAuthProvider httpOauthprovider;
 
+	// Create a new App on https://dev.twitter.com/apps/new for the following
+	// credentials
 	public final static String consumerKey = "9C0j9rlHFXvnNVeoNnbA";
 	public final static String consumerSecret = "mHw3TWz63Eemq9Jk8SoIBLeYyGWGWmsgHs7KIkA";
 	protected static final String SOURCE_TWITTER = "TWITTER";
@@ -52,25 +61,26 @@ public class TwitterLinkGrabberService extends Activity {
 		context = getApplicationContext();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
+		// Checks if the user has already authenticated with the application. If
+		// not, start authentication process, else fetch Twitter Token from
+		// TwitterHelperMethods
 		if (!TwitterHelperMethods.isTwitterUserLoggedIn(context)) {
-			Log.d("Tag", "inside If");
 			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					loginToTwitter();
 				}
 			}).start();
 		} else {
-			Log.d("TAG", "Inside Else");
-
 			String twitterToken = TwitterHelperMethods
 					.getTwitterToken(getApplicationContext());
 			String twitterTokenSecret = TwitterHelperMethods
 					.getTwitterTokenSecret(getApplicationContext());
 			Log.d("tokenSecret", twitterTokenSecret);
 			if (twitterToken != null && twitterTokenSecret != null) {
+				// This sets up the twitter object which can successfully make
+				// requests to the twitter api.
 				setUpTwitter(twitterToken, twitterTokenSecret);
 				long userId = accessToken.getUserId();
 				getTweets(userId);
@@ -81,6 +91,11 @@ public class TwitterLinkGrabberService extends Activity {
 		}
 
 	}
+
+	/**
+	 * Fires up an Intent which allows the twitter user to grant permission to
+	 * the the Privly app. The User is then redirected to the callback url.
+	 */
 	private void loginToTwitter() {
 		try {
 			httpOauthConsumer = new CommonsHttpOAuthConsumer(consumerKey,
@@ -99,13 +114,10 @@ public class TwitterLinkGrabberService extends Activity {
 		}
 	}
 
-	private void setUpTwitter(String token, String tokenSecret) {
-		accessToken = new AccessToken(token, tokenSecret);
-		twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(consumerKey, consumerSecret);
-		twitter.setOAuthAccessToken(accessToken);
-	}
-
+	/**
+	 * Handles the new intent received after the user authorizes the Privly app
+	 * with twitter permissions.
+	 */
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
@@ -116,13 +128,10 @@ public class TwitterLinkGrabberService extends Activity {
 			verifier = uri
 					.getQueryParameter(oauth.signpost.OAuth.OAUTH_VERIFIER);
 
-			// this will populate token and token_secret in consumer
-
 			new Thread(new Runnable() {
 
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					try {
 						httpOauthprovider.retrieveAccessToken(
 								httpOauthConsumer, verifier);
@@ -139,7 +148,6 @@ public class TwitterLinkGrabberService extends Activity {
 						long userId = accessToken.getUserId();
 						getTweets(userId);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -148,8 +156,24 @@ public class TwitterLinkGrabberService extends Activity {
 		}
 
 	}
+
 	/**
-	 * Handles for the new thread spawned. Maintains progressDialog while
+	 * Creates a new twitter AccessToken Object and then sets up the twitter
+	 * object with AccessToken and ConsumerKey and Consumer Secret.
+	 *
+	 * @param {String} token
+	 * @param {String} tokenSecret
+	 *
+	 */
+	private void setUpTwitter(String token, String tokenSecret) {
+		accessToken = new AccessToken(token, tokenSecret);
+		twitter = new TwitterFactory().getInstance();
+		twitter.setOAuthConsumer(consumerKey, consumerSecret);
+		twitter.setOAuthAccessToken(accessToken);
+	}
+
+	/**
+	 * Handler for the new thread spawned. Maintains progressDialog while
 	 * fetching inbox messages from Facebook.
 	 */
 	Handler handler = new Handler() {
@@ -178,6 +202,13 @@ public class TwitterLinkGrabberService extends Activity {
 		}
 	};
 
+	/**
+	 * Fetch tweets from the twitter timeline. Looks for any Privly links in the
+	 * tweets and store them in the Db.
+	 *
+	 * @param {long} userId Twitter user id for which we want to fetch the
+	 *        timeline.
+	 */
 	public void getTweets(long userId) {
 		new Thread(new Runnable() {
 
@@ -191,20 +222,21 @@ public class TwitterLinkGrabberService extends Activity {
 					statuses = twitter.getHomeTimeline();
 
 					for (Status status : statuses) {
-						Log.d("@", status.getUser().getScreenName() + " - "
-								+ status.getText());
 						URLEntity[] entities = status.getURLEntities();
 						for (int i = 0; i < entities.length; i++) {
+							// Since urls are shortened by the twitter t.co
+							// service, get the expanded urls to search for
+							// Privly links
 							url = entities[i].getExpandedURL();
 						}
-
-						Log.d("entities", entities.toString());
 						ArrayList<String> listOfUrls = Utilities
 								.fetchPrivlyUrls(url);
 						if (!listOfUrls.isEmpty()) {
 							Iterator<String> iter = listOfUrls.iterator();
 							while (iter.hasNext()) {
 								String url = iter.next();
+								// Checks if the link already exists in local
+								// Db. If not, Insert into Db.
 								if (!Utilities.ifLinkExistsInDb(
 										getApplicationContext(), url,
 										SOURCE_TWITTER)) {
@@ -219,10 +251,6 @@ public class TwitterLinkGrabberService extends Activity {
 						}
 					}
 				} catch (TwitterException te) {
-					te.printStackTrace();
-					System.out.println("Failed to get timeline: "
-							+ te.getMessage());
-					// pDialog.dismiss();
 				}
 				Message msgFinal = Message.obtain();
 				msgFinal.what = THREAD_COMPLETE;
