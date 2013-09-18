@@ -119,12 +119,12 @@ public class ShowContent extends Activity {
 		}
 
 		String urlForExtension = "";
-		if (url.indexOf("privlyInjectableApplication=ZeroBin") > 0 || // deprecated
-				url.indexOf("privlyApp=ZeroBin") > 0) {
+		if (url.indexOf("privlyInjectableApplication%3DZeroBin") > 0 || // deprecated
+				url.indexOf("privlyApp%3DZeroBin") > 0) {
 			urlForExtension = "PrivlyApplications/ZeroBin/show.html?privlyOriginalURL="
 					+ url;
-		} else if (url.indexOf("privlyInjectableApplication=PlainPost") > 0 || // deprecated
-				url.indexOf("privlyApp=PlainPost") > 0) {
+		} else if (url.indexOf("privlyInjectableApplication%3DPlainPost") > 0 || // deprecated
+				url.indexOf("privlyApp%3DPlainPost") > 0) {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
 		} else {
