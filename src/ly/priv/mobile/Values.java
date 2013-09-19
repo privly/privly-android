@@ -11,6 +11,17 @@ import java.util.HashMap;
  * Values class is used to set/get values that should be accessible to all
  * classes throughout the application.
  *
+ * <p>
+ * Key Pair Values saved in shared preferences
+ * <li>uname : email id of user</li>
+ * <li>pwd :password of the User</li>
+ * <li>base_url : domain_name to which the user authorises</li>
+ * <li>auth_token : authentication Key</li>
+ * <li>remember_me : flag to check if the user checked remember me check box</li>
+ * <li>verified_at_login : flag to check if user has been authenticated at
+ * login. If true, the auth_token is not verified in Home Activity</li>
+ * </p>
+ *
  * @author Shivam Verma
  */
 public final class Values {
@@ -56,6 +67,8 @@ public final class Values {
 	}
 
 	/**
+	 * Returns value of remember_me Flag
+	 *
 	 * @return {Boolean} rememberMe
 	 */
 	Boolean getRememberMe() {
@@ -65,6 +78,8 @@ public final class Values {
 	}
 
 	/**
+	 * Returns username of the currently logged in user.
+	 *
 	 * @return userName
 	 */
 	String getUserName() {
@@ -151,10 +166,5 @@ public final class Values {
 }
 
 /**
- * Key Pair Values saved in shared preferences uname : email id of user; pwd :
- * password of the User; base_url : domain_name to which the user authorises;
- * auth_token : authentication Key; remember_me : flag to check if the user
- * checked remember me check box; verified_at_login : flag to check if user has
- * been authenticated at login. If true, the auth_token is not verified in Home
- * Activity;
+ *
  **/

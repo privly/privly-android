@@ -89,7 +89,8 @@ public class Home extends Activity {
 		readListView.setAdapter(readArrayAdapter);
 
 		// OnItemClickListener for creating posts ListView. The name of the
-		// selected Posting app is sent with the intent to Home Screen.
+		// selected Posting app is sent with the intent to {@link
+		// ly.priv.mobile.NewPost} Activity.
 		createListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -111,6 +112,8 @@ public class Home extends Activity {
 
 		// OnItemClickListener for Reading posts ListView. Redirects User to
 		// LinkGrabber Service of the respective platform.
+		// For Twitter - {@link ly.priv.mobile.TwitterLinkGrabberService}
+		// For Facebook - {@link ly.priv.mobile.FacebookLinkGrabberService}
 		readListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -146,7 +149,11 @@ public class Home extends Activity {
 	}
 
 	/**
-	 * Item click listener for options menu
+	 * Item click listener for options menu.
+	 * <p>
+	 * Redirect to {@link ly.priv.mobile.Settings} Or
+	 * {@link ly.priv.mobile.Login}
+	 * </p>
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -173,6 +180,13 @@ public class Home extends Activity {
 		}
 	}
 
+	/**
+	 * Verifies the validity of existing auth_token. If expired, redirect to
+	 * {@link ly.priv.mobile.Login}
+	 *
+	 * @author Shivam Verma
+	 *
+	 */
 	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
 
 		volatile ProgressDialog dialog = new ProgressDialog(Home.this);

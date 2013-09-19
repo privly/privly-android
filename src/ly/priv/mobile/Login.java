@@ -175,7 +175,8 @@ public class Login extends Activity {
 	}
 
 	/**
-	 * Verify user credentials and login
+	 * Verify user credentials and login. Redirects to
+	 * {@link ly.priv.mobile.Home} Home Activity after successful login.
 	 *
 	 * @author Shivam Verma
 	 *

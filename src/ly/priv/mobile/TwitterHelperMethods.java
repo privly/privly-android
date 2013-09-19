@@ -52,7 +52,7 @@ public class TwitterHelperMethods {
 	 * Save the twitter access token and token secret values to
 	 * SharedPreferences
 	 *
-	 * @param {Context} context Context of the Calling Activit
+	 * @param {Context} context Context of the Calling Activity
 	 * @param {String} token Token value fetched after making a request to the
 	 *        twitter api.
 	 * @param {String} tokenSecret Token Secret value fetched after making a

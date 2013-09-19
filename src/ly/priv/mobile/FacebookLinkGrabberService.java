@@ -38,6 +38,7 @@ import java.util.List;
  * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
  * <li>Parses the received json response and inserts any new Privly links to the
  * local database.</li>
+ * <li>Redirect User to {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
  * </ul>
  * </p>
  *
@@ -287,7 +288,8 @@ public class FacebookLinkGrabberService extends Activity {
 			Bundle bundle = new Bundle();
 			bundle.putString("contentSource", "FACEBOOK");
 
-			// Redirect user to ShowContent Class
+			// Redirect user to {@link ly.priv.mobile.ShowContent} ShowContent
+			// Class
 			Intent showContentIntent = new Intent(
 					FacebookLinkGrabberService.this, ShowContent.class);
 			showContentIntent.putExtras(bundle);
