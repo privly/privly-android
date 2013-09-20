@@ -11,9 +11,9 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 /**
- * This class acts as a bridge between the Js of the Posting Applications and
+ * Acts as a bridge between the Js of the Privly Posting and Reading Applications and
  * the native Android functions.
- * 
+ *
  * @author Shivam Verma
  */
 public class JsObject {
@@ -24,7 +24,7 @@ public class JsObject {
 
 	/**
 	 * sets current context as the context of the calling class.
-	 * 
+	 *
 	 * @param callingContext
 	 */
 	JsObject(Context callingContext) {
@@ -42,9 +42,9 @@ public class JsObject {
 	}
 
 	/**
-	 * Shows the Share screen {@link ly.priv.mobile.Share} to the user on
+	 * Shows the {@link ly.priv.mobile.Share} Activity to the user on
 	 * receiving a new Privly Url
-	 * 
+	 *
 	 * @param url
 	 *            The newly generated Privly Url
 	 */
@@ -61,7 +61,7 @@ public class JsObject {
 
 	/**
 	 * Identify the platform the Js is running on.
-	 * 
+	 *
 	 * @return "ANDROID"
 	 */
 	@JavascriptInterface
@@ -72,7 +72,7 @@ public class JsObject {
 
 	/**
 	 * Fetch logged in user's auth_token from the sharedPreferences
-	 * 
+	 *
 	 * @return auth_token {String}
 	 */
 	@JavascriptInterface
@@ -84,7 +84,7 @@ public class JsObject {
 
 	/**
 	 * Fetch the domain name to which all Privly Requests are being made.
-	 * 
+	 *
 	 * @return domainName {String}
 	 */
 	@JavascriptInterface
@@ -132,7 +132,7 @@ public class JsObject {
 
 	/**
 	 * Checks for data connection availability
-	 * 
+	 *
 	 * @return {Boolean}
 	 */
 	@JavascriptInterface

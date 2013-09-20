@@ -8,7 +8,7 @@ import android.view.ViewConfiguration;
 import java.util.HashMap;
 
 /**
- * Values class is used to set/get values that should be accessible to all
+ * Used to set/get values that should be accessible to all
  * classes throughout the application.
  *
  * <p>

@@ -21,8 +21,7 @@ import java.util.regex.Pattern;
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
 /**
- * Utilities class contains simple functions that should be used wherever
- * possible.
+ * Contains simple functions that should be used wherever possible.
  *
  * @author Shivam Verma
  */
@@ -50,12 +49,15 @@ public class Utilities {
 	 * @param {String} textToToast
 	 * @param {String} longToast
 	 */
-	public static void showToast(Context context, String textToToast,
+	public static Boolean showToast(Context context, String textToToast,
 			Boolean longToast) {
-		if (longToast)
+		if (longToast) {
 			Toast.makeText(context, textToToast, Toast.LENGTH_LONG).show();
-		else
+			return true;
+		} else {
 			Toast.makeText(context, textToToast, Toast.LENGTH_SHORT).show();
+			return true;
+		}
 	}
 
 	/**

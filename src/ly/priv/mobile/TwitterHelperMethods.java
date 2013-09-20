@@ -18,9 +18,11 @@ public class TwitterHelperMethods {
 	 *
 	 * Example :
 	 * <p>
-	 * To Logout a user :
-	 * TwitterHelperMethods.setTwitterUserLoggedInStatus(getApplicationContext
-	 * (), false);
+	 * Key Values pair saved in SharedPrefrences
+	 * <li>twitter_login_status : Login status.</li>
+	 * <li>twitter_token : twitter access token</li>
+	 * <li>twitter_token_secret : twitter access token secret</li>
+	 * </p>
 	 *
 	 * @param {Context} context Context of the calling Activity
 	 * @param {Boolean} status Logged in status to be set.

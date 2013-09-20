@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * This class shows the Settings Activity. Currently, supports setting of the
+ * Shows the Settings Activity. Currently, supports setting of the
  * domain name with which the application works.
  *
  * @author Shivam Verma

@@ -10,6 +10,9 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
@@ -23,7 +26,7 @@ import java.util.HashMap;
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
 /**
- * This class displays the Home Activity for a user after authentication.
+ * Displays the Home Activity for a user after authentication.
  *
  * <p>
  * <ul>
@@ -94,35 +97,35 @@ public class ShowContent extends Activity {
 
 		// Check if database exists, If not, redirect to Home Screen. Else, load
 		// links from Db.
-		if (!database.exists()) {
+		// if (!database.exists()) {
+		// Toast.makeText(getApplicationContext(),
+		// "No Privly Links found for" + contentSource,
+		// Toast.LENGTH_LONG).show();
+		// Intent goToHome = new Intent(this, Home.class);
+		// startActivity(goToHome);
+		// finish();
+		//
+		// } else {
+		cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME + " WHERE "
+				+ LinksDb.COLUMN_NAME_SOURCE + "= '" + contentSource + "'",
+				null);
+
+		int numRows = cursor.getCount();
+		if (numRows > 0) {
+			cursor.moveToFirst();
+			loadUrlInWebview();
+		} else {
 			Toast.makeText(getApplicationContext(),
-					"No Privly Links found for" + contentSource,
+					"No Privly Links found for " + contentSource,
 					Toast.LENGTH_LONG).show();
 			Intent goToHome = new Intent(this, Home.class);
 			startActivity(goToHome);
 			finish();
-
-		} else {
-			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
-					+ " WHERE " + LinksDb.COLUMN_NAME_SOURCE + "= '"
-					+ contentSource + "'", null);
-
-			int numRows = cursor.getCount();
-			if (numRows > 0) {
-				cursor.moveToFirst();
-				loadUrlInWebview();
-			} else {
-				Toast.makeText(getApplicationContext(),
-						"No Privly Links found for" + contentSource,
-						Toast.LENGTH_LONG).show();
-				Intent goToHome = new Intent(this, Home.class);
-				startActivity(goToHome);
-				finish();
-			}
-
 		}
 
 	}
+
+	// }
 
 	/**
 	 * Swipe gesture listener.
@@ -228,6 +231,44 @@ public class ShowContent extends Activity {
 		}
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 
+	}
+
+	/**
+	 * Inflate options menu with the layout
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.layout.menu_layout_show_content, menu);
+		return true;
+	}
+
+	/**
+	 * Item click listener for options menu.
+	 * <p>
+	 * Redirect to {@link ly.priv.mobile.Settings} Or
+	 * {@link ly.priv.mobile.Login}
+	 * </p>
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+			case R.id.logout :
+				// Logs out User from Privly Application
+				Values values = new Values(getApplicationContext());
+				values.setAuthToken(null);
+				values.setRememberMe(false);
+				Intent gotoLogin = new Intent(this, Login.class);
+				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(gotoLogin);
+				return true;
+
+			default :
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 }

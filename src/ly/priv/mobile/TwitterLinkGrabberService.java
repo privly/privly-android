@@ -52,7 +52,6 @@ import java.util.List;
  */
 public class TwitterLinkGrabberService extends Activity {
 
-	int numberOfLinks = 0;
 	// TwitterProperties
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
 	private OAuthProvider httpOauthprovider;
@@ -213,11 +212,6 @@ public class TwitterLinkGrabberService extends Activity {
 
 				case THREAD_COMPLETE :
 					progressDialog.dismiss();
-					Toast.makeText(
-							getApplicationContext(),
-							String.valueOf(numberOfLinks)
-									+ " new Privly links fetched from your Twitter timeline",
-							Toast.LENGTH_LONG).show();
 					Bundle bundle = new Bundle();
 					bundle.putString("contentSource", "TWITTER");
 					Intent showContentIntent = new Intent(
@@ -275,7 +269,6 @@ public class TwitterLinkGrabberService extends Activity {
 											SOURCE_TWITTER, url,
 											String.valueOf(status.getId()),
 											status.getUser().getScreenName());
-									numberOfLinks++;
 								}
 
 							}

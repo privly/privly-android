@@ -1,10 +1,8 @@
 package ly.priv.mobile;
 
 import com.facebook.Session;
-import com.facebook.Session.Builder;
 import com.facebook.Session.OpenRequest;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
+import com.facebook.SessionLoginBehavior;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,12 +20,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Authenticates user with Facebook and grabs Privly links from message inbox.
@@ -49,7 +44,6 @@ public class FacebookLinkGrabberService extends Activity {
 	private static final String URL_PREFIX_FRIENDS = "https://graph.facebook.com/me/inbox?access_token=";
 	String fbResponse = "";
 	Session globalSession;
-	private Session.StatusCallback statusCallback = new SessionStatusCallback();
 	final int THREAD_STARTING = 0;
 	final int THREAD_COMPLETE = 1;
 	ProgressDialog progressDialog;
@@ -69,26 +63,31 @@ public class FacebookLinkGrabberService extends Activity {
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
 		session = Session.getActiveSession();
-
 		if (session == null) {
-			// Set the permissions required for facebook access. 'read_mailbox'
-			// in this case.
-			Log.d("session = null", "true");
-			session = openActiveSession(this, true, statusCallback,
-					Arrays.asList("read_mailbox"));
+			Log.d("Session", "null");
+			session = new Session.Builder(this).build();
 			Session.setActiveSession(session);
+			if (!session.isOpened()) {
+				ArrayList<String> permissions = new ArrayList<String>();
+				permissions.add("read_mailbox");
+				session.openForRead(new OpenRequest(this).setPermissions(
+						permissions).setLoginBehavior(
+						SessionLoginBehavior.SSO_WITH_FALLBACK));
+			} else {
+				FetchFbMessages task = new FetchFbMessages();
+				task.execute();
+			}
 
+			Log.d("AccessToken", session.getAccessToken().toString());
 		} else {
-			Log.d("session", "not null");
 			FetchFbMessages task = new FetchFbMessages();
 			task.execute();
 		}
+
 	}
 	@Override
 	public void onResume() {
 		super.onResume();
-		Session.getActiveSession().addCallback(statusCallback);
-		Log.d("OnResume", "OnResume");
 	}
 
 	@Override
@@ -99,7 +98,6 @@ public class FacebookLinkGrabberService extends Activity {
 	@Override
 	public void onStop() {
 		super.onStop();
-		Session.getActiveSession().removeCallback(statusCallback);
 	}
 
 	@Override
@@ -107,6 +105,9 @@ public class FacebookLinkGrabberService extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode,
 				resultCode, data);
+		Log.d("OnActivityResult", "Log");
+		FetchFbMessages task = new FetchFbMessages();
+		task.execute();
 	}
 
 	@Override
@@ -114,51 +115,6 @@ public class FacebookLinkGrabberService extends Activity {
 		super.onSaveInstanceState(outState);
 		Session session = Session.getActiveSession();
 		Session.saveSession(session, outState);
-	}
-
-	/**
-	 * Custom implementation of openActiveSession to ask for Read Permissions
-	 * programatically. Skips the usage of Facebook Login button.
-	 *
-	 * @param activity
-	 * @param allowLoginUI
-	 * @param callback
-	 * @param permissions
-	 * @return null
-	 */
-	private static Session openActiveSession(Activity activity,
-			boolean allowLoginUI, StatusCallback callback,
-			List<String> permissions) {
-		OpenRequest openRequest = new OpenRequest(activity).setPermissions(
-				permissions).setCallback(callback);
-		Session session = new Builder(activity).build();
-		if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState())
-				|| allowLoginUI) {
-			Session.setActiveSession(session);
-			session.openForRead(openRequest);
-			return session;
-		}
-		return null;
-	}
-
-	/**
-	 * Callback method. Executed on any change in session.
-	 */
-	private class SessionStatusCallback implements Session.StatusCallback {
-		@Override
-		public void call(Session session, SessionState state,
-				Exception exception) {
-
-			if (session.getAccessToken() != null) {
-
-				// Since fetching of data from Facebook server and parsing it to
-				// find Privly links is a high latency procedure, we use an
-				// AsyncTask.
-				FetchFbMessages task = new FetchFbMessages();
-				task.execute();
-
-			}
-		}
 	}
 
 	/**
@@ -211,11 +167,11 @@ public class FacebookLinkGrabberService extends Activity {
 		protected void onPostExecute(String result) {
 			// Parse JSON to search for Privly links and then insert into Db if
 			// new links found
-			int numOfLinksAdded = 0;
 			try {
 				JSONArray fbDataArray = null;
 				JSONObject fbInbox = null;
 				fbInbox = new JSONObject(fbResponse);
+				Log.d("fbResponse", fbResponse);
 				if (fbInbox.has("data")) {
 					fbDataArray = fbInbox.getJSONArray("data");
 					for (int i = 0; i < fbDataArray.length(); i++) {
@@ -262,7 +218,6 @@ public class FacebookLinkGrabberService extends Activity {
 																		url,
 																		messageId,
 																		userName);
-														numOfLinksAdded++;
 													}
 
 												}
@@ -279,11 +234,6 @@ public class FacebookLinkGrabberService extends Activity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Toast.makeText(
-					getApplicationContext(),
-					String.valueOf(numOfLinksAdded)
-							+ " new Privly links fetched from your Facebook inbox",
-					Toast.LENGTH_LONG).show();
 			dialog.dismiss();
 			Bundle bundle = new Bundle();
 			bundle.putString("contentSource", "FACEBOOK");
