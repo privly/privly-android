@@ -97,37 +97,42 @@ public class ShowContent extends Activity {
 
 		// Check if database exists, If not, redirect to Home Screen. Else, load
 		// links from Db.
-		// if (!database.exists()) {
-		// Toast.makeText(getApplicationContext(),
-		// "No Privly Links found for" + contentSource,
-		// Toast.LENGTH_LONG).show();
-		// Intent goToHome = new Intent(this, Home.class);
-		// startActivity(goToHome);
-		// finish();
-		//
-		// } else {
-		cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME + " WHERE "
-				+ LinksDb.COLUMN_NAME_SOURCE + "= '" + contentSource + "'",
-				null);
-
-		int numRows = cursor.getCount();
-		if (numRows > 0) {
-			cursor.moveToFirst();
-			loadUrlInWebview();
-		} else {
+		if (!database.exists()) {
 			Toast.makeText(getApplicationContext(),
-					"No Privly Links found for " + contentSource,
+					"No Privly Links found for" + contentSource,
 					Toast.LENGTH_LONG).show();
 			Intent goToHome = new Intent(this, Home.class);
-			// Send an isRedirected Flag. The Home Activity checks for the flag
-			// and does not re authenticate the user.
 			Bundle bundle_2 = new Bundle();
 			bundle_2.putBoolean("isRedirected", true);
 			goToHome.putExtras(bundle_2);
 			startActivity(goToHome);
 			finish();
-		}
 
+		} else {
+			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
+					+ " WHERE " + LinksDb.COLUMN_NAME_SOURCE + "= '"
+					+ contentSource + "'", null);
+
+			int numRows = cursor.getCount();
+			if (numRows > 0) {
+				cursor.moveToFirst();
+				loadUrlInWebview();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"No Privly Links found for " + contentSource,
+						Toast.LENGTH_LONG).show();
+				Intent goToHome = new Intent(this, Home.class);
+				// Send an isRedirected Flag. The Home Activity checks for the
+				// flag
+				// and does not re authenticate the user.
+				Bundle bundle_2 = new Bundle();
+				bundle_2.putBoolean("isRedirected", true);
+				goToHome.putExtras(bundle_2);
+				startActivity(goToHome);
+				finish();
+			}
+
+		}
 	}
 
 	/**
