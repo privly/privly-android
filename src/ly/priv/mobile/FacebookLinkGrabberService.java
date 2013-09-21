@@ -73,12 +73,15 @@ public class FacebookLinkGrabberService extends Activity {
 				session.openForRead(new OpenRequest(this).setPermissions(
 						permissions).setLoginBehavior(
 						SessionLoginBehavior.SSO_WITH_FALLBACK));
+				if (session.isOpened()) {
+					FetchFbMessages task = new FetchFbMessages();
+					task.execute();
+				}
 			} else {
 				FetchFbMessages task = new FetchFbMessages();
 				task.execute();
 			}
 
-			Log.d("AccessToken", session.getAccessToken().toString());
 		} else {
 			FetchFbMessages task = new FetchFbMessages();
 			task.execute();

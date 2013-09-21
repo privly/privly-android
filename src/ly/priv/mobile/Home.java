@@ -58,16 +58,21 @@ public class Home extends Activity {
 		createHeadingEditText.setTypeface(lobster);
 		readHeadingEditText.setTypeface(lobster);
 
-		Values values = new Values(getApplicationContext());
-		// Checks if the User has already been verified at the Login Screen. If
-		// yes, prevents double authentication. If not, creates and executes a
-		// VerifyAuthToken task.
-		if (!values.isUserVerifiedAtLogin()) {
-			VerifyAuthToken task = new VerifyAuthToken();
-			task.execute(values.getContentServerDomain()
-					+ "/token_authentications.json");
-		} else
-			values.setUserVerifiedAtLogin(false);
+		try {
+			Bundle bundle = getIntent().getExtras();
+			bundle.getBoolean("isRedirected");
+		} catch (NullPointerException e) {
+			Values values = new Values(getApplicationContext());
+			// Checks if the User has already been verified at the Login Screen.
+			// If yes, prevents re authentication. If not, creates and executes
+			// a VerifyAuthToken task.
+			if (!values.isUserVerifiedAtLogin()) {
+				VerifyAuthToken task = new VerifyAuthToken();
+				task.execute(values.getContentServerDomain()
+						+ "/token_authentications.json");
+			} else
+				values.setUserVerifiedAtLogin(false);
+		}
 
 		// Create two ListViews which display create/read options.
 		final String[] arrCreate = {"PlainPost", "ZeroBin"};

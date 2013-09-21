@@ -45,7 +45,7 @@ public class Utilities {
 	/**
 	 * Show Toast on screen.
 	 *
-	 * @param {Context} context Context of the class which calls this method.
+	 * @param {Context} context Context of the calling class.
 	 * @param {String} textToToast
 	 * @param {String} longToast
 	 */
@@ -132,10 +132,10 @@ public class Utilities {
 	/**
 	 * Checks if a link from a source already exists in the database.
 	 *
-	 * @param context
-	 * @param id
-	 * @param sourceOfLink
-	 * @return exists
+	 * @param {Context} context of calling Activity
+	 * @param {String} sourceOfLink Source of the link. Example : FACEBOOK,
+	 *        TWITTER
+	 * @return {Boolean} exists
 	 */
 	public static Boolean ifLinkExistsInDb(Context context, String url,
 			String sourceOfLink) {

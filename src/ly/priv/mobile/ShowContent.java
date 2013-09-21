@@ -119,13 +119,16 @@ public class ShowContent extends Activity {
 					"No Privly Links found for " + contentSource,
 					Toast.LENGTH_LONG).show();
 			Intent goToHome = new Intent(this, Home.class);
+			// Send an isRedirected Flag. The Home Activity checks for the flag
+			// and does not re authenticate the user.
+			Bundle bundle_2 = new Bundle();
+			bundle_2.putBoolean("isRedirected", true);
+			goToHome.putExtras(bundle_2);
 			startActivity(goToHome);
 			finish();
 		}
 
 	}
-
-	// }
 
 	/**
 	 * Swipe gesture listener.
