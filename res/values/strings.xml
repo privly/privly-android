@@ -13,8 +13,14 @@
     <string name="shareButtonLabel">Share Url</string>
     <string name="headerDescription">Privly</string>
     <string name="settingsMenuLabel">Change Content Server</string>
-    <string name="logoutMenuLabel">Logout</string>
+    <string name="logoutMenuLabel">Logout From Application</string>
     <string name="baseUrlHeading">Content Server Location</string>
     <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
+    <string name="defaultContentServer">https://privlyalpha.org</string>
     <string name="saveButtonLabel">Save</string>
+    <string name="loginUnsure">This is the web address of the server where your Privly data is stored. If you\'re unsure of what this means, please leave the default setting.</string>
+    <string name="app_id">157708894428970</string>
+    <string name="logoutTwitter"> Logout From Twitter</string>
+    <string name="logoutFacebook"> Logout From Facebook</string>
+
 </resources>

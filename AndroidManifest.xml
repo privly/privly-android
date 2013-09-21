@@ -4,17 +4,21 @@
     android:versionCode="1"
     android:versionName="0.0.0.1" >
 
-    <uses-sdk android:minSdkVersion="11" />
+    <uses-sdk android:minSdkVersion="10" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
 
     <application
+        android:allowBackup="false"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/customPrivlyTheme" >
         <activity
             android:name=".PrivlyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +26,59 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Login" >
+        <activity
+            android:name=".Login"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
-        <activity android:name=".Settings" >
+        <activity
+            android:name=".Settings"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
-        <activity android:name=".Home" >
+        <activity
+            android:name=".Home"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
-        <activity android:name=".NewPost" >
+        <activity
+            android:name=".NewPost"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
-        <activity android:name=".Share" >
+        <activity
+            android:name=".Share"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
+        <activity
+            android:name=".ShowContent"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        <activity android:name=".LinkGrabber" >
+        </activity>
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".FacebookLinkGrabberService"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+        <activity
+            android:name=".TwitterLinkGrabberService"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="privlyT4JCallback"
+                    android:scheme="x-oauthflow-twitter" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
     </application>
 
 </manifest>

@@ -2,31 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal" >
-    
-    <ImageView 
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/privlyheader"
-        android:contentDescription="@string/headerDescription"/>
-    
-    <TextView 
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
+        android:contentDescription="@string/headerDescription"
+        android:src="@drawable/privlyheader" />
+
+    <TextView
+        android:id="@+id/newUrlHeader"
         android:layout_width="match_parent"
-        android:text="@string/newUrlLabel"/>
-    <WebView 
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5sp"
+        android:text="@string/newUrlLabel"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <WebView
         android:id="@+id/urlWebview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20sp"
         android:layout_marginBottom="20sp"
         android:layout_marginLeft="5sp"
-        android:layout_marginRight="5sp"/>
-    
+        android:layout_marginRight="5sp"
+        android:layout_marginTop="20sp" />
+
     <Button
         android:id="@+id/shareButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/shareButtonLabel"/>
+        android:text="@string/shareButtonLabel" />
+
 </LinearLayout>
