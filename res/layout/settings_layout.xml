@@ -8,6 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10sp"
         android:contentDescription="@string/headerDescription"
         android:src="@drawable/privlyheader" />
 
@@ -20,11 +21,21 @@
             android:id="@+id/enterBaseUrlHeading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
             android:text="@string/baseUrlHeading"
-            android:layout_marginLeft="5sp" 
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/loginUnsure"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5sp"
+            android:layout_marginTop="5sp"
+            android:text="@string/loginUnsure"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <EditText
+            android:text="@string/defaultContentServer"
             android:id="@+id/baseUrlEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
