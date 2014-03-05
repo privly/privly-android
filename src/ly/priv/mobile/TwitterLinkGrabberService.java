@@ -58,8 +58,8 @@ public class TwitterLinkGrabberService extends Activity {
 
 	// Create a new App on https://dev.twitter.com/apps/new for the following
 	// credentials
-	public final static String consumerKey = "Place Consumer Key Here";
-	public final static String consumerSecret = "Place Consumer Secret Here";
+	public final static String consumerKey = "9C0j9rlHFXvnNVeoNnbA";
+	public final static String consumerSecret = "mHw3TWz63Eemq9Jk8SoIBLeYyGWGWmsgHs7KIkA";
 
 	private static final String SOURCE_TWITTER = "TWITTER";
 
