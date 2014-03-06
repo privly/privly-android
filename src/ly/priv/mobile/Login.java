@@ -56,7 +56,7 @@ public class Login extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-
+		Utilities.setHederFont(this);
 		// Shared Preference File for storing the domain name, if not
 		// https://privlyalpha.org by
 		// default.

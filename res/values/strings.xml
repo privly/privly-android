@@ -22,5 +22,6 @@
     <string name="app_id">157708894428970</string>
     <string name="logoutTwitter"> Logout From Twitter</string>
     <string name="logoutFacebook"> Logout From Facebook</string>
+    <string name="hederText">&#160;&#160;privlyalpha.org&#160;&#160;</string>
 
 </resources>

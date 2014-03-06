@@ -26,7 +26,7 @@ public class Share extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share);
-
+		Utilities.setHederFont(this);
 		TextView newUrlHeader = (TextView) findViewById(R.id.newUrlHeader);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");

@@ -51,12 +51,13 @@ public class Home extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+		Utilities.setHederFont(this);
 		TextView createHeadingEditText = (TextView) findViewById(R.id.createNewHeadingTextView);
 		TextView readHeadingEditText = (TextView) findViewById(R.id.readPostsHeadingTextView);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");
 		createHeadingEditText.setTypeface(lobster);
-		readHeadingEditText.setTypeface(lobster);
+		readHeadingEditText.setTypeface(lobster); 
 
 		try {
 			Bundle bundle = getIntent().getExtras();

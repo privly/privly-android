@@ -35,7 +35,7 @@ public class Settings extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.settings_layout);
-
+		Utilities.setHederFont(this);
 		TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");

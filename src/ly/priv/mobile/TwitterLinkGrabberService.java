@@ -83,7 +83,8 @@ public class TwitterLinkGrabberService extends Activity {
 		context = getApplicationContext();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
-
+		Utilities.setHederFont(this);
+		
 		// Checks if the user has already authenticated with the application. If
 		// not, start authentication process, else fetch Twitter Token from
 		// TwitterHelperMethods
