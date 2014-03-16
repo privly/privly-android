@@ -22,5 +22,7 @@
     <string name="app_id">157708894428970</string>
     <string name="logoutTwitter"> Logout From Twitter</string>
     <string name="logoutFacebook"> Logout From Facebook</string>
+    <string name="privly_home">Privly Home</string>
+    <string name="set_content_server">Content Server Location</string>
 
 </resources>

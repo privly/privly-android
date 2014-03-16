@@ -1,5 +1,11 @@
 package ly.priv.mobile;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,15 +18,11 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -29,11 +31,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.app.SherlockActivity;
 
 /**
  * Displays the Home Activity for a user after authentication. Gives the user
@@ -42,7 +44,7 @@ import javax.net.ssl.HttpsURLConnection;
  *
  * @author Shivam Verma
  */
-public class Home extends Activity {
+public class Home extends SherlockActivity {
 
 	ListView readListView, createListView;
 	String loginResponse;
@@ -51,6 +53,9 @@ public class Home extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setTitle(R.string.privly_home);
+		
 		TextView createHeadingEditText = (TextView) findViewById(R.id.createNewHeadingTextView);
 		TextView readHeadingEditText = (TextView) findViewById(R.id.readPostsHeadingTextView);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
@@ -148,7 +153,7 @@ public class Home extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.layout.menu_layout_home, menu);
 		return true;
 	}

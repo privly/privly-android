@@ -23,9 +23,6 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,13 +34,19 @@ import java.util.ArrayList;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 /**
  * Displays the login screen. Allows the user to authenticate to a Privly Web
  * Server by fetching the auth_token.
  *
  * @author Shivam Verma
  */
-public class Login extends Activity {
+public class Login extends SherlockActivity {
 	/** Called when the activity is first created. */
 	String userName, password, loginResponse, contentServerDomain;
 	Button loginButton;
@@ -56,7 +59,7 @@ public class Login extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-
+		getSupportActionBar().hide();
 		// Shared Preference File for storing the domain name, if not
 		// https://privlyalpha.org by
 		// default.
@@ -156,7 +159,7 @@ public class Login extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.layout.menu_layout_login, menu);
 		return true;
 	}
