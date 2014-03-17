@@ -16,6 +16,8 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/headerDescription"
             android:src="@drawable/privlyheader" />
+            
+        </LinearLayout>
 
     <TextView
         android:id="@+id/loginHeader"
