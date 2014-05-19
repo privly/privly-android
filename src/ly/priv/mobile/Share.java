@@ -1,13 +1,17 @@
 package ly.priv.mobile;
 
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,25 +22,28 @@ import android.widget.TextView;
  *
  * @author Shivam Verma
  */
-public class Share extends Activity {
+public class Share extends SherlockFragment {
 	/** Called when the activity is first created. */
 	String newPrivlyUrl;
 
+	public Share(){
+		
+	}
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.share);
-
-		TextView newUrlHeader = (TextView) findViewById(R.id.newUrlHeader);
-		Typeface lobster = Typeface.createFromAsset(getAssets(),
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.share, container, false);
+		setHasOptionsMenu(true);
+		TextView newUrlHeader = (TextView) view.findViewById(R.id.newUrlHeader);
+		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Lobster.ttf");
 		newUrlHeader.setTypeface(lobster);
-
+		
 		// Receive new Privly URL from intent
 
-		Bundle bundle = getIntent().getExtras();
+		Bundle bundle = getArguments();
 		newPrivlyUrl = bundle.getString("newPrivlyUrl");
-		WebView urlWebview = (WebView) findViewById(R.id.urlWebview);
+		WebView urlWebview = (WebView) view.findViewById(R.id.urlWebview);
 		/**
 		 * Load HTML content of the form <a href="http://priv.ly#params">
 		 * http://priv.ly#params </a> in the WebView
@@ -47,7 +54,7 @@ public class Share extends Activity {
 		/**
 		 * Show sharing intent on Share button Click
 		 */
-		Button shareButton = (Button) findViewById(R.id.shareButton);
+		Button shareButton = (Button) view.findViewById(R.id.shareButton);
 		shareButton.setOnClickListener(new View.OnClickListener() {
 
 			// Shows all sharing options with the following intent.
@@ -65,14 +72,13 @@ public class Share extends Activity {
 				}
 			}
 		});
+		return view;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
+	public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+		super.onCreateOptionsMenu(menu, menuInflater);
 		menuInflater.inflate(R.layout.menu_layout_settings, menu);
-		return true;
 	}
 
 	@Override
@@ -80,10 +86,10 @@ public class Share extends Activity {
 
 		switch (item.getItemId()) {
 			case R.id.logout :
-				Values values = new Values(getApplicationContext());
+				Values values = new Values(getActivity());
 				values.setAuthToken(null);
 				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(this, Login.class);
+				Intent gotoLogin = new Intent(getActivity(), Login.class);
 				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(gotoLogin);

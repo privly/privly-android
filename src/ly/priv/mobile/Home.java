@@ -23,7 +23,12 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -32,10 +37,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.app.SherlockActivity;
 
 /**
  * Displays the Home Activity for a user after authentication. Gives the user
@@ -44,30 +49,34 @@ import com.actionbarsherlock.app.SherlockActivity;
  *
  * @author Shivam Verma
  */
-public class Home extends SherlockActivity {
+public class Home extends SherlockFragment {
 
 	ListView readListView, createListView;
 	String loginResponse;
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home);
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setTitle(R.string.privly_home);
+	public Home(){
 		
-		TextView createHeadingEditText = (TextView) findViewById(R.id.createNewHeadingTextView);
-		TextView readHeadingEditText = (TextView) findViewById(R.id.readPostsHeadingTextView);
-		Typeface lobster = Typeface.createFromAsset(getAssets(),
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		setHasOptionsMenu(true);
+		View view = inflater.inflate(R.layout.home, container, false);
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.privly_home);
+		container.removeAllViews();
+		TextView createHeadingEditText = (TextView) view.findViewById(R.id.createNewHeadingTextView);
+		TextView readHeadingEditText = (TextView) view.findViewById(R.id.readPostsHeadingTextView);
+		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Lobster.ttf");
 		createHeadingEditText.setTypeface(lobster);
 		readHeadingEditText.setTypeface(lobster);
 
 		try {
-			Bundle bundle = getIntent().getExtras();
-			bundle.getBoolean("isRedirected");
+			Boolean isRedirected = getArguments().getBoolean("isRedirected");
 		} catch (NullPointerException e) {
-			Values values = new Values(getApplicationContext());
+			Values values = new Values(getActivity());
 			// Checks if the User has already been verified at the Login Screen.
 			// If yes, prevents re authentication. If not, creates and executes
 			// a VerifyAuthToken task.
@@ -87,12 +96,12 @@ public class Home extends SherlockActivity {
 		ArrayList<String> readArrayList = new ArrayList<String>(
 				Arrays.asList(arrRead));
 
-		createListView = (ListView) findViewById(R.id.create_listView);
-		readListView = (ListView) findViewById(R.id.read_listView);
+		createListView = (ListView) view.findViewById(R.id.create_listView);
+		readListView = (ListView) view.findViewById(R.id.read_listView);
 
 		ArrayAdapter<String> createArrayAdapter = new ArrayAdapter<String>(
-				this, R.layout.list_item, createArrayList);
-		ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(this,
+				getActivity(), R.layout.list_item, createArrayList);
+		ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(getActivity(),
 				R.layout.list_item, readArrayList);
 
 		createListView.setAdapter(createArrayAdapter);
@@ -107,14 +116,17 @@ public class Home extends SherlockActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 				if (Utilities
-						.isDataConnectionAvailable(getApplicationContext())) {
-					Intent gotoCreateNewPost = new Intent(
-							getApplicationContext(), NewPost.class);
-					gotoCreateNewPost
-							.putExtra("JsAppName", arrCreate[position]);
-					startActivity(gotoCreateNewPost);
+						.isDataConnectionAvailable(getActivity())) {
+					Fragment gotoCreateNewPost = new NewPost();
+					Bundle bundle = new Bundle();
+					bundle.putString("JsAppName", arrCreate[position]);
+					gotoCreateNewPost.setArguments(bundle);
+					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					transaction.replace(R.id.container, gotoCreateNewPost);
+					transaction.addToBackStack("home");
+					transaction.commit();
 				} else
-					Utilities.showToast(getApplicationContext(),
+					Utilities.showToast(getActivity(),
 							"Oops! Seems like there\'s no data connection.",
 							true);
 			}
@@ -130,32 +142,35 @@ public class Home extends SherlockActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 				if (position == 0) {
-					Toast.makeText(getApplicationContext(),
+					Toast.makeText(getActivity(),
 							"Sorry, Gmail hasn't been integrated yet.",
 							Toast.LENGTH_LONG).show();
 				} else if (position == 1) {
-					Intent facebookLinkGrabberIntent = new Intent(Home.this,
-							FacebookLinkGrabberService.class);
-					startActivity(facebookLinkGrabberIntent);
+					FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
+					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					transaction.replace(R.id.container, fbGrabber);
+					transaction.disallowAddToBackStack();
+					transaction.commit();
 				} else if (position == 2) {
-					Intent twitterLinkGrabberIntent = new Intent(Home.this,
-							TwitterLinkGrabberService.class);
-					startActivity(twitterLinkGrabberIntent);
+					TwitterLinkGrabberService twitGrabber = new TwitterLinkGrabberService();
+					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					transaction.replace(R.id.container, twitGrabber, "Twitter");
+					transaction.disallowAddToBackStack();
+					transaction.commit();
 				}
 
 			}
 		});
-
+		Log.d("fragments", "Home");
+		return view;
 	}
 	/**
 	 * Inflate options menu with the layout
 	 */
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getSupportMenuInflater();
-		menuInflater.inflate(R.layout.menu_layout_home, menu);
-		return true;
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.layout.menu_layout_home, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	/**
@@ -170,16 +185,16 @@ public class Home extends SherlockActivity {
 
 		switch (item.getItemId()) {
 			case R.id.settings :
-				Intent gotoSettings = new Intent(this, Settings.class);
+				Intent gotoSettings = new Intent(getActivity(), Settings.class);
 				startActivity(gotoSettings);
 				return true;
 
 			case R.id.logout :
 				// Logs out User from Privly Application
-				Values values = new Values(getApplicationContext());
+				Values values = new Values(getActivity());
 				values.setAuthToken(null);
 				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(this, Login.class);
+				Intent gotoLogin = new Intent(getActivity(), Login.class);
 				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(gotoLogin);
@@ -199,7 +214,7 @@ public class Home extends SherlockActivity {
 	 */
 	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
 
-		volatile ProgressDialog dialog = new ProgressDialog(Home.this);
+		volatile ProgressDialog dialog = new ProgressDialog(getActivity());
 
 		@Override
 		protected void onPreExecute() {
@@ -212,7 +227,7 @@ public class Home extends SherlockActivity {
 		protected String doInBackground(String... urls) {
 
 			String authenticatedUrl = Utilities.getGetRequestUrl(urls[0],
-					getApplicationContext());
+					getActivity());
 			try {
 				// Setting Up for a secure connection
 				HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
@@ -247,22 +262,22 @@ public class Home extends SherlockActivity {
 				JSONObject jObject = new JSONObject(loginResponse);
 				if (!jObject.has("error") && jObject.has("auth_key")) {
 					String authToken = jObject.getString("auth_key");
-					Values values = new Values(getApplicationContext());
+					Values values = new Values(getActivity());
 					values.setAuthToken(authToken);
 					values.setUserVerifiedAtLogin(false);
-					Utilities.showToast(getApplicationContext(),
+					Utilities.showToast(getActivity(),
 							"Good to go! Select an option.", false);
 				} else {
-					Values values = new Values(getApplicationContext());
+					Values values = new Values(getActivity());
 					values.setAuthToken(null);
-					Intent gotoLogin = new Intent(getApplicationContext(),
+					Intent gotoLogin = new Intent(getActivity(),
 							Login.class);
 					// Clear history stack. User should not be able to access
 					// any activity since his session has expired.
 					gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					startActivity(gotoLogin);
-					Utilities.showToast(getApplicationContext(),
+					Utilities.showToast(getActivity(),
 							"Your session has expired. Please login again.",
 							true);
 				}
