@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5.0dip" >
+
+    <ImageView
+        android:id="@+id/ivAvaFriend"
+        android:layout_width="50.0dip"
+        android:layout_height="50.0dip"
+        android:layout_marginRight="5.0dip"
+        android:contentDescription="@null"
+        android:src="@drawable/ava" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivAvaFriend"
+        android:layout_toLeftOf="@+id/tvTime"
+        android:layout_toRightOf="@id/ivAvaFriend"
+        android:maxLines="1"
+        android:textSize="15.0sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tvUserName"
+        android:layout_alignBottom="@id/tvUserName"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="15.0dip"
+        android:textColor="@color/blue" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ivAvaFriend"
+        android:layout_alignLeft="@id/tvUserName"
+        android:layout_below="@id/tvUserName"
+        android:layout_marginTop="3.0dip"
+        android:layout_toLeftOf="@id/tvTime"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/gray" />
+
+</RelativeLayout>

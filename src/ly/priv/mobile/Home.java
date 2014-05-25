@@ -6,6 +6,8 @@ import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import ly.priv.mobile.gui.socialnetworks.SListUsersActivity;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -39,8 +41,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays the Home Activity for a user after authentication. Gives the user
@@ -146,9 +148,11 @@ public class Home extends SherlockFragment {
 							"Sorry, Gmail hasn't been integrated yet.",
 							Toast.LENGTH_LONG).show();
 				} else if (position == 1) {
-					FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
+					//FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
+					SListUsersActivity sListUsersActivity =new SListUsersActivity();
 					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-					transaction.replace(R.id.container, fbGrabber);
+					//transaction.replace(R.id.container, fbGrabber);
+					transaction.replace(R.id.container, sListUsersActivity);
 					transaction.disallowAddToBackStack();
 					transaction.commit();
 				} else if (position == 2) {

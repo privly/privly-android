@@ -1,15 +1,5 @@
 package ly.priv.mobile;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +9,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Contains simple functions that should be used wherever possible.

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5.0dip" >
+
+    <ImageView
+        android:id="@+id/ivAvaFriendFrom"
+        android:layout_width="50.0dip"
+        android:layout_height="50.0dip"
+        android:layout_marginRight="5.0dip"
+        android:contentDescription="@null"
+        android:src="@drawable/ava" />
+
+    <TextView
+        android:id="@+id/tvTimeFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5.0dip"
+        android:text="text"
+        android:textColor="@color/blue" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/ivAvaFriendFrom"
+        android:layout_toLeftOf="@id/tvTimeFrom"
+        android:layout_toRightOf="@id/ivAvaFriendFrom"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvMessageFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/orca_convo_bubble_normal_classic"
+            android:text="eeeee" />
+    </LinearLayout>
+
+</RelativeLayout>

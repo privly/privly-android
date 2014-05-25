@@ -1,9 +1,7 @@
 package ly.priv.mobile;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.facebook.Session;
-import com.facebook.Session.OpenRequest;
-import com.facebook.SessionLoginBehavior;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,7 +12,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +24,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.facebook.Session;
+import com.facebook.Session.OpenRequest;
+import com.facebook.SessionLoginBehavior;
 
 /**
  * Authenticates user with Facebook and grabs Privly links from message inbox.

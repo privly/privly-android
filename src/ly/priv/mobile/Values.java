@@ -1,11 +1,11 @@
 package ly.priv.mobile;
 
+import java.util.HashMap;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.ViewConfiguration;
-
-import java.util.HashMap;
 
 /**
  * Used to set/get values that should be accessible to all

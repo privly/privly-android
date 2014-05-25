@@ -1,11 +1,10 @@
 package ly.priv.mobile;
 
+import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
 /**
  * Helper class for managing the database.
