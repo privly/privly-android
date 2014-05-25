@@ -6,8 +6,8 @@ import ly.priv.mobile.R;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +51,17 @@ public class SListUsersActivity extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-//				Intent localIntent = new Intent(getActivity().getApplicationContext(),
-//						SListUserMessagesActivity.class);
-//				localIntent.putExtra("UserMessages", mListUserMess
-//						.get(position).getListUserMess());
-//				startActivity(localIntent);
+				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();		
+				SListUserMessagesActivity sListUserMessagesActivity =new SListUserMessagesActivity();
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("UserMessages", mListUserMess
+						.get(position).getListUserMess());
+				sListUserMessagesActivity.setArguments(bundle);
+				transaction.replace(R.id.container, sListUserMessagesActivity);
+				transaction.disallowAddToBackStack();
+				transaction.commit();
+			
+				
 
 			}
 		});

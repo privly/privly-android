@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry excluding="ly/priv/mobile/gui/socialnetworks/SListUserMessagesActivity.java|ly/priv/mobile/gui/socialnetworks/ListUserMessagesAdapter.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/signpost-commonshttp4-1.2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs/signpost-core-1.2.1.2.jar"/>
-	<classpathentry kind="lib" path="libs/twitter4j-core-3.0.3.jar"/>
-	<classpathentry kind="lib" path="/FacebookSDK/libs/android-support-v4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/signpost-commonshttp4-1.2.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/signpost-core-1.2.1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/twitter4j-core-3.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="/FacebookSDK/libs/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

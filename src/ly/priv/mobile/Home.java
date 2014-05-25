@@ -6,6 +6,7 @@ import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import ly.priv.mobile.gui.microblogs.MicroblogListPostsActivity;
 import ly.priv.mobile.gui.socialnetworks.SListUsersActivity;
 
 import org.apache.http.HttpEntity;
@@ -156,7 +157,8 @@ public class Home extends SherlockFragment {
 					transaction.disallowAddToBackStack();
 					transaction.commit();
 				} else if (position == 2) {
-					TwitterLinkGrabberService twitGrabber = new TwitterLinkGrabberService();
+				//	TwitterLinkGrabberService twitGrabber = new TwitterLinkGrabberService();
+					MicroblogListPostsActivity twitGrabber =new MicroblogListPostsActivity();
 					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
 					transaction.disallowAddToBackStack();

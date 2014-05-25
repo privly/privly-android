@@ -2,7 +2,7 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.util.ArrayList;
 
-import ua.cn.privly_gui.R;
+import ly.priv.mobile.R;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;

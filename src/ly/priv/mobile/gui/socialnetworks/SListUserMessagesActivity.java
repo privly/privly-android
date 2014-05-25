@@ -2,33 +2,36 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.util.ArrayList;
 
-import ua.cn.privly_gui.R;
+import ly.priv.mobile.R;
+
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
-public class SListUserMessagesActivity extends ActionBarActivity {
+public class SListUserMessagesActivity extends SherlockFragment {
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
 	private ListView mListViewUserMessages;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void onCreate(Bundle paramBundle) {
-		super.onCreate(paramBundle);
-		setContentView(R.layout.activity_list);
-		this.mListViewUserMessages = ((ListView) findViewById(R.id.lView));
-		try {
 
-			mListUserMess = ((ArrayList) getIntent().getExtras()
-					.getSerializable("UserMessages"));
-			if (this.mListUserMess != null) {
-				this.mListUserMessagesAdapter = new ListUserMessagesAdapter(
-						this, this.mListUserMess);
-				this.mListViewUserMessages
-						.setAdapter(this.mListUserMessagesAdapter);
-			}
-		} catch (NullPointerException localNullPointerException) {
-			System.out.println("NullPointerException");
+	@SuppressWarnings("unchecked")
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.activity_list, container, false);
+		this.mListViewUserMessages = ((ListView)view.findViewById(R.id.lView));
+		mListUserMess=(ArrayList<SMessage>)getArguments().getSerializable(
+		        "UserMessages");
+		System.out.println(mListUserMess.get(0).getMessage());
+		if (this.mListUserMess != null) {
+			this.mListUserMessagesAdapter = new ListUserMessagesAdapter(
+					getActivity(), this.mListUserMess);
+			this.mListViewUserMessages
+					.setAdapter(this.mListUserMessagesAdapter);
 		}
+		return view;
 	}
 }

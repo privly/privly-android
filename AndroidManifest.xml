@@ -56,6 +56,10 @@
             android:name="com.facebook.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
+             <activity android:label="@string/app_name" android:name="ua.cn.privly_gui.socialnetworks.SListUserMessagesActivity" />
+        <activity android:label="@string/app_name" android:name="ua.cn.privly_gui.socialnetworks.SListUsersActivity" />
+         <activity android:label="@string/app_name" android:name="ua.cn.privly_gui.microblogs.MicroblogListPostsActivity" />
+   
 <!--    <activity
             android:name="ly.priv.mobile.FacebookLinkGrabberService"
             android:configChanges="keyboardHidden|orientation|screenSize" >
