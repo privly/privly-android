@@ -75,23 +75,7 @@ public class FacebookLinkGrabberService extends SherlockFragment {
 
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.link_grabber_service, container, false);
-		// Add code to print out the key hash
-	    try {
-	        PackageInfo info = getActivity().getPackageManager().getPackageInfo(
-	                "com.facebook.samples.hellofacebook", 
-	                PackageManager.GET_SIGNATURES);
-	        for (Signature signature : info.signatures) {
-	            MessageDigest md = MessageDigest.getInstance("SHA");
-	            md.update(signature.toByteArray());
-	            Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-	            }
-	    } catch (NameNotFoundException e) {
-
-	    } catch (NoSuchAlgorithmException e) {
-
-	    }
-		
-		
+	
 		context = getActivity();
 		current = this;
 		Log.d("OnCreateView", "OnCreateView");

@@ -9,8 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -57,6 +60,21 @@ public class Utilities {
 			Toast.makeText(context, textToToast, Toast.LENGTH_SHORT).show();
 			return true;
 		}
+	}
+	
+	public static AlertDialog showDialog(final Activity activity,String mess){
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(R.string.dialog_info_title);
+		builder.setCancelable(true);
+		builder.setMessage(mess);
+		builder.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		return builder.create();
 	}
 
 	/**

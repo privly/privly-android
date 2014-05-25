@@ -2,10 +2,15 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import ly.priv.mobile.Login;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Settings;
+import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -16,12 +21,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 
@@ -30,6 +38,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private ArrayList<SUser> mListUserMess;
 	private ListUsersAdapter mListUserMessagesAdapter;
 	private ListView mListViewUsers;
+	private ProgressBar mProgressBar;
 	private Session mSession;
 
 	@Override
@@ -40,6 +49,7 @@ public class SListUsersActivity extends SherlockFragment {
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Facebook);
 		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
+		mProgressBar = (ProgressBar)view.findViewById(R.id.pbLoadingData);
 		mSession = Session.getActiveSession();
 		login();
 
@@ -133,17 +143,50 @@ public class SListUsersActivity extends SherlockFragment {
 				openRequest.setPermissions(permissions);
 				mSession.openForRead(openRequest);
 				if (mSession.isOpened()) {
-					// FetchFbMessages task = new FetchFbMessages();
-					// task.execute();
+					getInboxFromFaceBook();
 				}
 			} else {
-				// FetchFbMessages task = new FetchFbMessages();
-				// task.execute();
+				getInboxFromFaceBook();
 			}
 
 		} else {
-			// FetchFbMessages task = new FetchFbMessages();
-			// task.execute();
+			getInboxFromFaceBook();
 		}
+	}
+	/**
+	 * Get inbox from FaceBook
+	 */
+	
+	private void getInboxFromFaceBook() {
+		Log.d(TAG, "getInboxFromFaceBook");
+		mProgressBar.setVisibility(View.VISIBLE);
+		// Make an API call to get user data and define a
+		// new callback to handle the response.
+		Bundle params = new Bundle();
+		params.putString("fields", "id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
+		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
+				new Request.Callback() {			
+					@Override
+					public void onCompleted(Response response) {												
+						if (response.getError() != null) {							
+							mProgressBar.setVisibility(View.INVISIBLE);
+							AlertDialog dialog = Utilities.showDialog(getActivity(), getString(R.string.error_inbox));
+							dialog.show();
+							return;
+						}						
+						JSONArray friendsArray = null;		
+						try {
+							Log.d(TAG, response.toString());
+							friendsArray = response.getGraphObject()
+									.getInnerJSONObject().getJSONArray("data");
+
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mProgressBar.setVisibility(View.INVISIBLE);
+					}
+				});
+		request.setParameters(params);
+		request.executeAsync();
 	}
 }
