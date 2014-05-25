@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -29,6 +30,7 @@ import android.widget.Toast;
  */
 public class Utilities {
 
+	private static final String MY_PREFERENCES = "privly";
 	/**
 	 * Check validity of an EMail address using RegEx
 	 *
@@ -251,5 +253,19 @@ public class Utilities {
 		}
 		contentValues.clear();
 		db.close();
+	}
+	
+	public static void setFacebookID(Context context,String id) {
+		final SharedPreferences reader = context.getSharedPreferences(
+				MY_PREFERENCES, Context.MODE_PRIVATE);
+		final SharedPreferences.Editor editor = reader.edit();
+		editor.putString("FacebookID", id);
+		editor.commit();
+	}
+
+	public static String getFacebookID(Context context) {
+			final SharedPreferences reader = context.getSharedPreferences(
+				MY_PREFERENCES, Context.MODE_PRIVATE);
+		return reader.getString("FacebookID", "");		
 	}
 }

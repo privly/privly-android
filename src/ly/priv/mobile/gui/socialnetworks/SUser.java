@@ -5,27 +5,34 @@ import java.util.ArrayList;
 
 public class SUser implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String mLastUserMess;
-	private ArrayList<SMessage> mListUserMess;
-	private String mTime;
-	private String mUrlToAvatar;
 	private String mUserName;
+	private String mUrlToAvatar;
+	private String mTime;
+	private String mLastUserMess;
+	private String mDialogId;
 
 	public SUser() {
 		this.mUserName = "";
 		this.mLastUserMess = "";
 		this.mTime = "";
-		this.mListUserMess = null;
+
 	}
 
-	public SUser(String mUserName, String mLastUserMess, String mTime,
-			String mUrlToAvatar, ArrayList<SMessage> mListUserMess) {
+	/**
+	 * @param mUserName
+	 * @param mUrlToAvatar
+	 * @param mTime
+	 * @param mLastUserMess
+	 * @param mDialogId
+	 */
+	public SUser(String mUserName, String mUrlToAvatar, String mTime,
+			String mLastUserMess, String mDialogId) {
 		super();
-		this.mLastUserMess = mLastUserMess;
-		this.mListUserMess = mListUserMess;
-		this.mTime = mTime;
-		this.mUrlToAvatar = mUrlToAvatar;
 		this.mUserName = mUserName;
+		this.mUrlToAvatar = mUrlToAvatar;
+		this.mTime = mTime;
+		this.mLastUserMess = mLastUserMess;
+		this.mDialogId = mDialogId;
 	}
 
 	public String getLastUserMess() {
@@ -34,14 +41,6 @@ public class SUser implements Serializable {
 
 	public void setLastUserMess(String mLastUserMess) {
 		this.mLastUserMess = mLastUserMess;
-	}
-
-	public ArrayList<SMessage> getListUserMess() {
-		return mListUserMess;
-	}
-
-	public void setListUserMess(ArrayList<SMessage> mListUserMess) {
-		this.mListUserMess = mListUserMess;
 	}
 
 	public String getTime() {
@@ -67,5 +66,24 @@ public class SUser implements Serializable {
 	public void setUserName(String mUserName) {
 		this.mUserName = mUserName;
 	}
+
+	public String getDialogId() {
+		return mDialogId;
+	}
+
+	public void setDialogId(String mDialogId) {
+		this.mDialogId = mDialogId;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "SUser [mUserName=" + mUserName + ", mUrlToAvatar="
+				+ mUrlToAvatar + ", mTime=" + mTime + ", mLastUserMess="
+				+ mLastUserMess + ", mDialogId=" + mDialogId + "]";
+	}
+
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import ly.priv.mobile.Login;
 import ly.priv.mobile.R;
@@ -40,6 +41,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private ListView mListViewUsers;
 	private ProgressBar mProgressBar;
 	private Session mSession;
+	private String mFaceBookUserId;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,31 +51,31 @@ public class SListUsersActivity extends SherlockFragment {
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Facebook);
 		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
-		mProgressBar = (ProgressBar)view.findViewById(R.id.pbLoadingData);
+		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mSession = Session.getActiveSession();
+		mFaceBookUserId =Utilities.getFacebookID(getActivity());
+		mListUserMess =new ArrayList<SUser>();
 		login();
 
-		if (this.mListUserMess != null) {
-			this.mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
-					this.mListUserMess);
-			this.mListViewUsers.setAdapter(this.mListUserMessagesAdapter);
-		}
+	
 
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				FragmentTransaction transaction = getActivity()
-						.getSupportFragmentManager().beginTransaction();
-				SListUserMessagesActivity sListUserMessagesActivity = new SListUserMessagesActivity();
-				Bundle bundle = new Bundle();
-				bundle.putSerializable("UserMessages",
-						mListUserMess.get(position).getListUserMess());
-				sListUserMessagesActivity.setArguments(bundle);
-				transaction.replace(R.id.container, sListUserMessagesActivity);
-				transaction.disallowAddToBackStack();
-				transaction.commit();
+				// FragmentTransaction transaction = getActivity()
+				// .getSupportFragmentManager().beginTransaction();
+				// SListUserMessagesActivity sListUserMessagesActivity = new
+				// SListUserMessagesActivity();
+				// Bundle bundle = new Bundle();
+				// bundle.putSerializable("UserMessages",
+				// mListUserMess.get(position).getListUserMess());
+				// sListUserMessagesActivity.setArguments(bundle);
+				// transaction.replace(R.id.container,
+				// sListUserMessagesActivity);
+				// transaction.disallowAddToBackStack();
+				// transaction.commit();
 
 			}
 		});
@@ -86,6 +88,7 @@ public class SListUsersActivity extends SherlockFragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
 				resultCode, data);
+		
 	}
 
 	@Override
@@ -117,7 +120,7 @@ public class SListUsersActivity extends SherlockFragment {
 		switch (item.getItemId()) {
 		case R.id.logout:
 			mSession.closeAndClearTokenInformation();
-			mSession=null;
+			mSession = null;
 			login();
 			return true;
 		default:
@@ -141,7 +144,7 @@ public class SListUsersActivity extends SherlockFragment {
 				openRequest
 						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
 				openRequest.setPermissions(permissions);
-				mSession.openForRead(openRequest);
+				mSession.openForRead(openRequest);				
 				if (mSession.isOpened()) {
 					getInboxFromFaceBook();
 				}
@@ -153,17 +156,20 @@ public class SListUsersActivity extends SherlockFragment {
 			getInboxFromFaceBook();
 		}
 	}
+
 	/**
 	 * Get inbox from FaceBook
 	 */
-	
+
 	private void getInboxFromFaceBook() {
 		Log.d(TAG, "getInboxFromFaceBook");
+
 		mProgressBar.setVisibility(View.VISIBLE);
 		// Make an API call to get user data and define a
 		// new callback to handle the response.
 		Bundle params = new Bundle();
 		params.putString("fields", "id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
+		//params.putString("limit", "1");
 		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
 				new Request.Callback() {			
 					@Override
@@ -174,14 +180,40 @@ public class SListUsersActivity extends SherlockFragment {
 							dialog.show();
 							return;
 						}						
-						JSONArray friendsArray = null;		
-						try {
-							Log.d(TAG, response.toString());
-							friendsArray = response.getGraphObject()
-									.getInnerJSONObject().getJSONArray("data");
-
+						JSONArray listUsersWIthLastMessage = null;		
+						try {							
+							listUsersWIthLastMessage = response.getGraphObject()
+									.getInnerJSONObject().getJSONArray("data");							
+							
+							for (int i = 0; i < listUsersWIthLastMessage.length(); i++) {
+								SUser sUser =new SUser();
+								JSONObject dialog = listUsersWIthLastMessage.getJSONObject(i);
+								sUser.setDialogId(dialog.getString("id"));
+								sUser.setTime(dialog.getString("updated_time"));								
+								JSONArray to =dialog.getJSONObject("to").getJSONArray("data");
+								for (int j = 0; j < to.length(); j++) {
+									JSONObject oTo=to.getJSONObject(j);
+									String id =oTo.getString("id");									
+									if (!id.equals(mFaceBookUserId)){									
+										sUser.setUserName(oTo.getString("name"));
+										JSONObject pric =oTo.getJSONObject("picture").getJSONObject("data");
+										sUser.setUrlToAvatar(pric.getString("url"));
+										break;
+									}
+									
+								}
+								JSONObject comment =dialog.getJSONObject("comments").getJSONArray("data").getJSONObject(0);
+								sUser.setLastUserMess(comment.getString("message"));
+								mListUserMess.add(sUser);	
+								Log.d(TAG, sUser.toString());
+							}
 						} catch (JSONException e) {
 							e.printStackTrace();
+						}
+						if (mListUserMess != null) {
+							mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
+									mListUserMess);
+							mListViewUsers.setAdapter(mListUserMessagesAdapter);
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 					}
