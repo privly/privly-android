@@ -52,6 +52,8 @@ import com.actionbarsherlock.app.SherlockFragment;
  * not, Redirect user to authentication link</li>
  * <li>Setup the Twitter Object using Access Token and Consumer Data : Consumer
  * Key and Consumer Secret</li>
+ * <li>Get the login data from the intent received from MainActivity through 
+ * the NewIntentListener interface</li> 
  * </ul>
  * </p>
  *
