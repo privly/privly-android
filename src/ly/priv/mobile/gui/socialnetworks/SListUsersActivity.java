@@ -33,6 +33,9 @@ import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
 
 public class SListUsersActivity extends SherlockFragment {
 	private static final String TAG = "SListUsersActivity";
@@ -40,9 +43,9 @@ public class SListUsersActivity extends SherlockFragment {
 	private ListUsersAdapter mListUserMessagesAdapter;
 	private ListView mListViewUsers;
 	private ProgressBar mProgressBar;
-	private Session mSession;
 	private String mFaceBookUserId;
-
+	private Session mSession;
+	private Session.StatusCallback mSessionStatusCallback;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -52,13 +55,6 @@ public class SListUsersActivity extends SherlockFragment {
 		actionBar.setTitle(R.string.privly_Facebook);
 		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
-		mSession = Session.getActiveSession();
-		mFaceBookUserId =Utilities.getFacebookID(getActivity());
-		mListUserMess =new ArrayList<SUser>();
-		login();
-
-	
-
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -79,23 +75,18 @@ public class SListUsersActivity extends SherlockFragment {
 
 			}
 		});
+
+		mSessionStatusCallback = new Session.StatusCallback() {
+
+			@Override
+			public void call(Session session, SessionState state,
+					Exception exception) {
+				onSessionStateChange(session, state, exception);
+
+			}
+		};
+		login();
 		return view;
-
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
-				resultCode, data);
-		
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Session session = Session.getActiveSession();
-		Session.saveSession(session, outState);
 	}
 
 	/**
@@ -132,22 +123,23 @@ public class SListUsersActivity extends SherlockFragment {
 	 * Login in FaceBook
 	 */
 	private void login() {
+		Log.d(TAG, "login()");
+		mListUserMess = new ArrayList<SUser>();
+		mListViewUsers.setAdapter(null);
 		if (mSession == null) {
 			mSession = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(mSession);
 			if (!mSession.isOpened()) {
 				ArrayList<String> permissions = new ArrayList<String>();
 				permissions.add("read_mailbox");
-				Session.OpenRequest openRequest = new Session.OpenRequest(this);
-				openRequest
-						.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
+				mSession.addCallback(mSessionStatusCallback);
+				Session.OpenRequest openRequest = new Session.OpenRequest(
+						SListUsersActivity.this);
+				openRequest.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
 				openRequest
 						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
 				openRequest.setPermissions(permissions);
-				mSession.openForRead(openRequest);				
-				if (mSession.isOpened()) {
-					getInboxFromFaceBook();
-				}
+				mSession.openForRead(openRequest);
 			} else {
 				getInboxFromFaceBook();
 			}
@@ -158,62 +150,150 @@ public class SListUsersActivity extends SherlockFragment {
 	}
 
 	/**
+	 * this method is used by the facebook API
+	 */
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (mSession != null) {
+			mSession.onActivityResult(getActivity(), requestCode, resultCode,
+					data);
+		}
+
+
+	}
+
+	/**
+	 * manages the session state change. This method is called after the
+	 * <code>login</code> method.
+	 * 
+	 * @param session
+	 * @param state
+	 * @param exception
+	 */
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		if (session != mSession) {
+			return;
+		}
+
+		if (state.isOpened()) {
+			// Log in just happened.
+			Log.d(TAG, "session opened");
+			makeMeRequest();			
+		} else if (state.isClosed()) {
+			// Log out just happened. Update the UI.
+			Log.d(TAG, "session closed");			
+		}
+	}
+
+	/**
+	 * Method for get information about me
+	 * 
+	 * @param session
+	 */
+	private void makeMeRequest() {
+		Log.d(TAG, "makeMeRequest");
+		mProgressBar.setVisibility(View.VISIBLE);
+		// Make an API call to get user data and define a
+		// new callback to handle the response.
+		Bundle params = new Bundle();
+		params.putString("fields", "id");
+		Request request = Request.newMeRequest(mSession,
+				new Request.GraphUserCallback() {
+					@Override
+					public void onCompleted(GraphUser user, Response response) {
+						if (response.getError() != null) {
+							mProgressBar.setVisibility(View.INVISIBLE);
+							AlertDialog dialog = Utilities.showDialog(
+									getActivity(),
+									getString(R.string.error_inbox));
+							dialog.show();
+							return;
+						}
+						if (user != null) {
+							Utilities.setFacebookID(getActivity(), user.getId());
+						}
+						mProgressBar.setVisibility(View.INVISIBLE);
+						getInboxFromFaceBook();
+					}
+				});
+		request.setParameters(params);
+		request.executeAsync();
+	}
+
+	/**
 	 * Get inbox from FaceBook
 	 */
 
 	private void getInboxFromFaceBook() {
 		Log.d(TAG, "getInboxFromFaceBook");
-
 		mProgressBar.setVisibility(View.VISIBLE);
+		mFaceBookUserId = Utilities.getFacebookID(getActivity());
 		// Make an API call to get user data and define a
 		// new callback to handle the response.
 		Bundle params = new Bundle();
-		params.putString("fields", "id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
-		//params.putString("limit", "1");
+		params.putString("fields",
+				"id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
+		// params.putString("limit", "1");
 		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
-				new Request.Callback() {			
+				new Request.Callback() {
 					@Override
-					public void onCompleted(Response response) {												
-						if (response.getError() != null) {							
+					public void onCompleted(Response response) {
+						if (response.getError() != null) {
+							Log.e(TAG, response.getError().getErrorMessage());
 							mProgressBar.setVisibility(View.INVISIBLE);
-							AlertDialog dialog = Utilities.showDialog(getActivity(), getString(R.string.error_inbox));
+							AlertDialog dialog = Utilities.showDialog(
+									getActivity(),
+									getString(R.string.error_inbox));
 							dialog.show();
 							return;
-						}						
-						JSONArray listUsersWIthLastMessage = null;		
-						try {							
-							listUsersWIthLastMessage = response.getGraphObject()
-									.getInnerJSONObject().getJSONArray("data");							
-							
-							for (int i = 0; i < listUsersWIthLastMessage.length(); i++) {
-								SUser sUser =new SUser();
-								JSONObject dialog = listUsersWIthLastMessage.getJSONObject(i);
+						}
+						JSONArray listUsersWIthLastMessage = null;
+						try {
+							listUsersWIthLastMessage = response
+									.getGraphObject().getInnerJSONObject()
+									.getJSONArray("data");
+
+							for (int i = 0; i < listUsersWIthLastMessage
+									.length(); i++) {
+								SUser sUser = new SUser();
+								JSONObject dialog = listUsersWIthLastMessage
+										.getJSONObject(i);
 								sUser.setDialogId(dialog.getString("id"));
-								sUser.setTime(dialog.getString("updated_time"));								
-								JSONArray to =dialog.getJSONObject("to").getJSONArray("data");
+								sUser.setTime(dialog.getString("updated_time"));
+								JSONArray to = dialog.getJSONObject("to")
+										.getJSONArray("data");
 								for (int j = 0; j < to.length(); j++) {
-									JSONObject oTo=to.getJSONObject(j);
-									String id =oTo.getString("id");									
-									if (!id.equals(mFaceBookUserId)){									
+									JSONObject oTo = to.getJSONObject(j);
+									String id = oTo.getString("id");
+									if (!id.equals(mFaceBookUserId)) {
 										sUser.setUserName(oTo.getString("name"));
-										JSONObject pric =oTo.getJSONObject("picture").getJSONObject("data");
-										sUser.setUrlToAvatar(pric.getString("url"));
+										JSONObject pric = oTo.getJSONObject(
+												"picture")
+												.getJSONObject("data");
+										sUser.setUrlToAvatar(pric
+												.getString("url"));
 										break;
 									}
-									
+
 								}
-								JSONObject comment =dialog.getJSONObject("comments").getJSONArray("data").getJSONObject(0);
-								sUser.setLastUserMess(comment.getString("message"));
-								mListUserMess.add(sUser);	
-								Log.d(TAG, sUser.toString());
+								JSONObject comment = dialog
+										.getJSONObject("comments")
+										.getJSONArray("data").getJSONObject(0);
+								sUser.setLastUserMess(comment
+										.getString("message"));
+								mListUserMess.add(sUser);
+								// Log.d(TAG, sUser.toString());
 							}
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
 						if (mListUserMess != null) {
-							mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
-									mListUserMess);
-							mListViewUsers.setAdapter(mListUserMessagesAdapter);
+							Log.d(TAG, "set adapter");
+							mListUserMessagesAdapter = new ListUsersAdapter(
+									getSherlockActivity(), mListUserMess);
+							mListViewUsers.setAdapter(mListUserMessagesAdapter);							
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 					}
@@ -221,4 +301,6 @@ public class SListUsersActivity extends SherlockFragment {
 		request.setParameters(params);
 		request.executeAsync();
 	}
+
+	
 }

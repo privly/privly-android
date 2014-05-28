@@ -19,15 +19,16 @@ public class MainActivity extends SherlockFragmentActivity {
 					.add(R.id.container, new Home()).commit();
 		}
 	}
-	
+
 	@Override
-	protected void onNewIntent(Intent intent){
+	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
-		NewIntentListener newIntentListener = (NewIntentListener) this.getSupportFragmentManager().findFragmentByTag("Twitter");
+		NewIntentListener newIntentListener = (NewIntentListener) this
+				.getSupportFragmentManager().findFragmentByTag("Twitter");
 		newIntentListener.onNewIntentRead(intent);
 	}
-	
-	public interface NewIntentListener{
+
+	public interface NewIntentListener {
 		public void onNewIntentRead(Intent intent);
 	}
 }

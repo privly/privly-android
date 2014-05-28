@@ -8,9 +8,9 @@ import android.content.SharedPreferences.Editor;
 import android.view.ViewConfiguration;
 
 /**
- * Used to set/get values that should be accessible to all
- * classes throughout the application.
- *
+ * Used to set/get values that should be accessible to all classes throughout
+ * the application.
+ * 
  * <p>
  * Key Pair Values saved in shared preferences
  * <li>uname : email id of user</li>
@@ -21,7 +21,7 @@ import android.view.ViewConfiguration;
  * <li>verified_at_login : flag to check if user has been authenticated at
  * login. If true, the auth_token is not verified in Home Activity</li>
  * </p>
- *
+ * 
  * @author Shivam Verma
  */
 public final class Values {
@@ -37,7 +37,7 @@ public final class Values {
 
 	/**
 	 * The name of the SharedPreference File
-	 *
+	 * 
 	 * @return {String} prefs_name
 	 */
 	String getPrefsName() {
@@ -46,7 +46,7 @@ public final class Values {
 
 	/**
 	 * The content server URL
-	 *
+	 * 
 	 * @return {String} baseUrl
 	 */
 	String getContentServerDomain() {
@@ -57,7 +57,7 @@ public final class Values {
 
 	/**
 	 * Returns Authentication token for user's session
-	 *
+	 * 
 	 * @return {String} authToken
 	 */
 	String getAuthToken() {
@@ -68,7 +68,7 @@ public final class Values {
 
 	/**
 	 * Returns value of remember_me Flag
-	 *
+	 * 
 	 * @return {Boolean} rememberMe
 	 */
 	Boolean getRememberMe() {
@@ -79,7 +79,7 @@ public final class Values {
 
 	/**
 	 * Returns username of the currently logged in user.
-	 *
+	 * 
 	 * @return userName
 	 */
 	String getUserName() {
@@ -90,7 +90,7 @@ public final class Values {
 
 	/**
 	 * Save authentication token to SharedPrefs
-	 *
+	 * 
 	 * @param authToken
 	 */
 	void setAuthToken(String authToken) {
@@ -102,7 +102,7 @@ public final class Values {
 
 	/**
 	 * Save content server to SharedPrefs
-	 *
+	 * 
 	 * @param baseUrl
 	 */
 	void setBaseUrl(String baseUrl) {
@@ -114,7 +114,7 @@ public final class Values {
 
 	/**
 	 * Set Remember me flag
-	 *
+	 * 
 	 * @param rememberMe
 	 */
 	void setRememberMe(Boolean rememberMe) {
@@ -127,7 +127,7 @@ public final class Values {
 	/**
 	 * Returns value of verified_at_login flag. Use this to prevent re
 	 * authentication at Home Screen.
-	 *
+	 * 
 	 * @return {Boolean}
 	 */
 	Boolean isUserVerifiedAtLogin() {
@@ -138,7 +138,7 @@ public final class Values {
 
 	/**
 	 * Sets the value of verified_at_login Flag.
-	 *
+	 * 
 	 * @param {Boolean} bool
 	 */
 	void setUserVerifiedAtLogin(Boolean bool) {
@@ -150,7 +150,7 @@ public final class Values {
 
 	/**
 	 * Get optimal parameter values to determine a swipe on a View.
-	 *
+	 * 
 	 * @return HashMap<String, Integer>
 	 */
 	HashMap<String, Integer> getValuesForSwipe() {

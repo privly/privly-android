@@ -17,14 +17,14 @@ public class SListUserMessagesActivity extends SherlockFragment {
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
 	private ListView mListViewUserMessages;
 
-
 	@SuppressWarnings("unchecked")
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_list, container, false);
-		this.mListViewUserMessages = ((ListView)view.findViewById(R.id.lView));
-		mListUserMess=(ArrayList<SMessage>)getArguments().getSerializable(
-		        "UserMessages");
+		this.mListViewUserMessages = ((ListView) view.findViewById(R.id.lView));
+		mListUserMess = (ArrayList<SMessage>) getArguments().getSerializable(
+				"UserMessages");
 		System.out.println(mListUserMess.get(0).getMessage());
 		if (this.mListUserMess != null) {
 			this.mListUserMessagesAdapter = new ListUserMessagesAdapter(

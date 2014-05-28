@@ -75,7 +75,9 @@ public class SUser implements Serializable {
 		this.mDialogId = mDialogId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -84,6 +86,5 @@ public class SUser implements Serializable {
 				+ mUrlToAvatar + ", mTime=" + mTime + ", mLastUserMess="
 				+ mLastUserMess + ", mDialogId=" + mDialogId + "]";
 	}
-
 
 }

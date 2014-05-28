@@ -25,15 +25,16 @@ import android.widget.Toast;
 
 /**
  * Contains simple functions that should be used wherever possible.
- *
+ * 
  * @author Shivam Verma
  */
 public class Utilities {
 
 	private static final String MY_PREFERENCES = "privly";
+
 	/**
 	 * Check validity of an EMail address using RegEx
-	 *
+	 * 
 	 * @param {String} emailToCheck
 	 * @return {Boolean}
 	 */
@@ -48,7 +49,7 @@ public class Utilities {
 
 	/**
 	 * Show Toast on screen.
-	 *
+	 * 
 	 * @param {Context} context Context of the calling class.
 	 * @param {String} textToToast
 	 * @param {String} longToast
@@ -63,8 +64,8 @@ public class Utilities {
 			return true;
 		}
 	}
-	
-	public static AlertDialog showDialog(final Activity activity,String mess){
+
+	public static AlertDialog showDialog(final Activity activity, String mess) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.dialog_info_title);
 		builder.setCancelable(true);
@@ -82,7 +83,7 @@ public class Utilities {
 	/**
 	 * Returns HTML string which will be loaded in the webview in Share
 	 * Activity.
-	 *
+	 * 
 	 * @param {String} url
 	 * @return {String} html Returns the HTML String which is used to display
 	 *         Privly link in the WebView
@@ -94,7 +95,7 @@ public class Utilities {
 
 	/**
 	 * Checks for data connection availability
-	 *
+	 * 
 	 * @param {Context} context
 	 * @return {Boolean}
 	 */
@@ -108,7 +109,7 @@ public class Utilities {
 
 	/**
 	 * Appends the current auth_token to any url.
-	 *
+	 * 
 	 * @param {String} url The Url to be displayed in the WebWiev
 	 * @param {Context} context Calling Context
 	 * @return {Boolean}
@@ -129,7 +130,7 @@ public class Utilities {
 
 	/**
 	 * This method uses regex to find out any Privly URLs in a given String
-	 *
+	 * 
 	 * @param {String} message
 	 * @return {ArrayList<String>} listOfUrls List of Privly Urls contained in a
 	 *         string.
@@ -150,7 +151,7 @@ public class Utilities {
 
 	/**
 	 * Checks if a link from a source already exists in the database.
-	 *
+	 * 
 	 * @param {Context} context of calling Activity
 	 * @param {String} sourceOfLink Source of the link. Example : FACEBOOK,
 	 *        TWITTER
@@ -223,16 +224,17 @@ public class Utilities {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Insert Links into the Database.
-	 *
+	 * 
 	 * @param {Context} context Application Context
 	 * @param {String} source Source of Privly Link (FACEBOOK, TWITTER etc)
 	 * @param {String} url Privly Link
 	 * @param {String} id unique identifier on the Source Server of the message
 	 * @param {String} userName Name of the user who sent the message / email
 	 *        /tweet.
-	 *
+	 * 
 	 */
 
 	public static void insertIntoDb(Context context, String source, String url,
@@ -254,8 +256,8 @@ public class Utilities {
 		contentValues.clear();
 		db.close();
 	}
-	
-	public static void setFacebookID(Context context,String id) {
+
+	public static void setFacebookID(Context context, String id) {
 		final SharedPreferences reader = context.getSharedPreferences(
 				MY_PREFERENCES, Context.MODE_PRIVATE);
 		final SharedPreferences.Editor editor = reader.edit();
@@ -264,8 +266,8 @@ public class Utilities {
 	}
 
 	public static String getFacebookID(Context context) {
-			final SharedPreferences reader = context.getSharedPreferences(
+		final SharedPreferences reader = context.getSharedPreferences(
 				MY_PREFERENCES, Context.MODE_PRIVATE);
-		return reader.getString("FacebookID", "");		
+		return reader.getString("FacebookID", "");
 	}
 }

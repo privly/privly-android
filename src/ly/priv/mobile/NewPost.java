@@ -21,18 +21,19 @@ import com.actionbarsherlock.view.MenuItem;
 /**
  * Allows the user to create new Privly Content. Integrates the Posting
  * Applications with the Android Application.
- *
+ * 
  * @author Shivam Verma
  */
 public class NewPost extends SherlockFragment {
-	
-	public NewPost(){
-		
+
+	public NewPost() {
+
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.new_post, container, false);
 		Bundle bundle = getArguments();
@@ -44,7 +45,8 @@ public class NewPost extends SherlockFragment {
 			String JsAppName = bundle.getString("JsAppName");
 			WebView w = (WebView) view.findViewById(R.id.webview_1);
 			w.getSettings().setJavaScriptEnabled(true);
-			w.addJavascriptInterface(new JsObject(getActivity()), "androidJsBridge");
+			w.addJavascriptInterface(new JsObject(getActivity()),
+					"androidJsBridge");
 
 			if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
 				w.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -74,22 +76,22 @@ public class NewPost extends SherlockFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.settings :
-				Intent gotoSettings = new Intent(getActivity(), Settings.class);
-				startActivity(gotoSettings);
-				return true;
-			case R.id.logout :
-				//Logout user from the Privly Android Application
-				Values values = new Values(getActivity());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(getActivity(), Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.settings:
+			Intent gotoSettings = new Intent(getActivity(), Settings.class);
+			startActivity(gotoSettings);
+			return true;
+		case R.id.logout:
+			// Logout user from the Privly Android Application
+			Values values = new Values(getActivity());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

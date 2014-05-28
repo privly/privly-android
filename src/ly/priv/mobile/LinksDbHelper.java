@@ -8,9 +8,9 @@ import android.util.Log;
 
 /**
  * Helper class for managing the database.
- *
+ * 
  * @author Shivam Verma
- *
+ * 
  */
 public class LinksDbHelper extends SQLiteOpenHelper {
 	/**

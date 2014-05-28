@@ -49,7 +49,7 @@ import com.actionbarsherlock.view.MenuItem;
  * Displays the Home Activity for a user after authentication. Gives the user
  * options to Create New Privly posts or Read Privly Posts from his social /
  * email feed.
- *
+ * 
  * @author Shivam Verma
  */
 public class Home extends SherlockFragment {
@@ -57,20 +57,23 @@ public class Home extends SherlockFragment {
 	ListView readListView, createListView;
 	String loginResponse;
 
-	public Home(){
-		
+	public Home() {
+
 	}
-	
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.home, container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_home);
 		container.removeAllViews();
-		TextView createHeadingEditText = (TextView) view.findViewById(R.id.createNewHeadingTextView);
-		TextView readHeadingEditText = (TextView) view.findViewById(R.id.readPostsHeadingTextView);
+		TextView createHeadingEditText = (TextView) view
+				.findViewById(R.id.createNewHeadingTextView);
+		TextView readHeadingEditText = (TextView) view
+				.findViewById(R.id.readPostsHeadingTextView);
 		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Lobster.ttf");
 		createHeadingEditText.setTypeface(lobster);
@@ -92,8 +95,8 @@ public class Home extends SherlockFragment {
 		}
 
 		// Create two ListViews which display create/read options.
-		final String[] arrCreate = {"PlainPost", "ZeroBin"};
-		final String[] arrRead = {"GMail", "Facebook", "Twitter"};
+		final String[] arrCreate = { "PlainPost", "ZeroBin" };
+		final String[] arrRead = { "GMail", "Facebook", "Twitter" };
 		ArrayList<String> createArrayList = new ArrayList<String>(
 				Arrays.asList(arrCreate));
 		ArrayList<String> readArrayList = new ArrayList<String>(
@@ -104,8 +107,8 @@ public class Home extends SherlockFragment {
 
 		ArrayAdapter<String> createArrayAdapter = new ArrayAdapter<String>(
 				getActivity(), R.layout.list_item, createArrayList);
-		ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(getActivity(),
-				R.layout.list_item, readArrayList);
+		ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(
+				getActivity(), R.layout.list_item, readArrayList);
 
 		createListView.setAdapter(createArrayAdapter);
 		readListView.setAdapter(readArrayAdapter);
@@ -118,13 +121,13 @@ public class Home extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-				if (Utilities
-						.isDataConnectionAvailable(getActivity())) {
+				if (Utilities.isDataConnectionAvailable(getActivity())) {
 					Fragment gotoCreateNewPost = new NewPost();
 					Bundle bundle = new Bundle();
 					bundle.putString("JsAppName", arrCreate[position]);
 					gotoCreateNewPost.setArguments(bundle);
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.container, gotoCreateNewPost);
 					transaction.addToBackStack("home");
 					transaction.commit();
@@ -149,17 +152,21 @@ public class Home extends SherlockFragment {
 							"Sorry, Gmail hasn't been integrated yet.",
 							Toast.LENGTH_LONG).show();
 				} else if (position == 1) {
-					//FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
-					SListUsersActivity sListUsersActivity =new SListUsersActivity();
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-					//transaction.replace(R.id.container, fbGrabber);
+					// FacebookLinkGrabberService fbGrabber = new
+					// FacebookLinkGrabberService();
+					SListUsersActivity sListUsersActivity = new SListUsersActivity();
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					// transaction.replace(R.id.container, fbGrabber);
 					transaction.replace(R.id.container, sListUsersActivity);
 					transaction.disallowAddToBackStack();
 					transaction.commit();
 				} else if (position == 2) {
-				//	TwitterLinkGrabberService twitGrabber = new TwitterLinkGrabberService();
-					MicroblogListPostsActivity twitGrabber =new MicroblogListPostsActivity();
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					// TwitterLinkGrabberService twitGrabber = new
+					// TwitterLinkGrabberService();
+					MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
 					transaction.disallowAddToBackStack();
 					transaction.commit();
@@ -170,6 +177,7 @@ public class Home extends SherlockFragment {
 		Log.d("fragments", "Home");
 		return view;
 	}
+
 	/**
 	 * Inflate options menu with the layout
 	 */
@@ -190,33 +198,33 @@ public class Home extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.settings :
-				Intent gotoSettings = new Intent(getActivity(), Settings.class);
-				startActivity(gotoSettings);
-				return true;
+		case R.id.settings:
+			Intent gotoSettings = new Intent(getActivity(), Settings.class);
+			startActivity(gotoSettings);
+			return true;
 
-			case R.id.logout :
-				// Logs out User from Privly Application
-				Values values = new Values(getActivity());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(getActivity(), Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
+		case R.id.logout:
+			// Logs out User from Privly Application
+			Values values = new Values(getActivity());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-			default :
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
 	/**
 	 * Verifies the validity of existing auth_token. If expired, redirect to
 	 * {@link ly.priv.mobile.Login}
-	 *
+	 * 
 	 * @author Shivam Verma
-	 *
+	 * 
 	 */
 	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
 
@@ -276,8 +284,7 @@ public class Home extends SherlockFragment {
 				} else {
 					Values values = new Values(getActivity());
 					values.setAuthToken(null);
-					Intent gotoLogin = new Intent(getActivity(),
-							Login.class);
+					Intent gotoLogin = new Intent(getActivity(), Login.class);
 					// Clear history stack. User should not be able to access
 					// any activity since his session has expired.
 					gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

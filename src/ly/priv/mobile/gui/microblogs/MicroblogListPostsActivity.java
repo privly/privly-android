@@ -17,10 +17,11 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 	private ListMicroblogAdapter mListMicroblogAdapter;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		this.mListViewPosts = ((ListView) view.findViewById(R.id.lView));
-		mListPosts =new ArrayList<Post>();
+		mListPosts = new ArrayList<Post>();
 		mListPosts.add(new Post("name1", "Nic1", "1d", "Mess on twits", ""));
 		mListPosts.add(new Post("name2", "Nic2", "3d", "Mess on twits", ""));
 		mListPosts.add(new Post("name3", "Nic3", "4d", "Mess on twits", ""));
@@ -32,6 +33,5 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 		}
 		return view;
 	}
-	
-	
+
 }

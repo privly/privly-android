@@ -32,7 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays the Home Activity for a user after authentication.
- *
+ * 
  * <p>
  * <ul>
  * <li>Receive source name from the intent</li>
@@ -44,7 +44,7 @@ import com.actionbarsherlock.view.MenuItem;
  * application using the WebView</li>
  * </ul>
  * <p>
- *
+ * 
  * @author Shivam Verma
  */
 public class ShowContent extends SherlockFragment {
@@ -58,17 +58,18 @@ public class ShowContent extends SherlockFragment {
 	WebView urlContentWebView;
 	Cursor cursor;
 	String contentSource;
-	
-	public ShowContent(){
-		
+
+	public ShowContent() {
+
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		//Bundle bundle = this.getIntent().getExtras();
+		// Bundle bundle = this.getIntent().getExtras();
 		contentSource = getArguments().getString("contentSource");
 		View webView = view.findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
@@ -88,7 +89,8 @@ public class ShowContent extends SherlockFragment {
 					.setAllowUniversalAccessFromFileURLs(true);
 
 		// Setup WebView to detect swipes.
-		gestureDetector = new GestureDetector(getActivity(), new SwipeGestureDetector());
+		gestureDetector = new GestureDetector(getActivity(),
+				new SwipeGestureDetector());
 		gestureListener = new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -101,8 +103,7 @@ public class ShowContent extends SherlockFragment {
 		LinksDbHelper mDbHelper = new LinksDbHelper(getActivity());
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-		File database = getActivity().getDatabasePath(
-				"PrivlyLinks.db");
+		File database = getActivity().getDatabasePath("PrivlyLinks.db");
 
 		// Check if database exists, If not, redirect to Home Screen. Else, load
 		// links from Db.
@@ -111,17 +112,18 @@ public class ShowContent extends SherlockFragment {
 					"No Privly Links found for" + contentSource,
 					Toast.LENGTH_LONG).show();
 			Fragment goToHome = new Home();
-			FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-			//Intent goToHome = new Intent(this, MainActivity.class);
+			FragmentTransaction transaction = getActivity()
+					.getSupportFragmentManager().beginTransaction();
+			// Intent goToHome = new Intent(this, MainActivity.class);
 			Bundle bundle_2 = new Bundle();
 			bundle_2.putBoolean("isRedirected", true);
 			goToHome.setArguments(bundle_2);
-			//goToHome.putExtras(bundle_2);
+			// goToHome.putExtras(bundle_2);
 			Log.d("fragments", "go home");
-			//startActivity(goToHome);
+			// startActivity(goToHome);
 			transaction.replace(R.id.container, goToHome);
 			transaction.commit();
-			//finish();
+			// finish();
 
 		} else {
 			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
@@ -137,17 +139,18 @@ public class ShowContent extends SherlockFragment {
 						"No Privly Links found for " + contentSource,
 						Toast.LENGTH_LONG).show();
 				Fragment goToHome = new Home();
-				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-				//Intent goToHome = new Intent(this, MainActivity.class);
+				FragmentTransaction transaction = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				// Intent goToHome = new Intent(this, MainActivity.class);
 				Bundle bundle_2 = new Bundle();
 				bundle_2.putBoolean("isRedirected", true);
 				goToHome.setArguments(bundle_2);
-				//goToHome.putExtras(bundle_2);
+				// goToHome.putExtras(bundle_2);
 				Log.d("fragments", "go home");
-				//startActivity(goToHome);
+				// startActivity(goToHome);
 				transaction.replace(R.id.container, goToHome);
 				transaction.commit();
-				//finish();
+				// finish();
 			}
 
 		}
@@ -163,7 +166,7 @@ public class ShowContent extends SherlockFragment {
 	 * <li>Calls loadUrlInWebView() method.</li>
 	 * </ul>
 	 * </p>
-	 *
+	 * 
 	 */
 	class SwipeGestureDetector extends SimpleOnGestureListener {
 		@Override
@@ -181,8 +184,8 @@ public class ShowContent extends SherlockFragment {
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
 					if (!cursor.isLast())
-						Toast.makeText(getActivity(),
-								"Loading Next Post", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), "Loading Next Post",
+								Toast.LENGTH_SHORT).show();
 
 					if (cursor.moveToNext()) {
 						loadUrlInWebview();
@@ -193,9 +196,8 @@ public class ShowContent extends SherlockFragment {
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
 					if (!cursor.isFirst())
-						Toast.makeText(getActivity(),
-								"Loading Previous Post", Toast.LENGTH_SHORT)
-								.show();
+						Toast.makeText(getActivity(), "Loading Previous Post",
+								Toast.LENGTH_SHORT).show();
 					if (cursor.moveToPrevious()) {
 						loadUrlInWebview();
 					}
@@ -216,7 +218,7 @@ public class ShowContent extends SherlockFragment {
 
 	/**
 	 * Loads a Privly URL into the Reading Application.
-	 *
+	 * 
 	 * <p>
 	 * <ul>
 	 * <li>Fetch link from Database Cursor</li>
@@ -225,7 +227,7 @@ public class ShowContent extends SherlockFragment {
 	 * <li>Load URL into the WebView</li>
 	 * </ul>
 	 * </p>
-	 *
+	 * 
 	 */
 	void loadUrlInWebview() {
 		String privlyLink;
@@ -267,9 +269,9 @@ public class ShowContent extends SherlockFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
-		//MenuInflater menuInflater = getMenuInflater();
+		// MenuInflater menuInflater = getMenuInflater();
 		inflater.inflate(R.layout.menu_layout_show_content, menu);
-		//return true;
+		// return true;
 	}
 
 	/**
@@ -283,19 +285,19 @@ public class ShowContent extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.logout :
-				// Logs out User from Privly Application
-				Values values = new Values(getActivity());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(getActivity(), Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
+		case R.id.logout:
+			// Logs out User from Privly Application
+			Values values = new Values(getActivity());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-			default :
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
