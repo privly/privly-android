@@ -118,6 +118,7 @@ public class SListUserMessagesActivity extends SherlockFragment {
 									getActivity(), mListUserMess);
 							mListViewUserMessages
 									.setAdapter(mListUserMessagesAdapter);
+							mListViewUserMessages.setSelection(mListUserMessagesAdapter.getCount() - 1);
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 					}

@@ -24,7 +24,7 @@ public class ListUsersAdapter extends BaseAdapter {
 		this.mActivity = activity;
 		this.mListUssers = list;
 		this.mImageLoader = new ImageLoader(
-				this.mActivity.getApplicationContext());
+				mActivity.getApplicationContext());
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
@@ -43,7 +43,7 @@ public class ListUsersAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = null;
 		if (convertView == null) {
-			inflater = this.mActivity.getLayoutInflater();
+			inflater = mActivity.getLayoutInflater();
 			vi = inflater.inflate(R.layout.item_socialnetwork_list_users, null);
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.mName = ((TextView) vi.findViewById(R.id.tvUserName));
@@ -55,13 +55,13 @@ public class ListUsersAdapter extends BaseAdapter {
 			vi = convertView;
 		}
 
-		this.mSUser = ((SUser) this.mListUssers.get(position));
+		mSUser = mListUssers.get(position);
 		if (this.mSUser != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mName.setText(this.mSUser.getUserName());
-			holder.mMessage.setText(this.mSUser.getLastUserMess());
-			holder.mTine.setText(this.mSUser.getTime());
-			this.mImageLoader.DisplayImage(this.mSUser.getUrlToAvatar(),
+			holder.mName.setText(mSUser.getUserName());
+			holder.mMessage.setText(mSUser.getLastUserMess());
+			holder.mTine.setText(mSUser.getTime());
+			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(),
 					holder.mAvatar);
 		}
 		return vi;

@@ -300,11 +300,11 @@ public class Utilities {
 			simpleDateFormat=new SimpleDateFormat("HH:mm");
 		}else
 		if (curDate.get(Calendar.WEEK_OF_YEAR)==fDate.get(Calendar.WEEK_OF_YEAR)){
-			simpleDateFormat=new SimpleDateFormat("E");
+			simpleDateFormat=new SimpleDateFormat("E, HH:mm");
 		} else
-			simpleDateFormat=new SimpleDateFormat("MMM dd");		
+			simpleDateFormat=new SimpleDateFormat("MMM dd, HH:mm");		
 		}else{			
-		simpleDateFormat=new SimpleDateFormat("MM/dd/yyyy");
+		simpleDateFormat=new SimpleDateFormat("MM/dd/yyyy, HH:mm");
 		}
 		return simpleDateFormat.format(fDate.getTime());
 	}

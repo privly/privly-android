@@ -24,7 +24,7 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 		this.mActivity = activity;
 		this.mListUsserMessages = list;
 		this.mImageLoader = new ImageLoader(
-				this.mActivity.getApplicationContext());
+				mActivity.getApplicationContext());
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
@@ -41,41 +41,42 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		this.mMessage = ((SMessage) this.mListUsserMessages.get(position));
-		View vi = null;
-		if (this.mMessage.IsMyMessage()) {
-			if (convertView == null) {
-				inflater = this.mActivity.getLayoutInflater();
+		mMessage =  mListUsserMessages.get(position);
+		View vi = null;		
+		if (convertView == null) {
+			ViewHolder holder = new ViewHolder();
+			if (this.mMessage.IsMyMessage()) {
+				inflater = mActivity.getLayoutInflater();
 				vi = inflater
 						.inflate(
 								R.layout.item_socialnetwork_list_user_messages_to,
 								null);
-				ViewHolder holder = new ViewHolder();
+
 				holder.mMessage = ((TextView) vi.findViewById(R.id.tvMessageTo));
 				holder.mTine = ((TextView) vi.findViewById(R.id.tvTimeTo));
-				vi.setTag(holder);
+				holder.mAvatar= new ImageView(mActivity);
 			} else {
-				vi = convertView;
+				inflater = mActivity.getLayoutInflater();
+				vi = inflater.inflate(
+						R.layout.item_socialnetwork_list_user_messages_from,
+						null);
+				holder.mMessage = ((TextView) vi
+						.findViewById(R.id.tvMessageFrom));
+				holder.mTine = ((TextView) vi.findViewById(R.id.tvTimeFrom));
+				holder.mAvatar = ((ImageView) vi
+						.findViewById(R.id.ivAvaFriendFrom));
 			}
-		} else if (convertView == null) {
-			inflater = this.mActivity.getLayoutInflater();
-			vi = inflater.inflate(
-					R.layout.item_socialnetwork_list_user_messages_from, null);
-			ViewHolder holder = new ViewHolder();
-			holder.mMessage = ((TextView) vi.findViewById(R.id.tvMessageFrom));
-			holder.mTine = ((TextView) vi.findViewById(R.id.tvTimeFrom));
-			holder.mAvatar = ((ImageView) vi.findViewById(R.id.ivAvaFriendFrom));
 			vi.setTag(holder);
 		} else {
 			vi = convertView;
 		}
-
-		if (this.mMessage != null) {
+		
+		if (mMessage != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mMessage.setText(this.mMessage.getMessage());
-			holder.mTine.setText(this.mMessage.getTime());
-			if (!this.mMessage.IsMyMessage())
-				this.mImageLoader.DisplayImage(this.mMessage.getUrlToAvatar(),
+			holder.mMessage.setText(mMessage.getMessage());
+			holder.mTine.setText(mMessage.getTime());
+			if (!mMessage.IsMyMessage())
+				mImageLoader.DisplayImage(mMessage.getUrlToAvatar(),
 						holder.mAvatar);
 		}
 		return vi;
