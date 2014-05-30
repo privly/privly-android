@@ -284,7 +284,6 @@ public class Utilities {
 	 * @param time
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
 	public static String getTime(String time){
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		Date date = null;

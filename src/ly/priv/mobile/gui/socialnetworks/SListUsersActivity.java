@@ -60,18 +60,18 @@ public class SListUsersActivity extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// FragmentTransaction transaction = getActivity()
-				// .getSupportFragmentManager().beginTransaction();
-				// SListUserMessagesActivity sListUserMessagesActivity = new
-				// SListUserMessagesActivity();
-				// Bundle bundle = new Bundle();
-				// bundle.putSerializable("UserMessages",
-				// mListUserMess.get(position).getListUserMess());
-				// sListUserMessagesActivity.setArguments(bundle);
-				// transaction.replace(R.id.container,
-				// sListUserMessagesActivity);
-				// transaction.disallowAddToBackStack();
-				// transaction.commit();
+				 FragmentTransaction transaction = getActivity()
+				 .getSupportFragmentManager().beginTransaction();
+				 SListUserMessagesActivity sListUserMessagesActivity = new
+				 SListUserMessagesActivity();
+				 Bundle bundle = new Bundle();
+				 bundle.putString("DialogID",
+				 mListUserMess.get(position).getDialogId());
+				 sListUserMessagesActivity.setArguments(bundle);
+				 transaction.replace(R.id.container,
+				 sListUserMessagesActivity);
+				 transaction.disallowAddToBackStack();
+				 transaction.commit();
 
 			}
 		});
@@ -203,7 +203,7 @@ public class SListUsersActivity extends SherlockFragment {
 				new Request.GraphUserCallback() {
 					@Override
 					public void onCompleted(GraphUser user, Response response) {
-						if (response.getError() != null) {
+						if (response.getError() != null) {							
 							mProgressBar.setVisibility(View.INVISIBLE);
 							AlertDialog dialog = Utilities.showDialog(
 									getActivity(),
@@ -269,10 +269,10 @@ public class SListUsersActivity extends SherlockFragment {
 									String id = oTo.getString("id");
 									if (!id.equals(mFaceBookUserId)) {
 										sUser.setUserName(oTo.getString("name"));
-										JSONObject pric = oTo.getJSONObject(
+										JSONObject pic = oTo.getJSONObject(
 												"picture")
 												.getJSONObject("data");
-										sUser.setUrlToAvatar(pric
+										sUser.setUrlToAvatar(pic
 												.getString("url"));
 										break;
 									}
