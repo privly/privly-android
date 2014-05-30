@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@color/privlyBackgroundColor"
     android:padding="5.0dip" >
 
     <TextView
         android:id="@+id/tvTimeTo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="text"
         android:textColor="@color/blue" />
 
     <LinearLayout
@@ -25,8 +25,8 @@
             android:id="@+id/tvMessageTo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/orca_convo_bubble_me_user_normal_classic"
-            android:text="Tex" />
+            android:background="@drawable/orca_convo_bubble_me_user_normal_classic" />
+
     </LinearLayout>
 
 </RelativeLayout>
