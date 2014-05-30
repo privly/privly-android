@@ -70,7 +70,8 @@ public class SListUsersActivity extends SherlockFragment {
 				 sListUserMessagesActivity.setArguments(bundle);
 				 transaction.replace(R.id.container,
 				 sListUserMessagesActivity);
-				 transaction.disallowAddToBackStack();
+				// transaction.disallowAddToBackStack();
+				 transaction.addToBackStack(null);
 				 transaction.commit();
 
 			}

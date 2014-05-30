@@ -159,7 +159,8 @@ public class Home extends SherlockFragment {
 							.getSupportFragmentManager().beginTransaction();
 					// transaction.replace(R.id.container, fbGrabber);
 					transaction.replace(R.id.container, sListUsersActivity);
-					transaction.disallowAddToBackStack();
+					//transaction.disallowAddToBackStack();
+					transaction.addToBackStack(null);
 					transaction.commit();
 				} else if (position == 2) {
 					// TwitterLinkGrabberService twitGrabber = new
@@ -168,7 +169,7 @@ public class Home extends SherlockFragment {
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
-					transaction.disallowAddToBackStack();
+					//transaction.disallowAddToBackStack();
 					transaction.commit();
 				}
 
