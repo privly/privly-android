@@ -125,7 +125,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private void login() {
 		Log.d(TAG, "login()");
 		mListUserMess = new ArrayList<SUser>();
-		mListViewUsers.setAdapter(null);
+		mListViewUsers.setAdapter(null);		
 		if (mSession == null) {
 			mSession = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(mSession);
@@ -261,7 +261,7 @@ public class SListUsersActivity extends SherlockFragment {
 								JSONObject dialog = listUsersWIthLastMessage
 										.getJSONObject(i);
 								sUser.setDialogId(dialog.getString("id"));
-								sUser.setTime(dialog.getString("updated_time"));
+								sUser.setTime(Utilities.getTime(dialog.getString("updated_time")));
 								JSONArray to = dialog.getJSONObject("to")
 										.getJSONArray("data");
 								for (int j = 0; j < to.length(); j++) {

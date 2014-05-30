@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +68,12 @@ public class Utilities {
 			return true;
 		}
 	}
-
+/**
+ * Show dialog on screen.
+ * @param activity
+ * @param mess
+ * @return
+ */
 	public static AlertDialog showDialog(final Activity activity, String mess) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.dialog_info_title);
@@ -269,5 +278,35 @@ public class Utilities {
 		final SharedPreferences reader = context.getSharedPreferences(
 				MY_PREFERENCES, Context.MODE_PRIVATE);
 		return reader.getString("FacebookID", "");
+	}
+	/**
+	 * Conversion Facebook time into local time
+	 * @param time
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static String getTime(String time){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		Date date = null;
+		try {
+			date =simpleDateFormat.parse(time);			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar fDate =Calendar.getInstance();
+		fDate.setTime(date);
+		Calendar curDate =Calendar.getInstance();	
+		if(fDate.get(Calendar.YEAR)==curDate.get(Calendar.YEAR)){
+		if(curDate.get(Calendar.DAY_OF_YEAR)==fDate.get(Calendar.DAY_OF_YEAR)){
+			simpleDateFormat=new SimpleDateFormat("HH:mm");
+		}else
+		if (curDate.get(Calendar.WEEK_OF_YEAR)==fDate.get(Calendar.WEEK_OF_YEAR)){
+			simpleDateFormat=new SimpleDateFormat("E");
+		} else
+			simpleDateFormat=new SimpleDateFormat("MMM dd");		
+		}else{			
+		simpleDateFormat=new SimpleDateFormat("MM/dd/yyyy");
+		}
+		return simpleDateFormat.format(fDate.getTime());
 	}
 }
