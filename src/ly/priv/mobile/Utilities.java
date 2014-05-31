@@ -266,19 +266,7 @@ public class Utilities {
 		db.close();
 	}
 
-	public static void setFacebookID(Context context, String id) {
-		final SharedPreferences reader = context.getSharedPreferences(
-				MY_PREFERENCES, Context.MODE_PRIVATE);
-		final SharedPreferences.Editor editor = reader.edit();
-		editor.putString("FacebookID", id);
-		editor.commit();
-	}
 
-	public static String getFacebookID(Context context) {
-		final SharedPreferences reader = context.getSharedPreferences(
-				MY_PREFERENCES, Context.MODE_PRIVATE);
-		return reader.getString("FacebookID", "");
-	}
 	/**
 	 * Conversion Facebook time into local time
 	 * @param time

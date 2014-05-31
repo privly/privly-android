@@ -45,6 +45,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private ProgressBar mProgressBar;
 	private String mFaceBookUserId;
 	private Session mSession;
+	private Values mValues;
 	private Session.StatusCallback mSessionStatusCallback;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +56,7 @@ public class SListUsersActivity extends SherlockFragment {
 		actionBar.setTitle(R.string.privly_Facebook);
 		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
+		mValues=new Values(getActivity());
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -213,7 +215,8 @@ public class SListUsersActivity extends SherlockFragment {
 							return;
 						}
 						if (user != null) {
-							Utilities.setFacebookID(getActivity(), user.getId());
+							
+							mValues.setFacebookID(user.getId());
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 						getInboxFromFaceBook();
@@ -230,7 +233,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private void getInboxFromFaceBook() {
 		Log.d(TAG, "getInboxFromFaceBook");
 		mProgressBar.setVisibility(View.VISIBLE);
-		mFaceBookUserId = Utilities.getFacebookID(getActivity());
+		mFaceBookUserId = mValues.getFacebookID();
 		// Make an API call to get user data and define a
 		// new callback to handle the response.
 		Bundle params = new Bundle();

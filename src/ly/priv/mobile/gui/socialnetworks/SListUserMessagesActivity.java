@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.facebook.Request;
@@ -19,6 +20,7 @@ import com.facebook.model.GraphObject;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.renderscript.Sampler.Value;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -44,7 +46,8 @@ public class SListUserMessagesActivity extends SherlockFragment {
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mDialogID =  getArguments().getString("DialogID");	
 		mListUserMess =new ArrayList<SMessage>();
-		mFaceBookUserId = Utilities.getFacebookID(getActivity());
+		Values values = new Values(getActivity());
+		mFaceBookUserId = values.getFacebookID();
 		mSession=Session.getActiveSession();
 		Log.d(TAG, mDialogID);
 		if(mSession!=null && mSession.isOpened()){
@@ -98,15 +101,18 @@ public class SListUserMessagesActivity extends SherlockFragment {
 							JSONArray comments = graphObject.getInnerJSONObject().getJSONObject("comments").getJSONArray("data");
 							for (int i = 0; i < comments.length(); i++) {
 								JSONObject comment = comments.getJSONObject(i);
-								SMessage message =new SMessage();
-								message.setMessage(comment.getString("message"));
-								message.setTime(Utilities.getTime(comment.getString("created_time")));	
+								SMessage sMmessage =new SMessage();
+								String message =comment.getString("message");
+								ArrayList<String> listUrl =Utilities.fetchPrivlyUrls(message);
+								
+								sMmessage.setMessage(message);
+								sMmessage.setTime(Utilities.getTime(comment.getString("created_time")));	
 								JSONObject from = comment.getJSONObject("from");
 								String id =from.getString("id");
-								message.setIsMyMessage(id.equals(mFaceBookUserId));
+								sMmessage.setIsMyMessage(id.equals(mFaceBookUserId));
 								JSONObject picture = from.getJSONObject("picture");
-								message.setUrlToAvatar(picture.getJSONObject("data").getString("url"));
-								mListUserMess.add(message);
+								sMmessage.setUrlToAvatar(picture.getJSONObject("data").getString("url"));
+								mListUserMess.add(sMmessage);
 							}
 							
 						} catch (JSONException e) {

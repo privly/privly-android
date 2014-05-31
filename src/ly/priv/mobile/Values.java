@@ -30,7 +30,7 @@ public final class Values {
 	SharedPreferences sharedPrefs;
 	Context context;
 
-	Values(Context callingContext) {
+	public Values(Context callingContext) {
 		prefsName = "prefsFile";
 		context = callingContext;
 	}
@@ -162,6 +162,18 @@ public final class Values {
 				vc.getScaledMinimumFlingVelocity());
 		swipeValues.put("swipeMaxOffPath", vc.getScaledMinimumFlingVelocity());
 		return swipeValues;
+	}
+	
+	public void setFacebookID(String id) {		
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString("FacebookID", id);
+		editor.commit();
+	}
+
+	public String getFacebookID() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString("FacebookID", "");
 	}
 }
 

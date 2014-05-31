@@ -238,8 +238,9 @@ public class ShowContent extends SherlockFragment {
 			privlyLink = "nothing";
 			e.printStackTrace();
 		}
-
+		
 		String url = privlyLink;
+		Log.d("ShowContent","Start="+ url);
 		try {
 			url = URLEncoder.encode(url, "utf-8");
 		} catch (UnsupportedEncodingException e) {
@@ -259,6 +260,7 @@ public class ShowContent extends SherlockFragment {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
 		}
+		Log.d("ShowContent","end="+ url);
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 
 	}
