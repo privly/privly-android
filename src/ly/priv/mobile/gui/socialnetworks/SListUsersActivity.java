@@ -57,6 +57,7 @@ public class SListUsersActivity extends SherlockFragment {
 		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mValues=new Values(getActivity());
+		mFaceBookUserId = mValues.getFacebookID();
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -115,6 +116,7 @@ public class SListUsersActivity extends SherlockFragment {
 		case R.id.logout:
 			mSession.closeAndClearTokenInformation();
 			mSession = null;
+			Session.setActiveSession(mSession);
 			login();
 			return true;
 		default:
@@ -126,9 +128,9 @@ public class SListUsersActivity extends SherlockFragment {
 	 * Login in FaceBook
 	 */
 	private void login() {
-		Log.d(TAG, "login()");
 		mListUserMess = new ArrayList<SUser>();
-		mListViewUsers.setAdapter(null);		
+		mListViewUsers.setAdapter(null);	
+		mSession=Session.getActiveSession();
 		if (mSession == null) {
 			mSession = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(mSession);
@@ -157,13 +159,9 @@ public class SListUsersActivity extends SherlockFragment {
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (mSession != null) {
-			mSession.onActivityResult(getActivity(), requestCode, resultCode,
-					data);
-		}
-
-
+		super.onActivityResult(requestCode, resultCode, data);		
+			Session.getActiveSession().onActivityResult(getActivity(), requestCode,
+					resultCode, data);
 	}
 
 	/**
@@ -186,10 +184,16 @@ public class SListUsersActivity extends SherlockFragment {
 			makeMeRequest();			
 		} else if (state.isClosed()) {
 			// Log out just happened. Update the UI.
+		
 			Log.d(TAG, "session closed");			
 		}
 	}
-
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Session session = Session.getActiveSession();
+		Session.saveSession(session, outState);
+	}
 	/**
 	 * Method for get information about me
 	 * 

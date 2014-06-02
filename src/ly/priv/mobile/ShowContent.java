@@ -3,6 +3,7 @@ package ly.priv.mobile;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
@@ -49,7 +50,7 @@ import com.actionbarsherlock.view.MenuItem;
  */
 public class ShowContent extends SherlockFragment {
 	/** Called when the activity is first created. */
-
+	private static final String TAG = "ShowContent";
 	private GestureDetector gestureDetector;
 	View.OnTouchListener gestureListener;
 	public int swipeMinDistance;
@@ -58,7 +59,8 @@ public class ShowContent extends SherlockFragment {
 	WebView urlContentWebView;
 	Cursor cursor;
 	String contentSource;
-
+	private ArrayList<String> mListOfLinks;
+	private Integer mId=0;
 	public ShowContent() {
 
 	}
@@ -69,8 +71,7 @@ public class ShowContent extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		// Bundle bundle = this.getIntent().getExtras();
-		contentSource = getArguments().getString("contentSource");
+		mListOfLinks =getArguments().getStringArrayList("listOfLinks");
 		View webView = view.findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
 
@@ -99,61 +100,7 @@ public class ShowContent extends SherlockFragment {
 		};
 		webView.setOnTouchListener(gestureListener);
 
-		// Fetch links for the particular source from the database.
-		LinksDbHelper mDbHelper = new LinksDbHelper(getActivity());
-		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-		File database = getActivity().getDatabasePath("PrivlyLinks.db");
-
-		// Check if database exists, If not, redirect to Home Screen. Else, load
-		// links from Db.
-		if (!database.exists()) {
-			Toast.makeText(getActivity(),
-					"No Privly Links found for" + contentSource,
-					Toast.LENGTH_LONG).show();
-			Fragment goToHome = new Home();
-			FragmentTransaction transaction = getActivity()
-					.getSupportFragmentManager().beginTransaction();
-			// Intent goToHome = new Intent(this, MainActivity.class);
-			Bundle bundle_2 = new Bundle();
-			bundle_2.putBoolean("isRedirected", true);
-			goToHome.setArguments(bundle_2);
-			// goToHome.putExtras(bundle_2);
-			Log.d("fragments", "go home");
-			// startActivity(goToHome);
-			transaction.replace(R.id.container, goToHome);
-			transaction.commit();
-			// finish();
-
-		} else {
-			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
-					+ " WHERE " + LinksDb.COLUMN_NAME_SOURCE + "= '"
-					+ contentSource + "'", null);
-
-			int numRows = cursor.getCount();
-			if (numRows > 0) {
-				cursor.moveToFirst();
-				loadUrlInWebview();
-			} else {
-				Toast.makeText(getActivity(),
-						"No Privly Links found for " + contentSource,
-						Toast.LENGTH_LONG).show();
-				Fragment goToHome = new Home();
-				FragmentTransaction transaction = getActivity()
-						.getSupportFragmentManager().beginTransaction();
-				// Intent goToHome = new Intent(this, MainActivity.class);
-				Bundle bundle_2 = new Bundle();
-				bundle_2.putBoolean("isRedirected", true);
-				goToHome.setArguments(bundle_2);
-				// goToHome.putExtras(bundle_2);
-				Log.d("fragments", "go home");
-				// startActivity(goToHome);
-				transaction.replace(R.id.container, goToHome);
-				transaction.commit();
-				// finish();
-			}
-
-		}
+		loadUrlInWebview(mId);
 		Log.d("fragments", "Inside Show");
 		return view;
 	}
@@ -183,23 +130,29 @@ public class ShowContent extends SherlockFragment {
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-					if (!cursor.isLast())
+					if (mId<mListOfLinks.size()-1) {
+						mId++;
+						loadUrlInWebview(mId);
 						Toast.makeText(getActivity(), "Loading Next Post",
 								Toast.LENGTH_SHORT).show();
-
-					if (cursor.moveToNext()) {
-						loadUrlInWebview();
+					}else{
+						Toast.makeText(getActivity(), "This is a last Post",
+								Toast.LENGTH_SHORT).show();
 					}
 
 				} else if (e2.getX() - e1.getX() > valuesForSwipe
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-					if (!cursor.isFirst())
+		
+					if (mId>0) {
+						mId--;
 						Toast.makeText(getActivity(), "Loading Previous Post",
 								Toast.LENGTH_SHORT).show();
-					if (cursor.moveToPrevious()) {
-						loadUrlInWebview();
+						loadUrlInWebview(mId);
+					}else{
+						Toast.makeText(getActivity(), "This is a first Post",
+								Toast.LENGTH_SHORT).show();
 					}
 				}
 			} catch (Exception e) {
@@ -229,18 +182,9 @@ public class ShowContent extends SherlockFragment {
 	 * </p>
 	 * 
 	 */
-	void loadUrlInWebview() {
-		String privlyLink;
-		try {
-			privlyLink = cursor.getString(cursor
-					.getColumnIndex(LinksDb.COLUMN_NAME_LINK));
-		} catch (Exception e) {
-			privlyLink = "nothing";
-			e.printStackTrace();
-		}
-		
-		String url = privlyLink;
-		Log.d("ShowContent","Start="+ url);
+	void loadUrlInWebview(Integer id) {	
+		Log.d(TAG, "loadUrlInWebview");
+		String url = mListOfLinks.get(id);
 		try {
 			url = URLEncoder.encode(url, "utf-8");
 		} catch (UnsupportedEncodingException e) {
@@ -259,10 +203,8 @@ public class ShowContent extends SherlockFragment {
 		} else {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
-		}
-		Log.d("ShowContent","end="+ url);
+		}		
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
-
 	}
 
 	/**

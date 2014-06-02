@@ -152,13 +152,13 @@ public class Home extends SherlockFragment {
 							"Sorry, Gmail hasn't been integrated yet.",
 							Toast.LENGTH_LONG).show();
 				} else if (position == 1) {
-					 FacebookLinkGrabberService fbGrabber = new
-					 FacebookLinkGrabberService();
-					//SListUsersActivity sListUsersActivity = new SListUsersActivity();
+					// FacebookLinkGrabberService fbGrabber = new
+					// FacebookLinkGrabberService();
+					SListUsersActivity sListUsersActivity = new SListUsersActivity();
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
-					 transaction.replace(R.id.container, fbGrabber);
-					//transaction.replace(R.id.container, sListUsersActivity);
+					// transaction.replace(R.id.container, fbGrabber);
+					transaction.replace(R.id.container, sListUsersActivity);
 					//transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);
 					transaction.commit();
