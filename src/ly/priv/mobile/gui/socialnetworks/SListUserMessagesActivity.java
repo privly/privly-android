@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.ls.LSInput;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
@@ -31,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class SListUserMessagesActivity extends SherlockFragment {
@@ -62,17 +64,22 @@ public class SListUserMessagesActivity extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				 FragmentTransaction transaction = getActivity()
+				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(mListUserMess.get(position).getMessage());
+				if(listOfUrls.size()>0){
+				FragmentTransaction transaction = getActivity()
 				 .getSupportFragmentManager().beginTransaction();
 				 ShowContent showContent =new ShowContent();
 				 Bundle bundle = new Bundle();
-				 bundle.putStringArrayList("listOfLinks", Utilities.fetchPrivlyUrls(mListUserMess.get(position).getMessage()));
+				 bundle.putStringArrayList("listOfLinks", listOfUrls);
 				 showContent.setArguments(bundle);
 				 transaction.replace(R.id.container,
 						 showContent);
 				 transaction.addToBackStack(null);
 				 transaction.commit();
-
+				}else{
+					Toast.makeText(getActivity(), R.string.message_not_containe_privly_link,
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		return view;

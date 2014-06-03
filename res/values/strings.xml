@@ -27,4 +27,5 @@
     <string name="set_content_server">Content Server Location</string>
 	<string name="dialog_info_title">Info</string>
 	<string name="error_inbox">Inbox is only available when connected to the internet.</string>
+	<string name="message_not_containe_privly_link">Message is not contain privly link.</string>
 </resources>
