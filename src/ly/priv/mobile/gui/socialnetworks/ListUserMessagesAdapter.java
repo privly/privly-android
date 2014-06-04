@@ -3,6 +3,7 @@ package ly.priv.mobile.gui.socialnetworks;
 import java.util.ArrayList;
 
 import ly.priv.mobile.R;
+import ly.priv.mobile.Values;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 	private ImageLoader mImageLoader;
 	private ArrayList<SMessage> mListUsserMessages;
 	private SMessage mMessage;
+	private Values mValues;
+	private String mFaceBookId;
 
 	public ListUserMessagesAdapter(Activity activity, ArrayList<SMessage> list) {
 		this.mActivity = activity;
@@ -26,6 +29,8 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 		this.mImageLoader = new ImageLoader(
 				mActivity.getApplicationContext());
 		this.mImageLoader.setStub_id(R.drawable.ava);
+		this.mValues=new Values(mActivity);
+		this.mFaceBookId=mValues.getFacebookID();
 	}
 
 	public int getCount() {
@@ -44,8 +49,8 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 		mMessage =  mListUsserMessages.get(position);
 		View vi = null;		
 		if (convertView == null) {
-			ViewHolder holder = new ViewHolder();
-			if (this.mMessage.IsMyMessage()) {
+			ViewHolder holder = new ViewHolder();			
+			if (mMessage.getId().equals(mFaceBookId)) {
 				inflater = mActivity.getLayoutInflater();
 				vi = inflater
 						.inflate(
@@ -75,7 +80,7 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 			ViewHolder holder = (ViewHolder) vi.getTag();
 			holder.mMessage.setText(mMessage.getMessage());
 			holder.mTine.setText(mMessage.getTime());
-			if (!mMessage.IsMyMessage())
+			if (!mMessage.getId().equals(mFaceBookId))
 				mImageLoader.DisplayImage(mMessage.getUrlToAvatar(),
 						holder.mAvatar);
 		}

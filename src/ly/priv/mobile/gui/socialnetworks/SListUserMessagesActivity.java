@@ -1,6 +1,8 @@
 package ly.priv.mobile.gui.socialnetworks;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+<<<<<<< HEAD
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -8,37 +10,48 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.ls.LSInput;
 
+
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.renderscript.Sampler.Value;
+
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+<<<<<<< HEAD
 import android.widget.AdapterView.OnItemClickListener;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
+=======
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+public class SListUserMessagesActivity extends SherlockFragment {
+>>>>>>> GSON_For_FaceBook
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
@@ -70,6 +83,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		if(mSession!=null && mSession.isOpened()){
 			getDialogFromFaceBook();
 		}		
+
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -138,22 +152,9 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 						 GraphObject graphObject = response.getGraphObject();
 						 try {							 
 							JSONArray comments = graphObject.getInnerJSONObject().getJSONObject("comments").getJSONArray("data");
-							for (int i = 0; i < comments.length(); i++) {
-								JSONObject comment = comments.getJSONObject(i);
-								SMessage sMmessage =new SMessage();
-								String message =comment.getString("message");
-								ArrayList<String> listUrl =Utilities.fetchPrivlyUrls(message);
-								
-								sMmessage.setMessage(message);
-								sMmessage.setTime(Utilities.getTime(comment.getString("created_time")));	
-								JSONObject from = comment.getJSONObject("from");
-								String id =from.getString("id");
-								sMmessage.setIsMyMessage(id.equals(mFaceBookUserId));
-								JSONObject picture = from.getJSONObject("picture");
-								sMmessage.setUrlToAvatar(picture.getJSONObject("data").getString("url"));
-								mListUserMess.add(sMmessage);
-							}
-							
+							Gson gson = new Gson();
+							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
+							mListUserMess=gson.fromJson(comments.toString(), collectionType);						
 						} catch (JSONException e) {
 								e.printStackTrace();
 						}
