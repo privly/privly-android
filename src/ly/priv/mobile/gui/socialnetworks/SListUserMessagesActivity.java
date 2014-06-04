@@ -4,40 +4,35 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.ls.LSInput;
-
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler.Value;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class SListUserMessagesActivity extends SherlockFragment {
 	private static final String TAG = "SListUserMessagesActivity";
@@ -63,6 +58,7 @@ public class SListUserMessagesActivity extends SherlockFragment {
 		if(mSession!=null && mSession.isOpened()){
 			getDialogFromFaceBook();
 		}		
+
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
