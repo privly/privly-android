@@ -12,9 +12,13 @@ import ly.priv.mobile.Values;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
@@ -37,6 +41,7 @@ import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
 
 	private static final String TAG = "SListUserMessagesActivity";
@@ -48,18 +53,21 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 	private Session mSession;
 	private String mDialogID;
 	private String mFaceBookUserId;
+	private String mNextUrlForLoadingMessages;
+
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_list, container, false);
-		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView));
+		View view = inflater.inflate(R.layout.activity_list_pull_refrash, container, false);
+		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView_refresh));
 		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
 				android.R.color.holo_orange_light,
 				android.R.color.holo_red_light);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
+		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData_refresh);
 		mDialogID =  getArguments().getString("DialogID");	
 		mListUserMess =new ArrayList<SMessage>();
 		Values values = new Values(getActivity());
@@ -67,7 +75,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		mSession=Session.getActiveSession();
 		Log.d(TAG, mDialogID);
 		if(mSession!=null && mSession.isOpened()){
-			getDialogFromFaceBook();
+			getListOfMessagesFromFaceBook();
 		}		
 
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
@@ -114,8 +122,8 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 	/**
 	 * Get inbox from FaceBook
 	 */
-	private void getDialogFromFaceBook() {
-		Log.d(TAG, "getDialogFromFaceBook");
+	private void getListOfMessagesFromFaceBook() {
+		Log.d(TAG, "getListOfMessagesFromFaceBook");
 		mProgressBar.setVisibility(View.VISIBLE);
 
 		Bundle params = new Bundle();
@@ -136,11 +144,13 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 							return;
 						}
 						 GraphObject graphObject = response.getGraphObject();
-						 try {							 
-							JSONArray comments = graphObject.getInnerJSONObject().getJSONObject("comments").getJSONArray("data");
+						 try {			
+							JSONObject jsonObjectComments =graphObject.getInnerJSONObject().getJSONObject("comments");
+							JSONArray comments = jsonObjectComments.getJSONArray("data");
 							Gson gson = new Gson();
 							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
-							mListUserMess=gson.fromJson(comments.toString(), collectionType);						
+							mListUserMess=gson.fromJson(comments.toString(), collectionType);	
+							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
 						} catch (JSONException e) {
 								e.printStackTrace();
 						}
@@ -158,18 +168,60 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		request.setParameters(params);
 		request.executeAsync();
 	}
+	
+	/**
+	 * Get inbox from FaceBook
+	 */
+	private void getNextListOfMessagesFromFaceBook() {
+		Log.d(TAG, "getNextListOfMessagesFromFaceBook");	
+			Log.d(TAG, mNextUrlForLoadingMessages);
+			Bundle params = new Bundle();
+			params.putString("fields",
+					"comments.fields(from.fields(id,picture),message,created_time)");
+		Request request = Request.newGraphPathRequest(mSession, mNextUrlForLoadingMessages,
+				new Request.Callback() {
+					@Override
+					public void onCompleted(Response response) {
+						if (response.getError() != null) {
+							Log.e(TAG, response.getError().getErrorMessage());						
+							AlertDialog dialog = Utilities.showDialog(
+									getActivity(),
+									getString(R.string.error_inbox));
+							dialog.show();
+							return;
+						}
+						 GraphObject graphObject = response.getGraphObject();
+						 try {			
+							JSONObject jsonObjectComments =graphObject.getInnerJSONObject().getJSONObject("comments");
+							JSONArray comments = jsonObjectComments.getJSONArray("data");
+							Gson gson = new Gson();
+							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();	
+							ArrayList<SMessage> sMessages =gson.fromJson(comments.toString(), collectionType);
+							mListUserMess.addAll(sMessages);							
+							for (SMessage mess : mListUserMess) {
+								Log.d(TAG, mess.toString());
+							}
+							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
+						//	Log.d(TAG, mNextUrlForLoadingMessages);
+						} catch (JSONException e) {
+								e.printStackTrace();
+						}
+						 
+						if (mListUserMess != null) {
+							mListUserMessagesAdapter = new ListUserMessagesAdapter(
+									getActivity(), mListUserMess);
+							mListViewUserMessages
+									.setAdapter(mListUserMessagesAdapter);
+							mListViewUserMessages.setSelection(mListUserMessagesAdapter.getCount() - 1);
+						}
 
+					}
+				});
+		request.setParameters(params);
+		request.executeAsync();
+	}
 	@Override
 	public void onRefresh() {
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				mSwipeRefreshLayout.setRefreshing(false);
-				Random rand = new Random();
-				Log.d(TAG, "Котика пора кормить. Его не кормили уже "
-						+ (1 + rand.nextInt(10)) + " мин.");
-			}
-		}, 4000);
-		
+		getNextListOfMessagesFromFaceBook();
 	}
 }

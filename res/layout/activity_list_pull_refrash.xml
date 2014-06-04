@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ptr_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/privlyBackgroundColor" >
-
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        android:id="@+id/lViewPull"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/lView_refresh"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/privlyBackgroundColor" />
-
+</android.support.v4.widget.SwipeRefreshLayout>
     <ProgressBar
-        android:id="@+id/pbLoadingDataPull"
+        android:id="@+id/pbLoadingData_refresh"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,4 +23,4 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_centerVertical="true"
         android:visibility="invisible" />
 
-</uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
+</RelativeLayout>
