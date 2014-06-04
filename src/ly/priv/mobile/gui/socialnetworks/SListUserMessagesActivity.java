@@ -1,6 +1,8 @@
 package ly.priv.mobile.gui.socialnetworks;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +20,8 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.model.GraphObject;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -127,22 +131,9 @@ public class SListUserMessagesActivity extends SherlockFragment {
 						 GraphObject graphObject = response.getGraphObject();
 						 try {							 
 							JSONArray comments = graphObject.getInnerJSONObject().getJSONObject("comments").getJSONArray("data");
-							for (int i = 0; i < comments.length(); i++) {
-								JSONObject comment = comments.getJSONObject(i);
-								SMessage sMmessage =new SMessage();
-								String message =comment.getString("message");
-								ArrayList<String> listUrl =Utilities.fetchPrivlyUrls(message);
-								
-								sMmessage.setMessage(message);
-								sMmessage.setTime(Utilities.getTime(comment.getString("created_time")));	
-								JSONObject from = comment.getJSONObject("from");
-								String id =from.getString("id");
-								sMmessage.setIsMyMessage(id.equals(mFaceBookUserId));
-								JSONObject picture = from.getJSONObject("picture");
-								sMmessage.setUrlToAvatar(picture.getJSONObject("data").getString("url"));
-								mListUserMess.add(sMmessage);
-							}
-							
+							Gson gson = new Gson();
+							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
+							mListUserMess=gson.fromJson(comments.toString(), collectionType);						
 						} catch (JSONException e) {
 								e.printStackTrace();
 						}
