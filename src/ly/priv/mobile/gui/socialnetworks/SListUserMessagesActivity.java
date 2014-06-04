@@ -2,14 +2,8 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-<<<<<<< HEAD
+import java.util.List;
 import java.util.Random;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.ls.LSInput;
-
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
@@ -23,9 +17,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.renderscript.Sampler.Value;
-
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,12 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-<<<<<<< HEAD
-import android.widget.AdapterView.OnItemClickListener;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
-=======
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.facebook.Request;
@@ -49,9 +37,8 @@ import com.facebook.Session;
 import com.facebook.model.GraphObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
 
-public class SListUserMessagesActivity extends SherlockFragment {
->>>>>>> GSON_For_FaceBook
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
@@ -68,7 +55,6 @@ public class SListUserMessagesActivity extends SherlockFragment {
 		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView));
 		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        // делаем повеселее
         mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
 				android.R.color.holo_orange_light,
