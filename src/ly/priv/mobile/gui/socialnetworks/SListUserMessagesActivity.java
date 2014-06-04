@@ -1,6 +1,7 @@
 package ly.priv.mobile.gui.socialnetworks;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,7 @@ import com.facebook.model.GraphObject;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.renderscript.Sampler.Value;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -34,12 +36,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-
-public class SListUserMessagesActivity extends SherlockFragment {
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
 	private ListView mListViewUserMessages;
+	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private ProgressBar mProgressBar;
 	private Session mSession;
 	private String mDialogID;
@@ -49,6 +53,13 @@ public class SListUserMessagesActivity extends SherlockFragment {
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView));
+		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        // делаем повеселее
+        mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+				android.R.color.holo_green_light,
+				android.R.color.holo_orange_light,
+				android.R.color.holo_red_light);
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mDialogID =  getArguments().getString("DialogID");	
 		mListUserMess =new ArrayList<SMessage>();
@@ -159,5 +170,19 @@ public class SListUserMessagesActivity extends SherlockFragment {
 				});
 		request.setParameters(params);
 		request.executeAsync();
+	}
+
+	@Override
+	public void onRefresh() {
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mSwipeRefreshLayout.setRefreshing(false);
+				Random rand = new Random();
+				Log.d(TAG, "Котика пора кормить. Его не кормили уже "
+						+ (1 + rand.nextInt(10)) + " мин.");
+			}
+		}, 4000);
+		
 	}
 }
