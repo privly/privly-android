@@ -15,11 +15,18 @@ import android.widget.TextView;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
+/**
+ * Adapter for ListViewUserMessages. It is showing messages for specific DialogId.
+ *	 
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
 public class ListUserMessagesAdapter extends BaseAdapter {
 	private static final int TYPE_ITEM_TO = 0;
 	private static final int TYPE_ITEM_FROM = 1;
 	private static final int TYPE_MAX_COUNT = 2;
-	private static LayoutInflater mInflater = null;
+	private LayoutInflater mInflater = null;
 	private Activity mActivity;
 	private ImageLoader mImageLoader;
 	private ArrayList<SMessage> mListUsserMessages;
@@ -27,10 +34,15 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 	private Values mValues;
 	private String mFaceBookId;
 
+	/**
+	 * Constructor for ListUserMessagesAdapter
+	 * @param activity
+	 * @param list
+	 */
 	public ListUserMessagesAdapter(Activity activity, ArrayList<SMessage> list) {
 		this.mActivity = activity;
 		this.mListUsserMessages = list;
-		this.mImageLoader = new ImageLoader(mActivity.getApplicationContext());
+		this.mImageLoader = new ImageLoader(mActivity);
 		this.mImageLoader.setStub_id(R.drawable.ava);
 		this.mValues = new Values(mActivity);
 		this.mFaceBookId = mValues.getFacebookID();

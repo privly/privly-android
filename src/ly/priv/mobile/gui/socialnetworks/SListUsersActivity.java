@@ -35,6 +35,22 @@ import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 
+/**
+ * Fragment for showing dialogs with last message in dialog
+ * <p>
+ * <ul>
+ * <li>Creates a new Facebook Session.</li>
+ * <li>Needs 'read_mailbox' permission from the user.</li>
+ * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
+ * <li>Parses the received json response and showing in mListViewUsers.</li>
+ * <li>Redirect User to {@link ly.priv.mobile.gui.SListUserMessagesActivity}
+ * SListUserMessagesActivity Fragment</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class SListUsersActivity extends SherlockFragment {
 	private static final String TAG = "SListUsersActivity";
 	private ArrayList<SUser> mListUserMess;
@@ -53,7 +69,7 @@ public class SListUsersActivity extends SherlockFragment {
 		setHasOptionsMenu(true);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Facebook);
-		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
+		mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mValues = new Values(getActivity());
 		mFaceBookUserId = mValues.getFacebookID();
@@ -97,7 +113,6 @@ public class SListUsersActivity extends SherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.layout.menu_layout_slistusers, menu);
 		super.onCreateOptionsMenu(menu, inflater);
-
 	}
 
 	/**
@@ -162,7 +177,7 @@ public class SListUsersActivity extends SherlockFragment {
 	}
 
 	/**
-	 * manages the session state change. This method is called after the
+	 * Manages the session state change. This method is called after the
 	 * <code>login</code> method.
 	 * 
 	 * @param session
@@ -196,7 +211,6 @@ public class SListUsersActivity extends SherlockFragment {
 	/**
 	 * Method for get information about me
 	 * 
-	 * @param session
 	 */
 	private void makeMeRequest() {
 		Log.d(TAG, "makeMeRequest");
@@ -232,7 +246,6 @@ public class SListUsersActivity extends SherlockFragment {
 	/**
 	 * Get inbox from FaceBook
 	 */
-
 	private void getInboxFromFaceBook() {
 		Log.d(TAG, "getInboxFromFaceBook");
 		mProgressBar.setVisibility(View.VISIBLE);
@@ -300,7 +313,7 @@ public class SListUsersActivity extends SherlockFragment {
 						if (mListUserMess != null) {
 							Log.d(TAG, "set adapter");
 							mListUserMessagesAdapter = new ListUsersAdapter(
-									getSherlockActivity(), mListUserMess);
+									getActivity(), mListUserMess);
 							mListViewUsers.setAdapter(mListUserMessagesAdapter);
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);

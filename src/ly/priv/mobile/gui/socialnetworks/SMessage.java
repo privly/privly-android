@@ -6,13 +6,24 @@ import ly.priv.mobile.Utilities;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Class for entity Message
+ * 
+ * Annotation is used for generate list of messages from json via Gson library.
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
+/**
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
 public class SMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@SerializedName("message")
 	private String mMessage;
 	@SerializedName("created_time")
 	private String mTime;
-	private String mUrlToAvatar;
 	@SerializedName("from")
 	private From mFrom;
 
@@ -69,48 +80,66 @@ public class SMessage implements Serializable {
 	public SMessage() {
 		this.mMessage = "";
 		this.mTime = "";
-		this.mUrlToAvatar = "";
 	}
 
 	/**
-	 * @param mIsMyMessage
-	 * @param mMessage
-	 * @param mTime
-	 * @param mUrlToAvatar
+	 * Constructor for SMessage
+	 * @param mMessage - message 
+	 * @param mTime - time when created message
+	 * @param mUrlToAvatar - url to avatar
 	 */
-	public SMessage(String mMessage, String mTime, String mUrlToAvatar,
-			boolean mIsMyMessage) {
+	public SMessage(String mMessage, String mTime, String mUrlToAvatar
+			) {
 		super();
 		this.mMessage = mMessage;
 		this.mTime = mTime;
-		this.mUrlToAvatar = mUrlToAvatar;
 	}
 
+	/**
+	 * Get message
+	 * 
+	 * @return message
+	 */
 	public String getMessage() {
 		return mMessage;
 	}
 
+	/**
+	 * Set message
+	 * @param mMessage
+	 */
 	public void setMessage(String mMessage) {
 		this.mMessage = mMessage;
 	}
 
+	
+	/**
+	 * Get time
+	 * @return time
+	 */
 	public String getTime() {
 		return Utilities.getTime(mTime);
 	}
 
+	/**
+	 * Set time
+	 * @param mTime
+	 */
 	public void setTime(String mTime) {
 		this.mTime = mTime;
 	}
 
+	/**
+	 * Get url to avatar from message
+	 * @return
+	 */
 	public String getUrlToAvatar() {
 		return mFrom.mPicture.mData.mUrl;
 	}
 
-	public void setUrlToAvatar(String mUrlToAvatar) {
-		this.mUrlToAvatar = mUrlToAvatar;
-	}
 
 	/**
+	 * Get id from message
 	 * @return the mId
 	 */
 	public String getId() {
@@ -125,7 +154,7 @@ public class SMessage implements Serializable {
 	@Override
 	public String toString() {
 		return "SMessage [mMessage=" + mMessage + ", mTime=" + mTime
-				+ ", mUrlToAvatar=" + mUrlToAvatar + ", from=" + mFrom + "]";
+				+ ", from=" + mFrom + "]";
 	}
 
 }

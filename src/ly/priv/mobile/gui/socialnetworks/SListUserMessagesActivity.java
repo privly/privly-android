@@ -45,9 +45,23 @@ import com.facebook.model.GraphObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Showing messages in chose dialog
+ * <p>
+ * <ul>
+ * <li>Get mDialogID from Bundle.</li> 
+ * <li>Get Facebook Session.</li> 
+ * <li>Makes a  Request.newGraphPathRequest to graph api with the Facebook access token.</li>
+ * <li>Parses the received json response with Gson library</li>
+ * <li>If privly link contained in message then Redirect User to {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
 public class SListUserMessagesActivity extends SherlockFragment implements
 		OnRefreshListener {
-
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
@@ -123,7 +137,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 	}
 
 	/**
-	 * Get inbox from FaceBook
+	 * Get inbox from FaceBook and show messages in mListViewUserMessages
 	 */
 	private void getListOfMessagesFromFaceBook() {
 		Log.d(TAG, "getListOfMessagesFromFaceBook");
@@ -180,6 +194,12 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 		request.executeAsync();
 	}
 
+	/**
+	 *  AsyncTask for getting next messages for current DialogId
+	 *
+	 * @author Ivan Metla e-mail: metlaivan@gmail.com
+	 *
+	 */
 	private class FetchFaceBookNextMessages extends
 			AsyncTask<String, Void, ArrayList<SMessage>> {
 
@@ -245,6 +265,9 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener#onRefresh()
+	 */
 	@Override
 	public void onRefresh() {
 		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
