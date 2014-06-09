@@ -1,21 +1,16 @@
 package ly.priv.mobile;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -60,7 +55,8 @@ public class ShowContent extends SherlockFragment {
 	Cursor cursor;
 	String contentSource;
 	private ArrayList<String> mListOfLinks;
-	private Integer mId=0;
+	private Integer mId = 0;
+
 	public ShowContent() {
 
 	}
@@ -71,7 +67,7 @@ public class ShowContent extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		mListOfLinks =getArguments().getStringArrayList("listOfLinks");
+		mListOfLinks = getArguments().getStringArrayList("listOfLinks");
 		View webView = view.findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
 
@@ -130,12 +126,12 @@ public class ShowContent extends SherlockFragment {
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-					if (mId<mListOfLinks.size()-1) {
+					if (mId < mListOfLinks.size() - 1) {
 						mId++;
 						loadUrlInWebview(mId);
 						Toast.makeText(getActivity(), "Loading Next Post",
 								Toast.LENGTH_SHORT).show();
-					}else{
+					} else {
 						Toast.makeText(getActivity(), "This is a last Post",
 								Toast.LENGTH_SHORT).show();
 					}
@@ -144,13 +140,13 @@ public class ShowContent extends SherlockFragment {
 						.get("swipeMinDistance")
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
-		
-					if (mId>0) {
+
+					if (mId > 0) {
 						mId--;
 						Toast.makeText(getActivity(), "Loading Previous Post",
 								Toast.LENGTH_SHORT).show();
 						loadUrlInWebview(mId);
-					}else{
+					} else {
 						Toast.makeText(getActivity(), "This is a first Post",
 								Toast.LENGTH_SHORT).show();
 					}
@@ -182,7 +178,7 @@ public class ShowContent extends SherlockFragment {
 	 * </p>
 	 * 
 	 */
-	void loadUrlInWebview(Integer id) {	
+	void loadUrlInWebview(Integer id) {
 		Log.d(TAG, "loadUrlInWebview");
 		String url = mListOfLinks.get(id);
 		try {
@@ -203,7 +199,7 @@ public class ShowContent extends SherlockFragment {
 		} else {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
-		}		
+		}
 		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 	}
 

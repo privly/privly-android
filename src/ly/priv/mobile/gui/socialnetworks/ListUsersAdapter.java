@@ -13,6 +13,11 @@ import android.widget.TextView;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
+/**
+ * Adapter for ListViewUsers.
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
 public class ListUsersAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
@@ -20,11 +25,15 @@ public class ListUsersAdapter extends BaseAdapter {
 	private ArrayList<SUser> mListUssers;
 	private SUser mSUser;
 
+	/**
+	 * Constructor for  ListUsersAdapter
+	 * @param activity
+	 * @param list
+	 */
 	public ListUsersAdapter(Activity activity, ArrayList<SUser> list) {
 		this.mActivity = activity;
 		this.mListUssers = list;
-		this.mImageLoader = new ImageLoader(
-				mActivity.getApplicationContext());
+		this.mImageLoader = new ImageLoader(mActivity);
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
@@ -61,8 +70,7 @@ public class ListUsersAdapter extends BaseAdapter {
 			holder.mName.setText(mSUser.getUserName());
 			holder.mMessage.setText(mSUser.getLastUserMess());
 			holder.mTine.setText(mSUser.getTime());
-			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(),
-					holder.mAvatar);
+			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(), holder.mAvatar);
 		}
 		return vi;
 	}

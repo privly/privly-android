@@ -163,8 +163,8 @@ public final class Values {
 		swipeValues.put("swipeMaxOffPath", vc.getScaledMinimumFlingVelocity());
 		return swipeValues;
 	}
-	
-	public void setFacebookID(String id) {		
+
+	public void setFacebookID(String id) {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
 		Editor editor = sharedPrefs.edit();
 		editor.putString("FacebookID", id);

@@ -18,7 +18,6 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
@@ -68,12 +67,14 @@ public class Utilities {
 			return true;
 		}
 	}
-/**
- * Show dialog on screen.
- * @param activity
- * @param mess
- * @return
- */
+
+	/**
+	 * Show dialog on screen.
+	 * 
+	 * @param activity
+	 * @param mess
+	 * @return
+	 */
 	public static AlertDialog showDialog(final Activity activity, String mess) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle(R.string.dialog_info_title);
@@ -266,33 +267,35 @@ public class Utilities {
 		db.close();
 	}
 
-
 	/**
 	 * Conversion Facebook time into local time
+	 * 
 	 * @param time
 	 * @return
 	 */
-	public static String getTime(String time){
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	public static String getTime(String time) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ssZ");
 		Date date = null;
 		try {
-			date =simpleDateFormat.parse(time);			
+			date = simpleDateFormat.parse(time);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		Calendar fDate =Calendar.getInstance();
+		Calendar fDate = Calendar.getInstance();
 		fDate.setTime(date);
-		Calendar curDate =Calendar.getInstance();	
-		if(fDate.get(Calendar.YEAR)==curDate.get(Calendar.YEAR)){
-		if(curDate.get(Calendar.DAY_OF_YEAR)==fDate.get(Calendar.DAY_OF_YEAR)){
-			simpleDateFormat=new SimpleDateFormat("HH:mm");
-		}else
-		if (curDate.get(Calendar.WEEK_OF_YEAR)==fDate.get(Calendar.WEEK_OF_YEAR)){
-			simpleDateFormat=new SimpleDateFormat("E, HH:mm");
-		} else
-			simpleDateFormat=new SimpleDateFormat("MMM dd, HH:mm");		
-		}else{			
-		simpleDateFormat=new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+		Calendar curDate = Calendar.getInstance();
+		if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+			if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
+					.get(Calendar.DAY_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("HH:mm");
+			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
+					.get(Calendar.WEEK_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+			} else
+				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+		} else {
+			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
 		}
 		return simpleDateFormat.format(fDate.getTime());
 	}

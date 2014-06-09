@@ -2,15 +2,14 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.util.ArrayList;
 
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ly.priv.mobile.Login;
-import ly.priv.mobile.R;
-import ly.priv.mobile.Settings;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,9 +33,24 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 
+/**
+ * Fragment for showing dialogs with last message in dialog
+ * <p>
+ * <ul>
+ * <li>Creates a new Facebook Session.</li>
+ * <li>Needs 'read_mailbox' permission from the user.</li>
+ * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
+ * <li>Parses the received json response and showing in mListViewUsers.</li>
+ * <li>Redirect User to {@link ly.priv.mobile.gui.SListUserMessagesActivity}
+ * SListUserMessagesActivity Fragment</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class SListUsersActivity extends SherlockFragment {
 	private static final String TAG = "SListUsersActivity";
 	private ArrayList<SUser> mListUserMess;
@@ -47,6 +61,7 @@ public class SListUsersActivity extends SherlockFragment {
 	private Session mSession;
 	private Values mValues;
 	private Session.StatusCallback mSessionStatusCallback;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,28 +69,26 @@ public class SListUsersActivity extends SherlockFragment {
 		setHasOptionsMenu(true);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Facebook);
-		this.mListViewUsers = ((ListView) view.findViewById(R.id.lView));
+		mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
-		mValues=new Values(getActivity());
+		mValues = new Values(getActivity());
 		mFaceBookUserId = mValues.getFacebookID();
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				 FragmentTransaction transaction = getActivity()
-				 .getSupportFragmentManager().beginTransaction();
-				 SListUserMessagesActivity sListUserMessagesActivity = new
-				 SListUserMessagesActivity();
-				 Bundle bundle = new Bundle();
-				 bundle.putString("DialogID",
-				 mListUserMess.get(position).getDialogId());
-				 sListUserMessagesActivity.setArguments(bundle);
-				 transaction.replace(R.id.container,
-				 sListUserMessagesActivity);
+				FragmentTransaction transaction = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				SListUserMessagesActivity sListUserMessagesActivity = new SListUserMessagesActivity();
+				Bundle bundle = new Bundle();
+				bundle.putString("DialogID", mListUserMess.get(position)
+						.getDialogId());
+				sListUserMessagesActivity.setArguments(bundle);
+				transaction.replace(R.id.container, sListUserMessagesActivity);
 				// transaction.disallowAddToBackStack();
-				 transaction.addToBackStack(null);
-				 transaction.commit();
+				transaction.addToBackStack(null);
+				transaction.commit();
 
 			}
 		});
@@ -100,7 +113,6 @@ public class SListUsersActivity extends SherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.layout.menu_layout_slistusers, menu);
 		super.onCreateOptionsMenu(menu, inflater);
-
 	}
 
 	/**
@@ -129,8 +141,8 @@ public class SListUsersActivity extends SherlockFragment {
 	 */
 	private void login() {
 		mListUserMess = new ArrayList<SUser>();
-		mListViewUsers.setAdapter(null);	
-		mSession=Session.getActiveSession();
+		mListViewUsers.setAdapter(null);
+		mSession = Session.getActiveSession();
 		if (mSession == null) {
 			mSession = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(mSession);
@@ -159,13 +171,13 @@ public class SListUsersActivity extends SherlockFragment {
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);		
-			Session.getActiveSession().onActivityResult(getActivity(), requestCode,
-					resultCode, data);
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
+				resultCode, data);
 	}
 
 	/**
-	 * manages the session state change. This method is called after the
+	 * Manages the session state change. This method is called after the
 	 * <code>login</code> method.
 	 * 
 	 * @param session
@@ -181,23 +193,24 @@ public class SListUsersActivity extends SherlockFragment {
 		if (state.isOpened()) {
 			// Log in just happened.
 			Log.d(TAG, "session opened");
-			makeMeRequest();			
+			makeMeRequest();
 		} else if (state.isClosed()) {
 			// Log out just happened. Update the UI.
-		
-			Log.d(TAG, "session closed");			
+
+			Log.d(TAG, "session closed");
 		}
 	}
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Session session = Session.getActiveSession();
 		Session.saveSession(session, outState);
 	}
+
 	/**
 	 * Method for get information about me
 	 * 
-	 * @param session
 	 */
 	private void makeMeRequest() {
 		Log.d(TAG, "makeMeRequest");
@@ -210,7 +223,7 @@ public class SListUsersActivity extends SherlockFragment {
 				new Request.GraphUserCallback() {
 					@Override
 					public void onCompleted(GraphUser user, Response response) {
-						if (response.getError() != null) {							
+						if (response.getError() != null) {
 							mProgressBar.setVisibility(View.INVISIBLE);
 							AlertDialog dialog = Utilities.showDialog(
 									getActivity(),
@@ -219,7 +232,7 @@ public class SListUsersActivity extends SherlockFragment {
 							return;
 						}
 						if (user != null) {
-							
+
 							mValues.setFacebookID(user.getId());
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
@@ -233,7 +246,6 @@ public class SListUsersActivity extends SherlockFragment {
 	/**
 	 * Get inbox from FaceBook
 	 */
-
 	private void getInboxFromFaceBook() {
 		Log.d(TAG, "getInboxFromFaceBook");
 		mProgressBar.setVisibility(View.VISIBLE);
@@ -269,7 +281,8 @@ public class SListUsersActivity extends SherlockFragment {
 								JSONObject dialog = listUsersWIthLastMessage
 										.getJSONObject(i);
 								sUser.setDialogId(dialog.getString("id"));
-								sUser.setTime(Utilities.getTime(dialog.getString("updated_time")));
+								sUser.setTime(Utilities.getTime(dialog
+										.getString("updated_time")));
 								JSONArray to = dialog.getJSONObject("to")
 										.getJSONArray("data");
 								for (int j = 0; j < to.length(); j++) {
@@ -300,8 +313,8 @@ public class SListUsersActivity extends SherlockFragment {
 						if (mListUserMess != null) {
 							Log.d(TAG, "set adapter");
 							mListUserMessagesAdapter = new ListUsersAdapter(
-									getSherlockActivity(), mListUserMess);
-							mListViewUsers.setAdapter(mListUserMessagesAdapter);							
+									getActivity(), mListUserMess);
+							mListViewUsers.setAdapter(mListUserMessagesAdapter);
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 					}
@@ -310,5 +323,4 @@ public class SListUsersActivity extends SherlockFragment {
 		request.executeAsync();
 	}
 
-	
 }
