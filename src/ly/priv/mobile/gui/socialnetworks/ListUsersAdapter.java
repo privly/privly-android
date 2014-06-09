@@ -23,8 +23,7 @@ public class ListUsersAdapter extends BaseAdapter {
 	public ListUsersAdapter(Activity activity, ArrayList<SUser> list) {
 		this.mActivity = activity;
 		this.mListUssers = list;
-		this.mImageLoader = new ImageLoader(
-				mActivity.getApplicationContext());
+		this.mImageLoader = new ImageLoader(mActivity);
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
@@ -61,8 +60,7 @@ public class ListUsersAdapter extends BaseAdapter {
 			holder.mName.setText(mSUser.getUserName());
 			holder.mMessage.setText(mSUser.getLastUserMess());
 			holder.mTine.setText(mSUser.getTime());
-			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(),
-					holder.mAvatar);
+			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(), holder.mAvatar);
 		}
 		return vi;
 	}

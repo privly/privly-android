@@ -2,14 +2,11 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,16 +18,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -52,7 +45,8 @@ import com.facebook.model.GraphObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class SListUserMessagesActivity extends SherlockFragment implements OnRefreshListener {
+public class SListUserMessagesActivity extends SherlockFragment implements
+		OnRefreshListener {
 
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
@@ -62,28 +56,29 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 	private ProgressBar mProgressBar;
 	private Session mSession;
 	private String mDialogID;
-	private String mFaceBookUserId;
 	private String mNextUrlForLoadingMessages;
-
+	private Boolean mflNoMoreMessage=false;
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_list_pull_refrash, container, false);
-		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView_refresh));
-		mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
+		View view = inflater.inflate(R.layout.activity_list_pull_refrash,
+				container, false);
+		mListViewUserMessages = ((ListView) view
+				.findViewById(R.id.lView_refresh));
+		mSwipeRefreshLayout = (SwipeRefreshLayout) view
+				.findViewById(R.id.swipe_container);
+		mSwipeRefreshLayout.setOnRefreshListener(this);
+		mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
 				android.R.color.holo_green_light,
 				android.R.color.holo_orange_light,
 				android.R.color.holo_red_light);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData_refresh);
-		mDialogID =  getArguments().getString("DialogID");	
-		mListUserMess =new ArrayList<SMessage>();
-		Values values = new Values(getActivity());
-		mFaceBookUserId = values.getFacebookID();
-		mSession=Session.getActiveSession();
-		if(mSession!=null && mSession.isOpened()){
+		mProgressBar = (ProgressBar) view
+				.findViewById(R.id.pbLoadingData_refresh);
+		mDialogID = getArguments().getString("DialogID");
+		mListUserMess = new ArrayList<SMessage>();
+		mSession = Session.getActiveSession();
+		if (mSession != null && mSession.isOpened()) {
 			getListOfMessagesFromFaceBook();
 		}
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
@@ -91,27 +86,29 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(mListUserMess.get(position).getMessage());
-				if(listOfUrls.size()>0){
-				FragmentTransaction transaction = getActivity()
-				 .getSupportFragmentManager().beginTransaction();
-				 ShowContent showContent =new ShowContent();
-				 Bundle bundle = new Bundle();
-				 bundle.putStringArrayList("listOfLinks", listOfUrls);
-				 showContent.setArguments(bundle);
-				 transaction.replace(R.id.container,
-						 showContent);
-				 transaction.addToBackStack(null);
-				 transaction.commit();
-				}else{
-					Toast.makeText(getActivity(), R.string.message_not_containe_privly_link,
+				ArrayList<String> listOfUrls = Utilities
+						.fetchPrivlyUrls(mListUserMess.get(position)
+								.getMessage());
+				if (listOfUrls.size() > 0) {
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ShowContent showContent = new ShowContent();
+					Bundle bundle = new Bundle();
+					bundle.putStringArrayList("listOfLinks", listOfUrls);
+					showContent.setArguments(bundle);
+					transaction.replace(R.id.container, showContent);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					Toast.makeText(getActivity(),
+							R.string.message_not_containe_privly_link,
 							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 		return view;
 	}
-	
+
 	/**
 	 * this method is used by the facebook API
 	 */
@@ -123,9 +120,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 					data);
 		}
 
-
 	}
-
 
 	/**
 	 * Get inbox from FaceBook
@@ -151,24 +146,32 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 							dialog.show();
 							return;
 						}
-						 GraphObject graphObject = response.getGraphObject();
-						 try {			
-							JSONObject jsonObjectComments =graphObject.getInnerJSONObject().getJSONObject("comments");
-							JSONArray comments = jsonObjectComments.getJSONArray("data");
+						GraphObject graphObject = response.getGraphObject();
+						try {
+							JSONObject jsonObjectComments = graphObject
+									.getInnerJSONObject().getJSONObject(
+											"comments");
+							JSONArray comments = jsonObjectComments
+									.getJSONArray("data");
 							Gson gson = new Gson();
-							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
-							mListUserMess=gson.fromJson(comments.toString(), collectionType);	
-							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
+							Type collectionType = new TypeToken<List<SMessage>>() {
+							}.getType();
+							mListUserMess = gson.fromJson(comments.toString(),
+									collectionType);
+							mNextUrlForLoadingMessages = jsonObjectComments
+									.getJSONObject("paging").getString("next");
 						} catch (JSONException e) {
-								e.printStackTrace();
+							e.printStackTrace();
 						}
-						 
+
 						if (mListUserMess != null) {
 							mListUserMessagesAdapter = new ListUserMessagesAdapter(
 									getActivity(), mListUserMess);
 							mListViewUserMessages
 									.setAdapter(mListUserMessagesAdapter);
-							mListViewUserMessages.setSelection(mListUserMessagesAdapter.getCount() - 1);
+							mListViewUserMessages
+									.setSelection(mListUserMessagesAdapter
+											.getCount() - 1);
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
 					}
@@ -176,20 +179,19 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		request.setParameters(params);
 		request.executeAsync();
 	}
-	
-	
-	private class FetchFaceBookNextMessages extends AsyncTask<String, Void, ArrayList<SMessage>> {
 
+	private class FetchFaceBookNextMessages extends
+			AsyncTask<String, Void, ArrayList<SMessage>> {
 
 		@Override
 		protected void onPreExecute() {
-			 mSwipeRefreshLayout.setRefreshing(true);
+			mSwipeRefreshLayout.setRefreshing(true);
 		}
 
 		@Override
 		protected ArrayList<SMessage> doInBackground(String... urls) {
-			String fbResponse="";
-			ArrayList<SMessage> sMessages=null;
+			String fbResponse = "";
+			ArrayList<SMessage> sMessages = null;
 			try {
 				// Make GET Request
 				HttpClient client = new DefaultHttpClient();
@@ -200,13 +202,20 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 					fbResponse = EntityUtils.toString(resEntityGet);
 
 				}
-				JSONObject jsonObjectComments =new JSONObject(fbResponse);
+				JSONObject jsonObjectComments = new JSONObject(fbResponse);
 				JSONArray comments = jsonObjectComments.getJSONArray("data");
-				Log.d(TAG, String.valueOf(comments.length()));
-				Gson gson = new Gson();
-				Type collectionType = new TypeToken<List<SMessage>>(){}.getType();	
-				sMessages =gson.fromJson(comments.toString(), collectionType);
-				mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
+				if (comments.length() != 0) {
+					Gson gson = new Gson();
+					Type collectionType = new TypeToken<List<SMessage>>() {
+					}.getType();
+					sMessages = gson.fromJson(comments.toString(),
+							collectionType);
+					mNextUrlForLoadingMessages = jsonObjectComments
+							.getJSONObject("paging").getString("next");
+				} else {
+					sMessages = null;
+					mflNoMoreMessage=true;
+				}
 			}
 
 			catch (Exception e) {
@@ -218,27 +227,36 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 
 		@Override
 		protected void onPostExecute(ArrayList<SMessage> result) {
-			Integer pos=result.size()-1;
-		result.addAll(mListUserMess);			
-			mListUserMess=result;					
-			if (mListUserMess != null) {
+			if (result != null) {
+				Integer pos = result.size() - 1;
+				result.addAll(mListUserMess);
+				mListUserMess = result;
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
 						getActivity(), mListUserMess);
-				mListViewUserMessages
-						.setAdapter(mListUserMessagesAdapter);				
+				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
 				mListViewUserMessages.setSelection(pos);
-			}			
+			} else {
+				Toast.makeText(getActivity(),
+						R.string.no_more_messages,
+						Toast.LENGTH_SHORT).show();
+			}	
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
-		
+
 	}
-	
-	
+
 	@Override
 	public void onRefresh() {
 		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
-		//getNextListOfMessagesFromFaceBook();
-		FetchFaceBookNextMessages faceBookNextMessages =new FetchFaceBookNextMessages();
+		if(!mflNoMoreMessage){
+		FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
 		faceBookNextMessages.execute(mNextUrlForLoadingMessages);
+		}else{
+			Toast.makeText(getActivity(),
+					R.string.no_more_messages,
+					Toast.LENGTH_SHORT).show();
+			mSwipeRefreshLayout.setRefreshing(false);
+		}
+	
 	}
 }

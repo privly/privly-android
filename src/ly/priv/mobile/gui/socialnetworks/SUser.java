@@ -1,7 +1,6 @@
 package ly.priv.mobile.gui.socialnetworks;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class SUser implements Serializable {
 	private static final long serialVersionUID = 1L;

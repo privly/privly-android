@@ -105,7 +105,7 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		if (mMessage != null) {			
+		if (mMessage != null) {
 			holder.mMessage.setText(mMessage.getMessage());
 			holder.mTine.setText(mMessage.getTime());
 			if (!mMessage.getId().equals(mFaceBookId))

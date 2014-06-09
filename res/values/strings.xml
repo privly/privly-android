@@ -28,4 +28,5 @@
 	<string name="dialog_info_title">Info</string>
 	<string name="error_inbox">Inbox is only available when connected to the internet.</string>
 	<string name="message_not_containe_privly_link">Message is not contain privly link.</string>
+	<string name="no_more_messages">No more messages.</string>
 </resources>

@@ -3,13 +3,13 @@ package ly.priv.mobile.gui.microblogs;
 import java.util.ArrayList;
 
 import ly.priv.mobile.R;
-
-import com.actionbarsherlock.app.SherlockFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockFragment;
 
 public class MicroblogListPostsActivity extends SherlockFragment {
 	private ArrayList<Post> mListPosts;

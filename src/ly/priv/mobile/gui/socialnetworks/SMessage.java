@@ -110,7 +110,6 @@ public class SMessage implements Serializable {
 		this.mUrlToAvatar = mUrlToAvatar;
 	}
 
-	
 	/**
 	 * @return the mId
 	 */
@@ -125,9 +124,8 @@ public class SMessage implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "SMessage [mMessage="
-				+ mMessage + ", mTime=" + mTime + ", mUrlToAvatar="
-				+ mUrlToAvatar + ", from=" + mFrom + "]";
+		return "SMessage [mMessage=" + mMessage + ", mTime=" + mTime
+				+ ", mUrlToAvatar=" + mUrlToAvatar + ", from=" + mFrom + "]";
 	}
 
 }
