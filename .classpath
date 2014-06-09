@@ -8,6 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/signpost-commonshttp4-1.2.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/signpost-core-1.2.1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/twitter4j-core-3.0.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="/FacebookSDK/libs/android-support-v4.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/ivan/_!Projects/Android-lib/support/v4/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
