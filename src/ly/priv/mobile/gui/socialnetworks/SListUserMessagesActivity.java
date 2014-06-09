@@ -83,11 +83,9 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		Values values = new Values(getActivity());
 		mFaceBookUserId = values.getFacebookID();
 		mSession=Session.getActiveSession();
-		Log.d(TAG, mDialogID);
 		if(mSession!=null && mSession.isOpened()){
 			getListOfMessagesFromFaceBook();
-		}		
-
+		}
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -160,9 +158,6 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 							Gson gson = new Gson();
 							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
 							mListUserMess=gson.fromJson(comments.toString(), collectionType);	
-							for (SMessage mess : mListUserMess) {
-								Log.d(TAG, mess.toString());
-							}
 							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
 						} catch (JSONException e) {
 								e.printStackTrace();
@@ -188,7 +183,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 
 		@Override
 		protected void onPreExecute() {
-	
+			 mSwipeRefreshLayout.setRefreshing(true);
 		}
 
 		@Override
@@ -207,6 +202,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 				}
 				JSONObject jsonObjectComments =new JSONObject(fbResponse);
 				JSONArray comments = jsonObjectComments.getJSONArray("data");
+				Log.d(TAG, String.valueOf(comments.length()));
 				Gson gson = new Gson();
 				Type collectionType = new TypeToken<List<SMessage>>(){}.getType();	
 				sMessages =gson.fromJson(comments.toString(), collectionType);
@@ -222,15 +218,15 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 
 		@Override
 		protected void onPostExecute(ArrayList<SMessage> result) {
-			Integer lastIndex =mListUserMess.size();
-			result.addAll(mListUserMess);			
+			Integer pos=result.size()-1;
+		result.addAll(mListUserMess);			
 			mListUserMess=result;					
 			if (mListUserMess != null) {
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
 						getActivity(), mListUserMess);
 				mListViewUserMessages
 						.setAdapter(mListUserMessagesAdapter);				
-				mListViewUserMessages.setSelection(lastIndex);
+				mListViewUserMessages.setSelection(pos);
 			}			
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
@@ -240,7 +236,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 	
 	@Override
 	public void onRefresh() {
-		 mSwipeRefreshLayout.setRefreshing(true);
+		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
 		//getNextListOfMessagesFromFaceBook();
 		FetchFaceBookNextMessages faceBookNextMessages =new FetchFaceBookNextMessages();
 		faceBookNextMessages.execute(mNextUrlForLoadingMessages);

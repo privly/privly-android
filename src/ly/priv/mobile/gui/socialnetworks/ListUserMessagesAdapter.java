@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Values;
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,10 @@ import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
 
 public class ListUserMessagesAdapter extends BaseAdapter {
-	private static LayoutInflater inflater = null;
+	private static final int TYPE_ITEM_TO = 0;
+	private static final int TYPE_ITEM_FROM = 1;
+	private static final int TYPE_MAX_COUNT = 2;
+	private static LayoutInflater mInflater = null;
 	private Activity mActivity;
 	private ImageLoader mImageLoader;
 	private ArrayList<SMessage> mListUsserMessages;
@@ -26,65 +30,89 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 	public ListUserMessagesAdapter(Activity activity, ArrayList<SMessage> list) {
 		this.mActivity = activity;
 		this.mListUsserMessages = list;
-		this.mImageLoader = new ImageLoader(
-				mActivity.getApplicationContext());
+		this.mImageLoader = new ImageLoader(mActivity.getApplicationContext());
 		this.mImageLoader.setStub_id(R.drawable.ava);
-		this.mValues=new Values(mActivity);
-		this.mFaceBookId=mValues.getFacebookID();
+		this.mValues = new Values(mActivity);
+		this.mFaceBookId = mValues.getFacebookID();
+		this.mInflater = (LayoutInflater) mActivity
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
+	@Override
 	public int getCount() {
 		return this.mListUsserMessages.size();
 	}
 
+	@Override
 	public Object getItem(int paramInt) {
 		return Integer.valueOf(paramInt);
 	}
 
+	@Override
 	public long getItemId(int paramInt) {
 		return paramInt;
 	}
 
+	@Override
+	public int getItemViewType(int position) {
+		mMessage = mListUsserMessages.get(position);
+		if (mMessage.getId().equals(mFaceBookId)) {
+			return TYPE_ITEM_TO;
+		} else {
+			return TYPE_ITEM_FROM;
+		}
+
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_MAX_COUNT;
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent) {
-		mMessage =  mListUsserMessages.get(position);
-		View vi = null;		
+		mMessage = mListUsserMessages.get(position);
+		ViewHolder holder = null;
+		int type = getItemViewType(position);
 		if (convertView == null) {
-			ViewHolder holder = new ViewHolder();			
-			if (mMessage.getId().equals(mFaceBookId)) {
-				inflater = mActivity.getLayoutInflater();
-				vi = inflater
+			holder = new ViewHolder();
+			switch (type) {
+			case TYPE_ITEM_TO:
+				convertView = mInflater
 						.inflate(
 								R.layout.item_socialnetwork_list_user_messages_to,
 								null);
+				holder.mMessage = ((TextView) convertView
+						.findViewById(R.id.tvMessageTo));
+				holder.mTine = ((TextView) convertView
+						.findViewById(R.id.tvTimeTo));
+				holder.mAvatar = new ImageView(mActivity);
+				break;
 
-				holder.mMessage = ((TextView) vi.findViewById(R.id.tvMessageTo));
-				holder.mTine = ((TextView) vi.findViewById(R.id.tvTimeTo));
-				holder.mAvatar= new ImageView(mActivity);
-			} else {
-				inflater = mActivity.getLayoutInflater();
-				vi = inflater.inflate(
+			case TYPE_ITEM_FROM:
+				convertView = mInflater.inflate(
 						R.layout.item_socialnetwork_list_user_messages_from,
 						null);
-				holder.mMessage = ((TextView) vi
+				holder.mMessage = ((TextView) convertView
 						.findViewById(R.id.tvMessageFrom));
-				holder.mTine = ((TextView) vi.findViewById(R.id.tvTimeFrom));
-				holder.mAvatar = ((ImageView) vi
+				holder.mTine = ((TextView) convertView
+						.findViewById(R.id.tvTimeFrom));
+				holder.mAvatar = ((ImageView) convertView
 						.findViewById(R.id.ivAvaFriendFrom));
+				break;
 			}
-			vi.setTag(holder);
+			convertView.setTag(holder);
 		} else {
-			vi = convertView;
+			holder = (ViewHolder) convertView.getTag();
 		}
-		
-		if (mMessage != null) {
-			ViewHolder holder = (ViewHolder) vi.getTag();
+
+		if (mMessage != null) {			
 			holder.mMessage.setText(mMessage.getMessage());
 			holder.mTine.setText(mMessage.getTime());
 			if (!mMessage.getId().equals(mFaceBookId))
 				mImageLoader.DisplayImage(mMessage.getUrlToAvatar(),
 						holder.mAvatar);
 		}
-		return vi;
+		return convertView;
 
 	}
 
