@@ -147,31 +147,36 @@ public class Home extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
-				if (position == 0) {
+				FragmentTransaction transaction = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				switch (position) {
+				case 0:
 					Toast.makeText(getActivity(),
 							"Sorry, Gmail hasn't been integrated yet.",
 							Toast.LENGTH_LONG).show();
-				} else if (position == 1) {
+					break;
+				case 1:
 					// FacebookLinkGrabberService fbGrabber = new
 					// FacebookLinkGrabberService();
-					SListUsersActivity sListUsersActivity = new SListUsersActivity();
-					FragmentTransaction transaction = getActivity()
-							.getSupportFragmentManager().beginTransaction();
+					SListUsersActivity sListUsersActivity = new SListUsersActivity();				
 					// transaction.replace(R.id.container, fbGrabber);
 					transaction.replace(R.id.container, sListUsersActivity);
 					// transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);
 					transaction.commit();
-				} else if (position == 2) {
+					break;
+				case 2:
 					// TwitterLinkGrabberService twitGrabber = new
 					// TwitterLinkGrabberService();
 					MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
-					FragmentTransaction transaction = getActivity()
-							.getSupportFragmentManager().beginTransaction();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
 					// transaction.disallowAddToBackStack();
 					transaction.commit();
+					break;				
+				default:
+					break;
 				}
+		
 
 			}
 		});
