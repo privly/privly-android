@@ -2,6 +2,7 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -10,6 +11,12 @@ import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,10 +24,13 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -150,6 +160,9 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 							Gson gson = new Gson();
 							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();
 							mListUserMess=gson.fromJson(comments.toString(), collectionType);	
+							for (SMessage mess : mListUserMess) {
+								Log.d(TAG, mess.toString());
+							}
 							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
 						} catch (JSONException e) {
 								e.printStackTrace();
@@ -169,59 +182,67 @@ public class SListUserMessagesActivity extends SherlockFragment implements OnRef
 		request.executeAsync();
 	}
 	
-	/**
-	 * Get inbox from FaceBook
-	 */
-	private void getNextListOfMessagesFromFaceBook() {
-		Log.d(TAG, "getNextListOfMessagesFromFaceBook");	
-			Log.d(TAG, mNextUrlForLoadingMessages);
-			Bundle params = new Bundle();
-			params.putString("fields",
-					"comments.fields(from.fields(id,picture),message,created_time)");
-		Request request = Request.newGraphPathRequest(mSession, mNextUrlForLoadingMessages,
-				new Request.Callback() {
-					@Override
-					public void onCompleted(Response response) {
-						if (response.getError() != null) {
-							Log.e(TAG, response.getError().getErrorMessage());						
-							AlertDialog dialog = Utilities.showDialog(
-									getActivity(),
-									getString(R.string.error_inbox));
-							dialog.show();
-							return;
-						}
-						 GraphObject graphObject = response.getGraphObject();
-						 try {			
-							JSONObject jsonObjectComments =graphObject.getInnerJSONObject().getJSONObject("comments");
-							JSONArray comments = jsonObjectComments.getJSONArray("data");
-							Gson gson = new Gson();
-							Type collectionType = new TypeToken<List<SMessage>>(){}.getType();	
-							ArrayList<SMessage> sMessages =gson.fromJson(comments.toString(), collectionType);
-							mListUserMess.addAll(sMessages);							
-							for (SMessage mess : mListUserMess) {
-								Log.d(TAG, mess.toString());
-							}
-							mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
-						//	Log.d(TAG, mNextUrlForLoadingMessages);
-						} catch (JSONException e) {
-								e.printStackTrace();
-						}
-						 
-						if (mListUserMess != null) {
-							mListUserMessagesAdapter = new ListUserMessagesAdapter(
-									getActivity(), mListUserMess);
-							mListViewUserMessages
-									.setAdapter(mListUserMessagesAdapter);
-							mListViewUserMessages.setSelection(mListUserMessagesAdapter.getCount() - 1);
-						}
+	
+	private class FetchFaceBookNextMessages extends AsyncTask<String, Void, ArrayList<SMessage>> {
 
-					}
-				});
-		request.setParameters(params);
-		request.executeAsync();
+
+		@Override
+		protected void onPreExecute() {
+	
+		}
+
+		@Override
+		protected ArrayList<SMessage> doInBackground(String... urls) {
+			String fbResponse="";
+			ArrayList<SMessage> sMessages=null;
+			try {
+				// Make GET Request
+				HttpClient client = new DefaultHttpClient();
+				HttpGet get = new HttpGet(urls[0]);
+				HttpResponse responseGet = client.execute(get);
+				HttpEntity resEntityGet = responseGet.getEntity();
+				if (resEntityGet != null) {
+					fbResponse = EntityUtils.toString(resEntityGet);
+
+				}
+				JSONObject jsonObjectComments =new JSONObject(fbResponse);
+				JSONArray comments = jsonObjectComments.getJSONArray("data");
+				Gson gson = new Gson();
+				Type collectionType = new TypeToken<List<SMessage>>(){}.getType();	
+				sMessages =gson.fromJson(comments.toString(), collectionType);
+				mNextUrlForLoadingMessages=jsonObjectComments.getJSONObject("paging").getString("next");
+			}
+
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return sMessages;
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<SMessage> result) {
+			Integer lastIndex =mListUserMess.size();
+			result.addAll(mListUserMess);			
+			mListUserMess=result;					
+			if (mListUserMess != null) {
+				mListUserMessagesAdapter = new ListUserMessagesAdapter(
+						getActivity(), mListUserMess);
+				mListViewUserMessages
+						.setAdapter(mListUserMessagesAdapter);				
+				mListViewUserMessages.setSelection(lastIndex);
+			}			
+			mSwipeRefreshLayout.setRefreshing(false);
+		}
+		
 	}
+	
+	
 	@Override
 	public void onRefresh() {
-		getNextListOfMessagesFromFaceBook();
+		 mSwipeRefreshLayout.setRefreshing(true);
+		//getNextListOfMessagesFromFaceBook();
+		FetchFaceBookNextMessages faceBookNextMessages =new FetchFaceBookNextMessages();
+		faceBookNextMessages.execute(mNextUrlForLoadingMessages);
 	}
 }
