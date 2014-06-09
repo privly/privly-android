@@ -25,6 +25,7 @@ public class SUser implements Serializable {
 
 	/**
 	 * Constructor for SUser
+	 * 
 	 * @param mUserName - uusername from which the messages was received
 	 * @param mUrlToAvatar url to avatar of user from which the messages was received
 	 * @param mTime - time when the user received last message
