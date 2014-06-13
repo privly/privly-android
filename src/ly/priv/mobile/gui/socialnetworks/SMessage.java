@@ -11,10 +11,13 @@ import com.google.gson.annotations.SerializedName;
  * 
  * Annotation is used for generate list of messages from json via Gson library.
  * 
- * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
- */
-/**
+ * <p>
+ * Dependencies :
+ * <ul>
+ * <li>/privly-android/libs/gson.jar</li>
+ * </ul>
+ * </p>
+ * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  *
  */

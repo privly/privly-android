@@ -47,7 +47,13 @@ import com.facebook.model.GraphUser;
  * SListUserMessagesActivity Fragment</li>
  * </ul>
  * </p>
- * 
+ * <p>
+ * Dependencies :
+ * <ul>
+ * <li>/privly-android/libs/gson.jar</li>
+ * <li>/privly-android/libs/android-support-v4.jar</li>
+ * </ul>
+ * </p>
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
