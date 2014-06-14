@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -274,7 +276,7 @@ public class Utilities {
 	 * @return
 	 * @author Ivan Metla 
 	 */
-	public static String getTime(String time) {
+	public static String getTimeForFacebook(String time) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 				"yyyy-MM-dd'T'HH:mm:ssZ");
 		Date date = null;
@@ -301,6 +303,33 @@ public class Utilities {
 		return simpleDateFormat.format(fDate.getTime());
 	}
 	
+	/**
+	 * Conversion Twitter time into local time
+	 * 
+	 * @param time
+	 * @return
+	 * @author Ivan Metla 
+	 */
+	public static String getTimeForTwitter(Date date) {
+		SimpleDateFormat simpleDateFormat;
+
+		Calendar tDate = Calendar.getInstance();
+		tDate.setTime(date);
+		Calendar curDate = Calendar.getInstance();		
+		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
+					.get(Calendar.DAY_OF_YEAR)) {
+				return new SimpleDateFormat("h:m").format(new Timestamp(curDate.getTimeInMillis()-tDate.getTimeInMillis()));
+			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == tDate
+					.get(Calendar.WEEK_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+			} else
+				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+		} else {
+			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+		}
+		return simpleDateFormat.format(tDate.getTime());
+	}
 	  /**
 	   * Check for Null or Whitespace
 	   * @param string

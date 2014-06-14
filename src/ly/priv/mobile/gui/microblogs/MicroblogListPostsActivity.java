@@ -1,6 +1,7 @@
 package ly.priv.mobile.gui.microblogs;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ly.priv.mobile.ConstantValues;
 import ly.priv.mobile.R;
@@ -49,23 +50,13 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		initializeComponent(view);
 		mValues = new Values(getActivity());
-		// if (!Utilities.IsNetworkAvailable(getActivity())) {
-		// AlertMessageBox.Show(getActivity(), "Internet connection",
-		// "A valid internet connection can't be established",
-		// AlertMessageBox.AlertMessageBoxIcon.Info);
-		//
-		// }
-		/*
-		 * this.mListViewPosts = ((ListView) view.findViewById(R.id.lView));
-		 * mListPosts = new ArrayList<Post>(); mListPosts.add(new Post("name1",
-		 * "Nic1", "1d", "Mess on twits", "")); mListPosts.add(new Post("name2",
-		 * "Nic2", "3d", "Mess on twits", "")); mListPosts.add(new Post("name3",
-		 * "Nic3", "4d", "Mess on twits", "")); mListPosts.add(new Post("name4",
-		 * "Nic4", "5d", "Mess on twits", "")); if (mListPosts != null) {
-		 * mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-		 * mListPosts); mListViewPosts.setAdapter(mListMicroblogAdapter); }
-		 */
-		logIn();
+		if (!Utilities.isDataConnectionAvailable(getActivity())) {
+			Log.d(TAG, getString(R.string.no_internet_connection));
+			Utilities.showToast(getActivity(),
+					getString(R.string.no_internet_connection), true);
+		} else {			
+			logIn();
+		}
 		return view;
 	}
 
@@ -82,6 +73,7 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 
 	}
+
 	/**
 	 * Inflate options menu with the layout
 	 */
@@ -112,6 +104,7 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
 	/**
 	 * Method for run login or show tweets
 	 */
@@ -160,54 +153,60 @@ public class MicroblogListPostsActivity extends SherlockFragment {
 			return TwitterUtil.getInstance().getRequestToken();
 		}
 	}
-/**
- * AsyncTask for get Access Token
- * 
- * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
- */
-	class TwitterGetAccessTokenTask extends AsyncTask<String, String, String> {
+
+	/**
+	 * AsyncTask for get Access Token
+	 * 
+	 * @author Ivan Metla e-mail: metlaivan@gmail.com
+	 * 
+	 */
+	class TwitterGetAccessTokenTask extends AsyncTask<String, String, List<twitter4j.Status> > {
 
 		@Override
-		protected void onPostExecute(String userName) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");
-			if (userName != null)
-				Log.d(TAG, userName);
+		protected void onPostExecute(List<twitter4j.Status>  statuses) {
+			Log.d(TAG, "TwitterGetAccessTokenTask");			
+			if (statuses != null){			
+			    Log.d(TAG, "Showing home timeline.");
+			    mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
+						  (ArrayList<twitter4j.Status>) statuses); 
+			    mListViewPosts.setAdapter(mListMicroblogAdapter); 
+			}
+				
 			mProgressBar.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected List<twitter4j.Status> doInBackground(String... params) {
 
 			Twitter twitter = TwitterUtil.getInstance().getTwitter();
 			RequestToken requestToken = TwitterUtil.getInstance()
 					.getRequestToken();
+			AccessToken accessToken = null;
 			if (!Utilities.isNullOrWhitespace(params[0])) {
 				try {
-					AccessToken accessToken = twitter.getOAuthAccessToken(
-							requestToken, params[0]);
+					accessToken = twitter.getOAuthAccessToken(requestToken,
+							params[0]);
 					mValues.setTwitterOauthToken(accessToken.getToken());
 					mValues.setTwitterOauthTokenSecret(accessToken
-							.getTokenSecret());				
-					return twitter.showUser(accessToken.getUserId()).getName();
-				} catch (TwitterException e) {
-					e.printStackTrace(); 
-				}
-			} else {
-				String accessTokenString = mValues.getTwitterOauthToken();
-				String accessTokenSecret = mValues.getTwitterOauthToken();
-				AccessToken accessToken = new AccessToken(accessTokenString,
-						accessTokenSecret);
-				try {
-					TwitterUtil.getInstance().setTwitterFactory(accessToken);
-					return TwitterUtil.getInstance().getTwitter()
-							.showUser(accessToken.getUserId()).getName();
+							.getTokenSecret());
 				} catch (TwitterException e) {
 					e.printStackTrace();
 				}
+			} else {
+				String accessTokenString = mValues.getTwitterOauthToken();
+				String accessTokenSecret = mValues.getTwitterOauthTokenSecret();
+				accessToken = new AccessToken(accessTokenString,
+						accessTokenSecret);
+				TwitterUtil.getInstance().setTwitterFactory(accessToken);
 			}
 
-			return null;
+			try {
+				List<twitter4j.Status> statuses = TwitterUtil.getInstance().getTwitter().getHomeTimeline();
+				return statuses;
+			} catch (TwitterException e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 	}
 

@@ -121,7 +121,7 @@ public class SMessage implements Serializable {
 	 * @return time
 	 */
 	public String getTime() {
-		return Utilities.getTime(mTime);
+		return Utilities.getTimeForFacebook(mTime);
 	}
 
 	/**

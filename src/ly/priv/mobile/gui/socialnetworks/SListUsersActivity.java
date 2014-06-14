@@ -287,7 +287,7 @@ public class SListUsersActivity extends SherlockFragment {
 								JSONObject dialog = listUsersWIthLastMessage
 										.getJSONObject(i);
 								sUser.setDialogId(dialog.getString("id"));
-								sUser.setTime(Utilities.getTime(dialog
+								sUser.setTime(Utilities.getTimeForFacebook(dialog
 										.getString("updated_time")));
 								JSONArray to = dialog.getJSONObject("to")
 										.getJSONArray("data");

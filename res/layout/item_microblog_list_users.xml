@@ -17,10 +17,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/ivAvaFriend"
-        android:layout_toLeftOf="@+id/tvNic"
         android:layout_toRightOf="@+id/ivAvaFriend"
         android:ellipsize="end"
         android:maxLines="1"
+        android:text="name"
         android:textSize="15.0sp"
         android:textStyle="bold" />
 
@@ -39,19 +39,21 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/tvNic"
+        android:text="time"
         android:textColor="@color/gray" />
 
     <TextView
         android:id="@+id/tvNic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tvMessage"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_alignBaseline="@+id/tvUserName"
+        android:layout_alignBottom="@+id/tvUserName"
         android:layout_toLeftOf="@+id/tvTime"
+        android:layout_toRightOf="@+id/tvUserName"
         android:ellipsize="end"
         android:gravity="left"
         android:maxLines="1"
+        android:text="nic"
         android:textSize="13sp" />
 
 </RelativeLayout>
