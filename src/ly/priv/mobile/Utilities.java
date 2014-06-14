@@ -314,12 +314,14 @@ public class Utilities {
 		SimpleDateFormat simpleDateFormat;
 
 		Calendar tDate = Calendar.getInstance();
-		tDate.setTime(date);
-		Calendar curDate = Calendar.getInstance();		
+		tDate.setTime(date);		
+		Calendar curDate = Calendar.getInstance();	
+		System.out.println("cur="+curDate.getTime().toString());
+		System.out.println("tdata="+tDate.getTime().toString());
 		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
 			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
 					.get(Calendar.DAY_OF_YEAR)) {
-				return new SimpleDateFormat("h:m").format(new Timestamp(curDate.getTimeInMillis()-tDate.getTimeInMillis()));
+				simpleDateFormat =  new SimpleDateFormat("HH:mm");
 			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == tDate
 					.get(Calendar.WEEK_OF_YEAR)) {
 				simpleDateFormat = new SimpleDateFormat("E, HH:mm");

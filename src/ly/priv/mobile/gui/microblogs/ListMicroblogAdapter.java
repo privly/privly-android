@@ -1,9 +1,9 @@
 package ly.priv.mobile.gui.microblogs;
 
 import java.util.ArrayList;
-
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.fedorvlasov.lazylist.ImageLoader;
 
 public class ListMicroblogAdapter extends BaseAdapter {
@@ -41,11 +40,13 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		return paramInt;
 	}
 
+	@SuppressLint("NewApi")
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = null;
 		if (convertView == null) {
 			inflater = this.mActivity.getLayoutInflater();
 			vi = inflater.inflate(R.layout.item_microblog_list_users, null);
+			vi.setRotation(180);
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.mName = ((TextView) vi.findViewById(R.id.tvUserName));
 			viewHolder.mNic = ((TextView) vi.findViewById(R.id.tvNic));
@@ -57,14 +58,14 @@ public class ListMicroblogAdapter extends BaseAdapter {
 			vi = convertView;
 		}
 
-		mPost = mListPosts.get(position);
+		mPost = mListPosts.get(getCount()-position-1);
 		if (this.mPost != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
 			holder.mName.setText(mPost.getUser().getName());
 			holder.mNic.setText("@"+mPost.getUser().getScreenName());
 			holder.mMessage.setText(mPost.getText());
 			holder.mTine.setText(Utilities.getTimeForTwitter(mPost.getCreatedAt()));
-			mImageLoader.DisplayImage(mPost.getUser().getMiniProfileImageURL(),
+			mImageLoader.DisplayImage(mPost.getUser().getBiggerProfileImageURL(),
 					holder.mAvatar);
 		}
 		return vi;
