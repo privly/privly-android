@@ -7,6 +7,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.gui.microblogs.MicroblogListPostsActivity;
+import ly.priv.mobile.gui.microblogs.TwitterUtil;
 import ly.priv.mobile.gui.socialnetworks.SListUsersActivity;
 
 import org.apache.http.HttpEntity;
@@ -21,9 +22,11 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import twitter4j.auth.RequestToken;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,7 +59,7 @@ public class Home extends SherlockFragment {
 
 	ListView readListView, createListView;
 	String loginResponse;
-
+	private static final String TAG = "Home";
 	public Home() {
 
 	}
@@ -165,13 +168,14 @@ public class Home extends SherlockFragment {
 					transaction.addToBackStack(null);
 					transaction.commit();
 					break;
-				case 2:
-					// TwitterLinkGrabberService twitGrabber = new
-					// TwitterLinkGrabberService();
-					MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
-					transaction.replace(R.id.container, twitGrabber, "Twitter");
-					// transaction.disallowAddToBackStack();
-					transaction.commit();
+				case 2:					
+						// TwitterLinkGrabberService twitGrabber = new
+						// TwitterLinkGrabberService();
+						MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
+						transaction.replace(R.id.container, twitGrabber, "Twitter");
+						//transaction.disallowAddToBackStack();
+						transaction.commit();
+									
 					break;				
 				default:
 					break;
@@ -305,4 +309,6 @@ public class Home extends SherlockFragment {
 		}
 	}
 
+		
+			
 }

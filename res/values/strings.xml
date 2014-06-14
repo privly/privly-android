@@ -24,6 +24,7 @@
     <string name="logoutFacebook"> Logout From Facebook</string>
     <string name="privly_home">Privly Home</string>
     <string name="privly_Facebook">Privly Facebook</string>
+     <string name="privly_Twitter">Privly Twitter</string>
     <string name="set_content_server">Content Server Location</string>
 	<string name="dialog_info_title">Info</string>
 	<string name="error_inbox">Inbox is only available when connected to the internet.</string>

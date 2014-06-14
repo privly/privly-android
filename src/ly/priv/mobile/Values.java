@@ -164,19 +164,102 @@ public final class Values {
 		return swipeValues;
 	}
 
+	// / -------- FaceBook------------------------
+	/**
+	 * Set FaceBook user ID
+	 * 
+	 * @param id
+	 *            - Facebook user id
+	 * @author Ivan Metla
+	 */
 	public void setFacebookID(String id) {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
 		Editor editor = sharedPrefs.edit();
-		editor.putString("FacebookID", id);
+		editor.putString(ConstantValues.PREFERENCE_FACEBOOK_USER_ID, id);
 		editor.commit();
 	}
 
+	/**
+	 * Get Facebook User ID
+	 * 
+	 * @return Facebook user ID
+	 * @author Ivan Metla
+	 */
 	public String getFacebookID() {
 		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getString("FacebookID", "");
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_FACEBOOK_USER_ID, "");
+	}
+
+	// / -------- Twitter------------------------
+	/**
+	 * Set Twitter Logged in
+	 * 
+	 * @param loggedIn
+	 */
+	public void setTwitterLoggedIn(boolean loggedIn) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putBoolean(ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN,
+				loggedIn);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Logged in
+	 * 
+	 * @return Twitter Logged in
+	 */
+	public boolean getTwitterLoggedIn() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getBoolean(
+				ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN, false);
+	}
+
+	/**
+	 * Set Twitter Oauth Token
+	 * 
+	 * @param token
+	 */
+	public void setTwitterOauthToken(String token) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, token);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Oauth Token
+	 * 
+	 * @return
+	 */
+	public String getTwitterOauthToken() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, "");
+	}
+
+	/**
+	 * Set Twitter Oauth Token Secret
+	 * 
+	 * @param tokenSecret
+	 */
+	public void setTwitterOauthTokenSecret(String tokenSecret) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
+				tokenSecret);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Oauth Token Secret
+	 * 
+	 * @return
+	 */
+	public String getTwitterOauthTokenSecret() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, "");
 	}
 }
-
-/**
- *
- **/

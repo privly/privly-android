@@ -272,6 +272,7 @@ public class Utilities {
 	 * 
 	 * @param time
 	 * @return
+	 * @author Ivan Metla 
 	 */
 	public static String getTime(String time) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
@@ -299,4 +300,13 @@ public class Utilities {
 		}
 		return simpleDateFormat.format(fDate.getTime());
 	}
+	
+	  /**
+	   * Check for Null or Whitespace
+	   * @param string
+	   * @return
+	   */
+	  public static boolean isNullOrWhitespace(String string) {
+	        return string == null || string.isEmpty() || string.trim().isEmpty();
+	    }
 }

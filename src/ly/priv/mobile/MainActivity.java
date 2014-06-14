@@ -1,34 +1,30 @@
 package ly.priv.mobile;
 
-import android.content.Intent;
+import ly.priv.mobile.gui.microblogs.MicroblogListPostsActivity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 public class MainActivity extends SherlockFragmentActivity {
 	Uri uri;
-
+	private static final String TAG = "MainActivity";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (savedInstanceState == null) {
+		Log.d(TAG, "onCreate MainActivity");
+		uri = getIntent().getData();
+		if(uri!=null){
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new Home()).commit();
-		}
-	}
-
-	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		NewIntentListener newIntentListener = (NewIntentListener) this
-				.getSupportFragmentManager().findFragmentByTag("Twitter");
-		newIntentListener.onNewIntentRead(intent);
-	}
-
-	public interface NewIntentListener {
-		public void onNewIntentRead(Intent intent);
+			.add(R.id.container, new MicroblogListPostsActivity()).commit();
+		}else{
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.add(R.id.container, new Home()).commit();
+			}
+		}	
+		
 	}
 }
