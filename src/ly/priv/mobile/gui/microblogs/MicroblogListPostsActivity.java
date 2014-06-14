@@ -5,11 +5,14 @@ import java.util.List;
 
 import ly.priv.mobile.ConstantValues;
 import ly.priv.mobile.R;
+import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import android.annotation.SuppressLint;
@@ -17,6 +20,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
@@ -24,8 +28,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -86,6 +93,39 @@ OnRefreshListener{
 				android.R.color.holo_green_light,
 				android.R.color.holo_orange_light,
 				android.R.color.holo_red_light);
+		mListViewPosts.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				String url="";
+				URLEntity[] entities = mPosts.get(mPosts.size()-position-1).getURLEntities();
+				for (int i = 0; i < entities.length; i++) {
+					// Since urls are shortened by the twitter t.co
+					// service, get the expanded urls to search for
+					// Privly links
+					url+="  "+ entities[i].getExpandedURL();
+				}
+				
+				ArrayList<String> listOfUrls = Utilities
+						.fetchPrivlyUrls(url);
+				if (listOfUrls.size() > 0) {
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ShowContent showContent = new ShowContent();
+					Bundle bundle = new Bundle();
+					bundle.putStringArrayList("listOfLinks", listOfUrls);
+					showContent.setArguments(bundle);
+					transaction.replace(R.id.container, showContent);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					Toast.makeText(getActivity(),
+							R.string.message_not_containe_privly_link,
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 	}
 
 	/**
@@ -181,6 +221,9 @@ OnRefreshListener{
 			Log.d(TAG, "TwitterGetAccessTokenTask");			
 			if (statuses != null){			
 			    Log.d(TAG, "Showing home timeline.");
+			    for (twitter4j.Status status : statuses) {
+					Log.d(TAG, status.toString());
+				}
 			    mPosts=new ArrayList<twitter4j.Status>(statuses);
 			    mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
 						  mPosts); 
