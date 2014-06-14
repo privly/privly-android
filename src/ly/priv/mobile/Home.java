@@ -174,6 +174,7 @@ public class Home extends SherlockFragment {
 						MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
 						transaction.replace(R.id.container, twitGrabber, "Twitter");
 						//transaction.disallowAddToBackStack();
+						transaction.addToBackStack(null);
 						transaction.commit();
 									
 					break;				
