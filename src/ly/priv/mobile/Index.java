@@ -1,8 +1,5 @@
 package ly.priv.mobile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
@@ -18,64 +15,62 @@ import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
- * Displays the Home Activity for a user after authentication. Gives the user
- * options to Create New Privly posts or Read Privly Posts from his social /
- * email feed.
+ * Displays the Index application for a user after authentication. 
  *
- * @author Shivam Verma
+ * @author Gitanshu Sardana
  */
-public class Home extends SherlockFragment {
+@SuppressLint("NewApi")
+public class Index extends SherlockFragment {
 
 	ListView readListView, createListView;
 	String loginResponse;
+	WebView w;
 
-	public Home(){
-		
+	public Index(){
+		Log.d("jsgfwef","kwjebfkjef");
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
-		View view = inflater.inflate(R.layout.home, container, false);
+		View view = inflater.inflate(R.layout.new_post, container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_home);
 		container.removeAllViews();
-		TextView createHeadingEditText = (TextView) view.findViewById(R.id.createNewHeadingTextView);
-		TextView readHeadingEditText = (TextView) view.findViewById(R.id.readPostsHeadingTextView);
-		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
-				"fonts/Lobster.ttf");
-		createHeadingEditText.setTypeface(lobster);
-		readHeadingEditText.setTypeface(lobster);
-
+		w = (WebView) view.findViewById(R.id.webview_1);
+		w.getSettings().setJavaScriptEnabled(true);
+		w.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		Boolean isRedirected = null;
 		try {
-			Boolean isRedirected = getArguments().getBoolean("isRedirected");
+			isRedirected = getArguments().getBoolean("isRedirected");
+			getActivity().setTitle("Index");
+			loadIndex();
 		} catch (NullPointerException e) {
+			Log.d("isRedirected",""+isRedirected);
 			Values values = new Values(getActivity());
 			// Checks if the User has already been verified at the Login Screen.
 			// If yes, prevents re authentication. If not, creates and executes
@@ -86,89 +81,35 @@ public class Home extends SherlockFragment {
 						+ "/token_authentications.json");
 			} else
 				values.setUserVerifiedAtLogin(false);
+				loadIndex();
 		}
-
-		// Create two ListViews which display create/read options.
-		final String[] arrCreate = {"PlainPost", "ZeroBin"};
-		final String[] arrRead = {"GMail", "Facebook", "Twitter"};
-		ArrayList<String> createArrayList = new ArrayList<String>(
-				Arrays.asList(arrCreate));
-		ArrayList<String> readArrayList = new ArrayList<String>(
-				Arrays.asList(arrRead));
-
-		createListView = (ListView) view.findViewById(R.id.create_listView);
-		readListView = (ListView) view.findViewById(R.id.read_listView);
-
-		ArrayAdapter<String> createArrayAdapter = new ArrayAdapter<String>(
-				getActivity(), R.layout.list_item, createArrayList);
-		ArrayAdapter<String> readArrayAdapter = new ArrayAdapter<String>(getActivity(),
-				R.layout.list_item, readArrayList);
-
-		createListView.setAdapter(createArrayAdapter);
-		readListView.setAdapter(readArrayAdapter);
-
-		// OnItemClickListener for creating posts ListView. The name of the
-		// selected Posting app is sent with the intent to {@link
-		// ly.priv.mobile.NewPost} Activity.
-		createListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				if (Utilities
-						.isDataConnectionAvailable(getActivity())) {
-					Fragment gotoCreateNewPost = new NewPost();
-					Bundle bundle = new Bundle();
-					bundle.putString("JsAppName", arrCreate[position]);
-					gotoCreateNewPost.setArguments(bundle);
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-					transaction.replace(R.id.container, gotoCreateNewPost);
-					transaction.addToBackStack("home");
-					transaction.commit();
-				} else
-					Utilities.showToast(getActivity(),
-							"Oops! Seems like there\'s no data connection.",
-							true);
-			}
-		});
-
-		// OnItemClickListener for Reading posts ListView. Redirects User to
-		// LinkGrabber Service of the respective platform.
-		// For Twitter - {@link ly.priv.mobile.TwitterLinkGrabberService}
-		// For Facebook - {@link ly.priv.mobile.FacebookLinkGrabberService}
-		readListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				if (position == 0) {
-					Toast.makeText(getActivity(),
-							"Sorry, Gmail hasn't been integrated yet.",
-							Toast.LENGTH_LONG).show();
-				} else if (position == 1) {
-					FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-					transaction.replace(R.id.container, fbGrabber);
-					transaction.disallowAddToBackStack();
-					transaction.commit();
-				} else if (position == 2) {
-					TwitterLinkGrabberService twitGrabber = new TwitterLinkGrabberService();
-					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-					transaction.replace(R.id.container, twitGrabber, "Twitter");
-					transaction.disallowAddToBackStack();
-					transaction.commit();
-				}
-
-			}
-		});
-		Log.d("fragments", "Home");
 		return view;
 	}
+	
+	void loadIndex(){
+		w.addJavascriptInterface(new JsObject(getActivity()), "androidJsBridge");
+
+		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
+			w.getSettings().setAllowUniversalAccessFromFileURLs(true);
+		// Logs all Js Console messages on the logcat.
+		w.setWebChromeClient(new WebChromeClient() {
+			@Override
+			public boolean onConsoleMessage(ConsoleMessage cm) {
+				Log.d("JsApplication",
+						cm.message() + " -- From line " + cm.lineNumber()
+								+ " of " + cm.sourceId());
+				return true;
+			}
+		});
+		w.loadUrl("file:///android_asset/PrivlyApplications/Index/new.html");
+	}
+
 	/**
 	 * Inflate options menu with the layout
 	 */
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 		inflater.inflate(R.layout.menu_layout_home, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -204,7 +145,7 @@ public class Home extends SherlockFragment {
 				return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
 	/**
 	 * Verifies the validity of existing auth_token. If expired, redirect to
 	 * {@link ly.priv.mobile.Login}
@@ -265,6 +206,7 @@ public class Home extends SherlockFragment {
 					Values values = new Values(getActivity());
 					values.setAuthToken(authToken);
 					values.setUserVerifiedAtLogin(false);
+					loadIndex();
 					Utilities.showToast(getActivity(),
 							"Good to go! Select an option.", false);
 				} else {
@@ -283,6 +225,7 @@ public class Home extends SherlockFragment {
 				}
 			} catch (Exception e) {
 			}
+			
 		}
 	}
 

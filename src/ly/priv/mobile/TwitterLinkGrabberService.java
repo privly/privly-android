@@ -8,8 +8,8 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
-
 import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,12 +17,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import ly.priv.mobile.MainActivity.NewIntentListener;
+
+import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * Grabs Privly links from a twitter user's timeline and stores them in the
@@ -44,13 +52,15 @@ import java.util.List;
  * not, Redirect user to authentication link</li>
  * <li>Setup the Twitter Object using Access Token and Consumer Data : Consumer
  * Key and Consumer Secret</li>
+ * <li>Get the login data from the intent received from MainActivity through 
+ * the NewIntentListener interface</li> 
  * </ul>
  * </p>
  *
  * @author Shivam Verma
  *
  */
-public class TwitterLinkGrabberService extends Activity {
+public class TwitterLinkGrabberService extends SherlockFragment implements NewIntentListener {
 
 	// TwitterProperties
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
@@ -75,13 +85,19 @@ public class TwitterLinkGrabberService extends Activity {
 	String verifier;
 	Context context;
 	ProgressDialog progressDialog;
+	
+	public TwitterLinkGrabberService(){
+		
+	}
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
 		Log.d("TAG", "onCreate");
-		setContentView(R.layout.link_grabber_service);
-		context = getApplicationContext();
-		progressDialog = new ProgressDialog(this);
+		View view = inflater.inflate(R.layout.link_grabber_service, container, false);
+		context = getActivity();
+		getActivity().setTitle("TWITTER");
+		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCanceledOnTouchOutside(false);
 
 		// Checks if the user has already authenticated with the application. If
@@ -97,9 +113,9 @@ public class TwitterLinkGrabberService extends Activity {
 			}).start();
 		} else {
 			String twitterToken = TwitterHelperMethods
-					.getTwitterToken(getApplicationContext());
+					.getTwitterToken(getActivity());
 			String twitterTokenSecret = TwitterHelperMethods
-					.getTwitterTokenSecret(getApplicationContext());
+					.getTwitterTokenSecret(getActivity());
 			Log.d("tokenSecret", twitterTokenSecret);
 			if (twitterToken != null && twitterTokenSecret != null) {
 
@@ -113,6 +129,7 @@ public class TwitterLinkGrabberService extends Activity {
 			}
 
 		}
+		return view;
 
 	}
 
@@ -134,7 +151,7 @@ public class TwitterLinkGrabberService extends Activity {
 			this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
 					.parse(authUrl)));
 		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+			Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -143,8 +160,8 @@ public class TwitterLinkGrabberService extends Activity {
 	 * with twitter permissions.
 	 */
 	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
+	public void onNewIntentRead(Intent intent) {
+
 
 		Uri uri = intent.getData();
 		if (uri != null && uri.toString().startsWith(CALLBACKURL)) {
@@ -212,16 +229,13 @@ public class TwitterLinkGrabberService extends Activity {
 
 				case THREAD_COMPLETE :
 					progressDialog.dismiss();
+					Fragment showContent = new ShowContent();
 					Bundle bundle = new Bundle();
 					bundle.putString("contentSource", "TWITTER");
-					Intent showContentIntent = new Intent(
-							TwitterLinkGrabberService.this, ShowContent.class);
-					showContentIntent.putExtras(bundle);
-					startActivity(showContentIntent);
-					// Clear this activity from stack so that the user is taken
-					// to the Home Screen on back press
-					TwitterLinkGrabberService.this.finish();
-
+					showContent.setArguments(bundle);
+					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					transaction.replace(R.id.container, showContent);
+					transaction.commit();
 			}
 		}
 	};
@@ -262,7 +276,7 @@ public class TwitterLinkGrabberService extends Activity {
 								// Checks if the link already exists in local
 								// Db. If not, Insert into Db.
 								if (!Utilities.ifLinkExistsInDb(
-										getApplicationContext(), url,
+										getActivity(), url,
 										SOURCE_TWITTER)) {
 									Log.d("INSERTING URL", url);
 									Utilities.insertIntoDb(context,
@@ -279,7 +293,7 @@ public class TwitterLinkGrabberService extends Activity {
 				Message msgFinal = Message.obtain();
 				msgFinal.what = THREAD_COMPLETE;
 				handler.sendMessage(msgFinal);
-
+				Log.d("Twitter", "readDone");
 			}
 		}).start();
 
