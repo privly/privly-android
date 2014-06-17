@@ -96,6 +96,7 @@ public class TwitterLinkGrabberService extends SherlockFragment implements NewIn
 		Log.d("TAG", "onCreate");
 		View view = inflater.inflate(R.layout.link_grabber_service, container, false);
 		context = getActivity();
+		getActivity().setTitle("TWITTER");
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCanceledOnTouchOutside(false);
 

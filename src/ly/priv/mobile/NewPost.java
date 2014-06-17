@@ -40,9 +40,10 @@ public class NewPost extends SherlockFragment {
 		setHasOptionsMenu(true);
 		// Fetch selected Js app's name and load the respective JS app into
 		// WebView.
-
+		
 		if (bundle.getString("JsAppName") != null) {
 			String JsAppName = bundle.getString("JsAppName");
+			getActivity().setTitle(JsAppName);
 			WebView w = (WebView) view.findViewById(R.id.webview_1);
 			w.getSettings().setJavaScriptEnabled(true);
 			w.addJavascriptInterface(new JsObject(getActivity()), "androidJsBridge");

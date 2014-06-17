@@ -72,9 +72,10 @@ public class ShowContent extends SherlockFragment {
 		View view = inflater.inflate(R.layout.show_content, container, false);
 		//Bundle bundle = this.getIntent().getExtras();
 		contentSource = getArguments().getString("contentSource");
+		getActivity().setTitle(contentSource);
 		View webView = view.findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
-
+		setHasOptionsMenu(true);
 		urlContentWebView.getSettings().setJavaScriptEnabled(true);
 
 		// Add JavaScript Interface to the WebView. This enables the JS to
@@ -112,18 +113,14 @@ public class ShowContent extends SherlockFragment {
 			Toast.makeText(getActivity(),
 					"No Privly Links found for" + contentSource,
 					Toast.LENGTH_LONG).show();
-			Fragment goToHome = new Home();
+			Fragment goToIndex = new Index();
 			FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-			//Intent goToHome = new Intent(this, MainActivity.class);
 			Bundle bundle_2 = new Bundle();
 			bundle_2.putBoolean("isRedirected", true);
-			goToHome.setArguments(bundle_2);
-			//goToHome.putExtras(bundle_2);
-			Log.d("fragments", "go home");
-			//startActivity(goToHome);
-			transaction.replace(R.id.container, goToHome);
+			goToIndex.setArguments(bundle_2);
+			Log.d("fragments", "go index");
+			transaction.replace(R.id.container, goToIndex);
 			transaction.commit();
-			//finish();
 
 		} else {
 			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
@@ -138,18 +135,14 @@ public class ShowContent extends SherlockFragment {
 				Toast.makeText(getActivity(),
 						"No Privly Links found for " + contentSource,
 						Toast.LENGTH_LONG).show();
-				Fragment goToHome = new Home();
+				Fragment goToIndex = new Index();
 				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-				//Intent goToHome = new Intent(this, MainActivity.class);
 				Bundle bundle_2 = new Bundle();
 				bundle_2.putBoolean("isRedirected", true);
-				goToHome.setArguments(bundle_2);
-				//goToHome.putExtras(bundle_2);
+				goToIndex.setArguments(bundle_2);
 				Log.d("fragments", "go home");
-				//startActivity(goToHome);
-				transaction.replace(R.id.container, goToHome);
+				transaction.replace(R.id.container, goToIndex);
 				transaction.commit();
-				//finish();
 			}
 
 		}
