@@ -100,10 +100,10 @@ public class ListUsersFragment extends SherlockFragment {
 			}
 		});
 		new getData().execute();
-		
+
 		return view;
 	}
-	
+
 	private class getData extends AsyncTask<Void, Void, Void> {
 
 		@Override
@@ -119,15 +119,17 @@ public class ListUsersFragment extends SherlockFragment {
 		 */
 		@Override
 		protected void onPostExecute(Void result) {
-			mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
-					mListUserMess);
-			mListViewUsers.setAdapter(mListUserMessagesAdapter);
+			if (mListUserMess != null) {
+				mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
+						mListUserMess);
+				mListViewUsers.setAdapter(mListUserMessagesAdapter);
+			}
 			mProgressBar.setVisibility(View.INVISIBLE);
 			super.onPostExecute(result);
 		}
 
 	}
-	
+
 	/**
 	 * Inflate options menu with the layout
 	 */
@@ -165,6 +167,5 @@ public class ListUsersFragment extends SherlockFragment {
 	public void setmISocialNetworks(ISocialNetworks mISocialNetworks) {
 		this.mISocialNetworks = mISocialNetworks;
 	}
-
 
 }

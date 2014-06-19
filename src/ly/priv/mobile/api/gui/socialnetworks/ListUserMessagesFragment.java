@@ -1,27 +1,12 @@
 package ly.priv.mobile.api.gui.socialnetworks;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,12 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.model.GraphObject;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Showing messages in chose dialog
@@ -152,18 +131,19 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		 */
 		@Override
 		protected void onPostExecute(Void result) {
-			mListUserMessagesAdapter = new ListUserMessagesAdapter(
-					getActivity(), mListUserMess);
-			mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
-			mListViewUserMessages.setSelection(mListUserMessagesAdapter
-					.getCount() - 1);
+			if (mListUserMess != null) {
+				mListUserMessagesAdapter = new ListUserMessagesAdapter(
+						getActivity(), mListUserMess);
+				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
+				mListViewUserMessages.setSelection(mListUserMessagesAdapter
+						.getCount() - 1);
+			}
 			mProgressBar.setVisibility(View.INVISIBLE);
 			super.onPostExecute(result);
 		}
 
 	}
 
-	
 	/**
 	 * AsyncTask for getting next messages for current DialogId
 	 * 
@@ -182,7 +162,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		protected ArrayList<SMessage> doInBackground(String... urls) {
 			HashMap<String, Object> res = (HashMap<String, Object>) mISocialNetworks
 					.fetchNextMessages(urls[0]);
-			ArrayList<SMessage> sMessages =null;
+			ArrayList<SMessage> sMessages = null;
 			if (res != null) {
 				sMessages = (ArrayList<SMessage>) res.get("Array");
 				mNextUrlForLoadingMessages = (String) res.get("NextLink");
@@ -193,7 +173,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		@Override
 		protected void onPostExecute(ArrayList<SMessage> result) {
 			if (result != null) {
-				mflNoMoreMessage=false;
+				mflNoMoreMessage = false;
 				Integer pos = result.size() - 1;
 				result.addAll(mListUserMess);
 				mListUserMess = result;
@@ -204,7 +184,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			} else {
 				Toast.makeText(getActivity(), R.string.no_more_messages,
 						Toast.LENGTH_SHORT).show();
-				mflNoMoreMessage=true;
+				mflNoMoreMessage = true;
 			}
 			mSwipeRefreshLayout.setRefreshing(false);
 		}

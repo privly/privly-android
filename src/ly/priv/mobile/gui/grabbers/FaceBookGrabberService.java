@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
-import ly.priv.mobile.api.gui.socialnetworks.ListUserMessagesAdapter;
-import ly.priv.mobile.api.gui.socialnetworks.ListUsersAdapter;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
@@ -27,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -36,14 +32,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
@@ -53,7 +46,8 @@ import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class FaceBookGrabberService extends SherlockFragment implements ISocialNetworks {
+public class FaceBookGrabberService extends SherlockFragment implements
+		ISocialNetworks {
 	private static final String TAG = "FaceBookDS";
 	private ArrayList<SUser> mListUserMess;
 	private String mFaceBookUserId;
@@ -228,9 +222,14 @@ public class FaceBookGrabberService extends SherlockFragment implements ISocialN
 		Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
-			AlertDialog dialog = Utilities.showDialog(getActivity(),
-					getString(R.string.error_inbox));
-			dialog.show();
+			if(getActivity()!=null)
+			getActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog dialog = Utilities.showDialog(getActivity(),
+							getString(R.string.error_inbox));
+					dialog.show();
+				}
+			});
 			return mListUserMess;
 		}
 		JSONArray listUsersWIthLastMessage = null;
@@ -288,10 +287,14 @@ public class FaceBookGrabberService extends SherlockFragment implements ISocialN
 		Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
-			mProgressBar.setVisibility(View.INVISIBLE);
-			AlertDialog dialog = Utilities.showDialog(getActivity(),
-					getString(R.string.error_inbox));
-			dialog.show();
+			getActivity().runOnUiThread(new Runnable() {
+				public void run() {
+					mProgressBar.setVisibility(View.INVISIBLE);
+					AlertDialog dialog = Utilities.showDialog(getActivity(),
+							getString(R.string.error_inbox));
+					dialog.show();
+				}
+			});
 			return null;
 		}
 		GraphObject graphObject = response.getGraphObject();
@@ -339,10 +342,10 @@ public class FaceBookGrabberService extends SherlockFragment implements ISocialN
 				}.getType();
 				listOfUsersMessage = gson.fromJson(comments.toString(),
 						collectionType);
-				nextUrlForLoadingMessages = jsonObjectComments
-						.getJSONObject("paging").getString("next");
+				nextUrlForLoadingMessages = jsonObjectComments.getJSONObject(
+						"paging").getString("next");
 			} else {
-				listOfUsersMessage = null;				
+				listOfUsersMessage = null;
 			}
 		}
 
