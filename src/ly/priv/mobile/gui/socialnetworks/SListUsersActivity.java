@@ -54,6 +54,7 @@ import com.facebook.model.GraphUser;
  * <li>/privly-android/libs/android-support-v4.jar</li>
  * </ul>
  * </p>
+ * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
@@ -63,10 +64,8 @@ public class SListUsersActivity extends SherlockFragment {
 	private ListUsersAdapter mListUserMessagesAdapter;
 	private ListView mListViewUsers;
 	private ProgressBar mProgressBar;
-	private String mFaceBookUserId;
 	private Session mSession;
-	private Values mValues;
-	private Session.StatusCallback mSessionStatusCallback;
+	private ISocialNetworks mISocialNetworks;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,8 +76,7 @@ public class SListUsersActivity extends SherlockFragment {
 		actionBar.setTitle(R.string.privly_Facebook);
 		mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
-		mValues = new Values(getActivity());
-		mFaceBookUserId = mValues.getFacebookID();
+		mProgressBar.setVisibility(View.VISIBLE);
 		mListViewUsers.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -98,17 +96,11 @@ public class SListUsersActivity extends SherlockFragment {
 
 			}
 		});
-
-		mSessionStatusCallback = new Session.StatusCallback() {
-
-			@Override
-			public void call(Session session, SessionState state,
-					Exception exception) {
-				onSessionStateChange(session, state, exception);
-
-			}
-		};
-		login();
+		mListUserMess = mISocialNetworks.getListOfUsers();
+		mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
+				mListUserMess);
+		mListViewUsers.setAdapter(mListUserMessagesAdapter);
+		mProgressBar.setVisibility(View.INVISIBLE);
 		return view;
 	}
 
@@ -135,7 +127,7 @@ public class SListUsersActivity extends SherlockFragment {
 			mSession.closeAndClearTokenInformation();
 			mSession = null;
 			Session.setActiveSession(mSession);
-			login();
+			// login();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -143,190 +135,18 @@ public class SListUsersActivity extends SherlockFragment {
 	}
 
 	/**
-	 * Login in FaceBook
+	 * @param mISocialNetworks
+	 *            the mISocialNetworks to set
 	 */
-	private void login() {
-		mListUserMess = new ArrayList<SUser>();
-		mListViewUsers.setAdapter(null);
-		mSession = Session.getActiveSession();
-		if (mSession == null) {
-			mSession = new Session.Builder(getActivity()).build();
-			Session.setActiveSession(mSession);
-			if (!mSession.isOpened()) {
-				ArrayList<String> permissions = new ArrayList<String>();
-				permissions.add("read_mailbox");
-				mSession.addCallback(mSessionStatusCallback);
-				Session.OpenRequest openRequest = new Session.OpenRequest(
-						SListUsersActivity.this);
-				openRequest.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
-				openRequest
-						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
-				openRequest.setPermissions(permissions);
-				mSession.openForRead(openRequest);
-			} else {
-				getInboxFromFaceBook();
-			}
-
-		} else {
-			getInboxFromFaceBook();
-		}
+	public void setmISocialNetworks(ISocialNetworks mISocialNetworks) {
+		this.mISocialNetworks = mISocialNetworks;
 	}
 
 	/**
-	 * this method is used by the facebook API
+	 * @return the mProgressBar
 	 */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
-				resultCode, data);
-	}
-
-	/**
-	 * Manages the session state change. This method is called after the
-	 * <code>login</code> method.
-	 * 
-	 * @param session
-	 * @param state
-	 * @param exception
-	 */
-	private void onSessionStateChange(Session session, SessionState state,
-			Exception exception) {
-		if (session != mSession) {
-			return;
-		}
-
-		if (state.isOpened()) {
-			// Log in just happened.
-			Log.d(TAG, "session opened");
-			makeMeRequest();
-		} else if (state.isClosed()) {
-			// Log out just happened. Update the UI.
-
-			Log.d(TAG, "session closed");
-		}
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Session session = Session.getActiveSession();
-		Session.saveSession(session, outState);
-	}
-
-	/**
-	 * Method for get information about me
-	 * 
-	 */
-	private void makeMeRequest() {
-		Log.d(TAG, "makeMeRequest");
-		mProgressBar.setVisibility(View.VISIBLE);
-		// Make an API call to get user data and define a
-		// new callback to handle the response.
-		Bundle params = new Bundle();
-		params.putString("fields", "id");
-		Request request = Request.newMeRequest(mSession,
-				new Request.GraphUserCallback() {
-					@Override
-					public void onCompleted(GraphUser user, Response response) {
-						if (response.getError() != null) {
-							mProgressBar.setVisibility(View.INVISIBLE);
-							AlertDialog dialog = Utilities.showDialog(
-									getActivity(),
-									getString(R.string.error_inbox));
-							dialog.show();
-							return;
-						}
-						if (user != null) {
-
-							mValues.setFacebookID(user.getId());
-						}
-						mProgressBar.setVisibility(View.INVISIBLE);
-						getInboxFromFaceBook();
-					}
-				});
-		request.setParameters(params);
-		request.executeAsync();
-	}
-
-	/**
-	 * Get inbox from FaceBook
-	 */
-	private void getInboxFromFaceBook() {
-		Log.d(TAG, "getInboxFromFaceBook");
-		mProgressBar.setVisibility(View.VISIBLE);
-		mFaceBookUserId = mValues.getFacebookID();
-		// Make an API call to get user data and define a
-		// new callback to handle the response.
-		Bundle params = new Bundle();
-		params.putString("fields",
-				"id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
-		// params.putString("limit", "1");
-		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
-				new Request.Callback() {
-					@Override
-					public void onCompleted(Response response) {
-						if (response.getError() != null) {
-							Log.e(TAG, response.getError().getErrorMessage());
-							mProgressBar.setVisibility(View.INVISIBLE);
-							AlertDialog dialog = Utilities.showDialog(
-									getActivity(),
-									getString(R.string.error_inbox));
-							dialog.show();
-							return;
-						}
-						JSONArray listUsersWIthLastMessage = null;
-						try {
-							listUsersWIthLastMessage = response
-									.getGraphObject().getInnerJSONObject()
-									.getJSONArray("data");
-
-							for (int i = 0; i < listUsersWIthLastMessage
-									.length(); i++) {
-								SUser sUser = new SUser();
-								JSONObject dialog = listUsersWIthLastMessage
-										.getJSONObject(i);
-								sUser.setDialogId(dialog.getString("id"));
-								sUser.setTime(Utilities.getTimeForFacebook(dialog
-										.getString("updated_time")));
-								JSONArray to = dialog.getJSONObject("to")
-										.getJSONArray("data");
-								for (int j = 0; j < to.length(); j++) {
-									JSONObject oTo = to.getJSONObject(j);
-									String id = oTo.getString("id");
-									if (!id.equals(mFaceBookUserId)) {
-										sUser.setUserName(oTo.getString("name"));
-										JSONObject pic = oTo.getJSONObject(
-												"picture")
-												.getJSONObject("data");
-										sUser.setUrlToAvatar(pic
-												.getString("url"));
-										break;
-									}
-
-								}
-								JSONObject comment = dialog
-										.getJSONObject("comments")
-										.getJSONArray("data").getJSONObject(0);
-								sUser.setLastUserMess(comment
-										.getString("message"));
-								mListUserMess.add(sUser);
-								// Log.d(TAG, sUser.toString());
-							}
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-						if (mListUserMess != null) {
-							Log.d(TAG, "set adapter");
-							mListUserMessagesAdapter = new ListUsersAdapter(
-									getActivity(), mListUserMess);
-							mListViewUsers.setAdapter(mListUserMessagesAdapter);
-						}
-						mProgressBar.setVisibility(View.INVISIBLE);
-					}
-				});
-		request.setParameters(params);
-		request.executeAsync();
+	public void setProgressBarStatus(int v) {
+		mProgressBar.setVisibility(v);
 	}
 
 }

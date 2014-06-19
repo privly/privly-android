@@ -127,6 +127,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 				}
 			}
 		});
+		
 		return view;
 	}
 
