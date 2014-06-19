@@ -85,6 +85,7 @@ public class SListUsersActivity extends SherlockFragment {
 				FragmentTransaction transaction = getActivity()
 						.getSupportFragmentManager().beginTransaction();
 				SListUserMessagesActivity sListUserMessagesActivity = new SListUserMessagesActivity();
+				sListUserMessagesActivity.setmISocialNetworks(mISocialNetworks);
 				Bundle bundle = new Bundle();
 				bundle.putString("DialogID", mListUserMess.get(position)
 						.getDialogId());
@@ -142,11 +143,5 @@ public class SListUsersActivity extends SherlockFragment {
 		this.mISocialNetworks = mISocialNetworks;
 	}
 
-	/**
-	 * @return the mProgressBar
-	 */
-	public void setProgressBarStatus(int v) {
-		mProgressBar.setVisibility(v);
-	}
 
 }

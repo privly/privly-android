@@ -1,14 +1,20 @@
 package ly.priv.mobile.gui.datasource;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 import ly.priv.mobile.gui.socialnetworks.ISocialNetworks;
+import ly.priv.mobile.gui.socialnetworks.ListUserMessagesAdapter;
 import ly.priv.mobile.gui.socialnetworks.ListUsersAdapter;
 import ly.priv.mobile.gui.socialnetworks.SListUsersActivity;
+import ly.priv.mobile.gui.socialnetworks.SMessage;
 import ly.priv.mobile.gui.socialnetworks.SUser;
 
 import org.json.JSONArray;
@@ -36,9 +42,12 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
+public class FaceBookDS extends SherlockFragment implements ISocialNetworks {
 	private static final String TAG = "FaceBookDS";
 	private ArrayList<SUser> mListUserMess;
 	private String mFaceBookUserId;
@@ -47,6 +56,7 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 	private Session.StatusCallback mSessionStatusCallback;
 	private SListUsersActivity mSListUsersActivity;
 	private ProgressBar mProgressBar;
+
 	/**
 	 * 
 	 */
@@ -57,7 +67,7 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Login_Facebook);
-		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);	
+		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mProgressBar.setVisibility(View.VISIBLE);
 		mValues = new Values(getActivity());
 		mSessionStatusCallback = new Session.StatusCallback() {
@@ -68,22 +78,22 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 				onSessionStateChange(session, state, exception);
 
 			}
-		};			
+		};
 		login();
 		return view;
 	}
-	
-	private void runSocialGui(){
+
+	private void runSocialGui() {
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
-		mSListUsersActivity = new SListUsersActivity();				
-		mSListUsersActivity.setmISocialNetworks(this);		
+		mSListUsersActivity = new SListUsersActivity();
+		mSListUsersActivity.setmISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
-		 transaction.disallowAddToBackStack();
-		//transaction.addToBackStack(null);
+		transaction.disallowAddToBackStack();
+		// transaction.addToBackStack(null);
 		transaction.commit();
 	}
-	
+
 	/**
 	 * Login in FaceBook
 	 */
@@ -104,12 +114,12 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 				openRequest.setPermissions(permissions);
 				mSession.openForRead(openRequest);
 			} else {
-				//getInboxFromFaceBook();
+				// getInboxFromFaceBook();
 				runSocialGui();
 			}
 
 		} else {
-			//getInboxFromFaceBook();
+			// getInboxFromFaceBook();
 			runSocialGui();
 		}
 		mProgressBar.setVisibility(View.INVISIBLE);
@@ -185,21 +195,20 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 							mValues.setFacebookID(user.getId());
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
-						//getInboxFromFaceBook();
+						// getInboxFromFaceBook();
 						runSocialGui();
 					}
 				});
 		request.setParameters(params);
 		request.executeAsync();
-		
+
 	}
 
-	
 	@Override
 	public ArrayList<SUser> getListOfUsers() {
 		Log.d(TAG, "getListOfUsers");
-		mListUserMess = new ArrayList<SUser>();	
-		//mProgressBar.setVisibility(View.VISIBLE);
+		mListUserMess = new ArrayList<SUser>();
+		// mProgressBar.setVisibility(View.VISIBLE);
 		mFaceBookUserId = mValues.getFacebookID();
 		// Make an API call to get user data and define a
 		// new callback to handle the response.
@@ -207,67 +216,108 @@ public class FaceBookDS extends SherlockFragment implements ISocialNetworks{
 		params.putString("fields",
 				"id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
 		// params.putString("limit", "1");
-		Request request = Request.newGraphPathRequest(mSession, "me/inbox",null);
+		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
+				null);
 		request.setParameters(params);
-		RequestAsyncTask asyncTask=request.executeAsync();
-		
+		RequestAsyncTask asyncTask = request.executeAsync();
+
 		try {
-			 Response response= asyncTask.get().get(0);
-				if (response.getError() != null) {
-					Log.e(TAG, response.getError().getErrorMessage());
-					AlertDialog dialog = Utilities.showDialog(
-							getActivity(),
-							getString(R.string.error_inbox));
-					dialog.show();
-					return null;
-				}
-				JSONArray listUsersWIthLastMessage = null;
-				try {
-					listUsersWIthLastMessage = response
-							.getGraphObject().getInnerJSONObject()
-							.getJSONArray("data");
+			Response response = asyncTask.get().get(0);
+			if (response.getError() != null) {
+				Log.e(TAG, response.getError().getErrorMessage());
+				AlertDialog dialog = Utilities.showDialog(getActivity(),
+						getString(R.string.error_inbox));
+				dialog.show();
+				return mListUserMess;
+			}
+			JSONArray listUsersWIthLastMessage = null;
+			try {
+				listUsersWIthLastMessage = response.getGraphObject()
+						.getInnerJSONObject().getJSONArray("data");
 
-					for (int i = 0; i < listUsersWIthLastMessage
-							.length(); i++) {
-						SUser sUser = new SUser();
-						JSONObject dialog = listUsersWIthLastMessage
-								.getJSONObject(i);
-						sUser.setDialogId(dialog.getString("id"));
-						sUser.setTime(Utilities.getTimeForFacebook(dialog
-								.getString("updated_time")));
-						JSONArray to = dialog.getJSONObject("to")
-								.getJSONArray("data");
-						for (int j = 0; j < to.length(); j++) {
-							JSONObject oTo = to.getJSONObject(j);
-							String id = oTo.getString("id");
-							if (!id.equals(mFaceBookUserId)) {
-								sUser.setUserName(oTo.getString("name"));
-								JSONObject pic = oTo.getJSONObject(
-										"picture")
-										.getJSONObject("data");
-								sUser.setUrlToAvatar(pic
-										.getString("url"));
-								break;
-							}
-
+				for (int i = 0; i < listUsersWIthLastMessage.length(); i++) {
+					SUser sUser = new SUser();
+					JSONObject dialog = listUsersWIthLastMessage
+							.getJSONObject(i);
+					sUser.setDialogId(dialog.getString("id"));
+					sUser.setTime(Utilities.getTimeForFacebook(dialog
+							.getString("updated_time")));
+					JSONArray to = dialog.getJSONObject("to").getJSONArray(
+							"data");
+					for (int j = 0; j < to.length(); j++) {
+						JSONObject oTo = to.getJSONObject(j);
+						String id = oTo.getString("id");
+						if (!id.equals(mFaceBookUserId)) {
+							sUser.setUserName(oTo.getString("name"));
+							JSONObject pic = oTo.getJSONObject("picture")
+									.getJSONObject("data");
+							sUser.setUrlToAvatar(pic.getString("url"));
+							break;
 						}
-						JSONObject comment = dialog
-								.getJSONObject("comments")
-								.getJSONArray("data").getJSONObject(0);
-						sUser.setLastUserMess(comment
-								.getString("message"));
-						mListUserMess.add(sUser);
+
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
+					JSONObject comment = dialog.getJSONObject("comments")
+							.getJSONArray("data").getJSONObject(0);
+					sUser.setLastUserMess(comment.getString("message"));
+					mListUserMess.add(sUser);
 				}
-			 return mListUserMess;
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return mListUserMess;
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return mListUserMess;
 	}
-	
+
+	// // SListUserMessages methods
+
+	/**
+	 * Get inbox from FaceBook and show messages in mListViewUserMessages
+	 */
+	@Override
+	public Map<String, Object> getListOfMessagesFromFaceBook(String dialogID) {
+		Log.d(TAG, "getListOfMessagesFromFaceBook");
+		String nextUrlForLoadingMessages = "";
+		ArrayList<SMessage> listOfUsersMessage = new ArrayList<SMessage>();
+		Map<String, Object> res = new HashMap<String, Object>();
+		Bundle params = new Bundle();
+		params.putString("fields",
+				"comments.fields(from.fields(id,picture),message,created_time)");
+		// params.putString("limit", "1");
+		Request request = Request.newGraphPathRequest(mSession, dialogID, null);
+		request.setParameters(params);
+		Response response = request.executeAndWait();
+		if (response.getError() != null) {
+			Log.e(TAG, response.getError().getErrorMessage());
+			mProgressBar.setVisibility(View.INVISIBLE);
+			AlertDialog dialog = Utilities.showDialog(getActivity(),
+					getString(R.string.error_inbox));
+			dialog.show();
+			return null;
+		}
+		GraphObject graphObject = response.getGraphObject();
+		try {
+			JSONObject jsonObjectComments = graphObject.getInnerJSONObject()
+					.getJSONObject("comments");
+			JSONArray comments = jsonObjectComments.getJSONArray("data");
+			Gson gson = new Gson();
+			Type collectionType = new TypeToken<List<SMessage>>() {
+			}.getType();
+			listOfUsersMessage = gson.fromJson(comments.toString(),
+					collectionType);
+			nextUrlForLoadingMessages = jsonObjectComments.getJSONObject(
+					"paging").getString("next");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		res.put("Array", listOfUsersMessage);
+		res.put("NextLink", nextUrlForLoadingMessages);
+		return res;
+	}
+
 }

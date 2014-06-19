@@ -2,6 +2,7 @@ package ly.priv.mobile.gui.socialnetworks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import ly.priv.mobile.R;
@@ -49,11 +50,13 @@ import com.google.gson.reflect.TypeToken;
  * Showing messages in chose dialog
  * <p>
  * <ul>
- * <li>Get mDialogID from Bundle.</li> 
- * <li>Get Facebook Session.</li> 
- * <li>Makes a  Request.newGraphPathRequest to graph api with the Facebook access token.</li>
+ * <li>Get mDialogID from Bundle.</li>
+ * <li>Get Facebook Session.</li>
+ * <li>Makes a Request.newGraphPathRequest to graph api with the Facebook access
+ * token.</li>
  * <li>Parses the received json response with Gson library</li>
- * <li>If privly link contained in message then Redirect User to {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
+ * <li>If privly link contained in message then Redirect User to
+ * {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
  * </ul>
  * </p>
  * 
@@ -64,8 +67,9 @@ import com.google.gson.reflect.TypeToken;
  * <li>/privly-android/libs/android-support-v4.jar</li>
  * </ul>
  * </p>
+ * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
+ * 
  */
 public class SListUserMessagesActivity extends SherlockFragment implements
 		OnRefreshListener {
@@ -78,7 +82,9 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 	private Session mSession;
 	private String mDialogID;
 	private String mNextUrlForLoadingMessages;
-	private Boolean mflNoMoreMessage=false;
+	private Boolean mflNoMoreMessage = false;
+	private ISocialNetworks mISocialNetworks;
+
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,12 +102,13 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 				android.R.color.holo_red_light);
 		mProgressBar = (ProgressBar) view
 				.findViewById(R.id.pbLoadingData_refresh);
+		mProgressBar.setVisibility(View.VISIBLE);
 		mDialogID = getArguments().getString("DialogID");
-		mListUserMess = new ArrayList<SMessage>();
-		mSession = Session.getActiveSession();
-		if (mSession != null && mSession.isOpened()) {
-			getListOfMessagesFromFaceBook();
-		}
+		// mListUserMess = new ArrayList<SMessage>();
+		// mSession = Session.getActiveSession();
+		// if (mSession != null && mSession.isOpened()) {
+		// getListOfMessagesFromFaceBook();
+		// }
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -127,7 +134,8 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 				}
 			}
 		});
-		
+		new getData().execute();
+
 		return view;
 	}
 
@@ -140,6 +148,37 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 		if (mSession != null) {
 			mSession.onActivityResult(getActivity(), requestCode, resultCode,
 					data);
+		}
+
+	}
+
+	private class getData extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			HashMap<String, Object> res = (HashMap<String, Object>) mISocialNetworks
+					.getListOfMessagesFromFaceBook(mDialogID);
+			if (res != null) {
+				mListUserMess = (ArrayList<SMessage>) res.get("Array");
+				mNextUrlForLoadingMessages = (String) res.get("NextLink");
+			}
+			return null;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Void result) {
+			mListUserMessagesAdapter = new ListUserMessagesAdapter(
+					getActivity(), mListUserMess);
+			mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
+			mListViewUserMessages.setSelection(mListUserMessagesAdapter
+					.getCount() - 1);
+			mProgressBar.setVisibility(View.INVISIBLE);
+			super.onPostExecute(result);
 		}
 
 	}
@@ -203,10 +242,10 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 	}
 
 	/**
-	 *  AsyncTask for getting next messages for current DialogId
-	 *
+	 * AsyncTask for getting next messages for current DialogId
+	 * 
 	 * @author Ivan Metla e-mail: metlaivan@gmail.com
-	 *
+	 * 
 	 */
 	private class FetchFaceBookNextMessages extends
 			AsyncTask<String, Void, ArrayList<SMessage>> {
@@ -242,7 +281,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 							.getJSONObject("paging").getString("next");
 				} else {
 					sMessages = null;
-					mflNoMoreMessage=true;
+					mflNoMoreMessage = true;
 				}
 			}
 
@@ -264,30 +303,40 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
 				mListViewUserMessages.setSelection(pos);
 			} else {
-				Toast.makeText(getActivity(),
-						R.string.no_more_messages,
+				Toast.makeText(getActivity(), R.string.no_more_messages,
 						Toast.LENGTH_SHORT).show();
-			}	
+			}
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
 
 	}
 
-	/* (non-Javadoc)
-	 * @see android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener#onRefresh()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener#onRefresh
+	 * ()
 	 */
 	@Override
 	public void onRefresh() {
 		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
-		if(!mflNoMoreMessage){
-		FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
-		faceBookNextMessages.execute(mNextUrlForLoadingMessages);
-		}else{
-			Toast.makeText(getActivity(),
-					R.string.no_more_messages,
+		if (!mflNoMoreMessage) {
+			FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
+			faceBookNextMessages.execute(mNextUrlForLoadingMessages);
+		} else {
+			Toast.makeText(getActivity(), R.string.no_more_messages,
 					Toast.LENGTH_SHORT).show();
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
-	
+
+	}
+
+	/**
+	 * @param mISocialNetworks
+	 *            the mISocialNetworks to set
+	 */
+	public void setmISocialNetworks(ISocialNetworks mISocialNetworks) {
+		this.mISocialNetworks = mISocialNetworks;
 	}
 }
