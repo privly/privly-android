@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui.socialnetworks;
+package ly.priv.mobile.api.gui.socialnetworks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class SListUserMessagesActivity extends SherlockFragment implements
+public class ListUserMessagesFragment extends SherlockFragment implements
 		OnRefreshListener {
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
@@ -104,11 +104,6 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 				.findViewById(R.id.pbLoadingData_refresh);
 		mProgressBar.setVisibility(View.VISIBLE);
 		mDialogID = getArguments().getString("DialogID");
-		// mListUserMess = new ArrayList<SMessage>();
-		// mSession = Session.getActiveSession();
-		// if (mSession != null && mSession.isOpened()) {
-		// getListOfMessagesFromFaceBook();
-		// }
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -135,21 +130,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 			}
 		});
 		new getData().execute();
-
 		return view;
-	}
-
-	/**
-	 * this method is used by the facebook API
-	 */
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (mSession != null) {
-			mSession.onActivityResult(getActivity(), requestCode, resultCode,
-					data);
-		}
-
 	}
 
 	private class getData extends AsyncTask<Void, Void, Void> {
@@ -183,64 +164,7 @@ public class SListUserMessagesActivity extends SherlockFragment implements
 
 	}
 
-	/**
-	 * Get inbox from FaceBook and show messages in mListViewUserMessages
-	 */
-	private void getListOfMessagesFromFaceBook() {
-		Log.d(TAG, "getListOfMessagesFromFaceBook");
-		mProgressBar.setVisibility(View.VISIBLE);
-
-		Bundle params = new Bundle();
-		params.putString("fields",
-				"comments.fields(from.fields(id,picture),message,created_time)");
-		// params.putString("limit", "1");
-		Request request = Request.newGraphPathRequest(mSession, mDialogID,
-				new Request.Callback() {
-					@Override
-					public void onCompleted(Response response) {
-						if (response.getError() != null) {
-							Log.e(TAG, response.getError().getErrorMessage());
-							mProgressBar.setVisibility(View.INVISIBLE);
-							AlertDialog dialog = Utilities.showDialog(
-									getActivity(),
-									getString(R.string.error_inbox));
-							dialog.show();
-							return;
-						}
-						GraphObject graphObject = response.getGraphObject();
-						try {
-							JSONObject jsonObjectComments = graphObject
-									.getInnerJSONObject().getJSONObject(
-											"comments");
-							JSONArray comments = jsonObjectComments
-									.getJSONArray("data");
-							Gson gson = new Gson();
-							Type collectionType = new TypeToken<List<SMessage>>() {
-							}.getType();
-							mListUserMess = gson.fromJson(comments.toString(),
-									collectionType);
-							mNextUrlForLoadingMessages = jsonObjectComments
-									.getJSONObject("paging").getString("next");
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-
-						if (mListUserMess != null) {
-							mListUserMessagesAdapter = new ListUserMessagesAdapter(
-									getActivity(), mListUserMess);
-							mListViewUserMessages
-									.setAdapter(mListUserMessagesAdapter);
-							mListViewUserMessages
-									.setSelection(mListUserMessagesAdapter
-											.getCount() - 1);
-						}
-						mProgressBar.setVisibility(View.INVISIBLE);
-					}
-				});
-		request.setParameters(params);
-		request.executeAsync();
-	}
-
+	
 	/**
 	 * AsyncTask for getting next messages for current DialogId
 	 * 

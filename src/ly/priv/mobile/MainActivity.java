@@ -1,6 +1,6 @@
 package ly.priv.mobile;
 
-import ly.priv.mobile.gui.microblogs.MicroblogListPostsActivity;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsActivity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;

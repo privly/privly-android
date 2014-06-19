@@ -6,10 +6,10 @@ import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
-import ly.priv.mobile.gui.datasource.FaceBookDS;
-import ly.priv.mobile.gui.microblogs.MicroblogListPostsActivity;
-import ly.priv.mobile.gui.microblogs.TwitterUtil;
-import ly.priv.mobile.gui.socialnetworks.SListUsersActivity;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsActivity;
+import ly.priv.mobile.api.gui.microblogs.TwitterUtil;
+import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
+import ly.priv.mobile.gui.grabbers.FaceBookGrabberService;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -168,7 +168,7 @@ public class Home extends SherlockFragment {
 //					// transaction.disallowAddToBackStack();
 //					transaction.addToBackStack(null);
 //					transaction.commit();
-					FaceBookDS faceBookDS =new FaceBookDS();			
+					FaceBookGrabberService faceBookDS =new FaceBookGrabberService();			
 //					// transaction.replace(R.id.container, fbGrabber);
 					transaction.replace(R.id.container, faceBookDS);
 					//transaction.disallowAddToBackStack();

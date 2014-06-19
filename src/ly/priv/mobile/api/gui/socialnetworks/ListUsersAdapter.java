@@ -1,9 +1,8 @@
-package ly.priv.mobile.gui.microblogs;
+package ly.priv.mobile.api.gui.socialnetworks;
 
 import java.util.ArrayList;
+
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +10,35 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.fedorvlasov.lazylist.ImageLoader;
 
-public class ListMicroblogAdapter extends BaseAdapter {
+/**
+ * Adapter for ListViewUsers.
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ *
+ */
+public class ListUsersAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
 	private ImageLoader mImageLoader;
-	private ArrayList<twitter4j.Status> mListPosts;
-	private twitter4j.Status mPost;
+	private ArrayList<SUser> mListUssers;
+	private SUser mSUser;
 
-	public ListMicroblogAdapter(Activity activity, ArrayList<twitter4j.Status> list) {
+	/**
+	 * Constructor for  ListUsersAdapter
+	 * @param activity
+	 * @param list
+	 */
+	public ListUsersAdapter(Activity activity, ArrayList<SUser> list) {
 		this.mActivity = activity;
-		this.mListPosts = list;
-		this.mImageLoader = new ImageLoader(
-					this.mActivity.getApplicationContext());
+		this.mListUssers = list;
+		this.mImageLoader = new ImageLoader(mActivity);
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
 	public int getCount() {
-		return this.mListPosts.size();
+		return this.mListUssers.size();
 	}
 
 	public Object getItem(int paramInt) {
@@ -40,16 +49,13 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		return paramInt;
 	}
 
-	@SuppressLint("NewApi")
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = null;
 		if (convertView == null) {
-			inflater = this.mActivity.getLayoutInflater();
-			vi = inflater.inflate(R.layout.item_microblog_list_users, null);
-			vi.setRotation(180);
+			inflater = mActivity.getLayoutInflater();
+			vi = inflater.inflate(R.layout.item_socialnetwork_list_users, null);
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.mName = ((TextView) vi.findViewById(R.id.tvUserName));
-			viewHolder.mNic = ((TextView) vi.findViewById(R.id.tvNic));
 			viewHolder.mMessage = ((TextView) vi.findViewById(R.id.tvMessage));
 			viewHolder.mTine = ((TextView) vi.findViewById(R.id.tvTime));
 			viewHolder.mAvatar = ((ImageView) vi.findViewById(R.id.ivAvaFriend));
@@ -58,15 +64,13 @@ public class ListMicroblogAdapter extends BaseAdapter {
 			vi = convertView;
 		}
 
-		mPost = mListPosts.get(getCount()-position-1);
-		if (this.mPost != null) {
+		mSUser = mListUssers.get(position);
+		if (this.mSUser != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mName.setText(mPost.getUser().getName());
-			holder.mNic.setText("@"+mPost.getUser().getScreenName());
-			holder.mMessage.setText(mPost.getText());
-			holder.mTine.setText(Utilities.getTimeForTwitter(mPost.getCreatedAt()));
-			mImageLoader.DisplayImage(mPost.getUser().getBiggerProfileImageURL(),
-					holder.mAvatar);
+			holder.mName.setText(mSUser.getUserName());
+			holder.mMessage.setText(mSUser.getLastUserMess());
+			holder.mTine.setText(mSUser.getTime());
+			mImageLoader.DisplayImage(mSUser.getUrlToAvatar(), holder.mAvatar);
 		}
 		return vi;
 	}
@@ -75,7 +79,6 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		protected ImageView mAvatar;
 		protected TextView mMessage;
 		protected TextView mName;
-		protected TextView mNic;
 		protected TextView mTine;
 	}
 }

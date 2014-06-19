@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui.microblogs;
+package ly.priv.mobile.api.gui.microblogs;
 
 import ly.priv.mobile.ConstantValues;
 import twitter4j.Twitter;

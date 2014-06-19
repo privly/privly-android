@@ -1,6 +1,7 @@
-package ly.priv.mobile.gui.socialnetworks;
+package ly.priv.mobile.api.gui.socialnetworks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -43,7 +45,7 @@ import com.facebook.model.GraphUser;
  * <li>Needs 'read_mailbox' permission from the user.</li>
  * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
  * <li>Parses the received json response and showing in mListViewUsers.</li>
- * <li>Redirect User to {@link ly.priv.mobile.gui.SListUserMessagesActivity}
+ * <li>Redirect User to {@link ly.priv.mobile.gui.ListUserMessagesFragment}
  * SListUserMessagesActivity Fragment</li>
  * </ul>
  * </p>
@@ -58,7 +60,7 @@ import com.facebook.model.GraphUser;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class SListUsersActivity extends SherlockFragment {
+public class ListUsersFragment extends SherlockFragment {
 	private static final String TAG = "SListUsersActivity";
 	private ArrayList<SUser> mListUserMess;
 	private ListUsersAdapter mListUserMessagesAdapter;
@@ -84,7 +86,7 @@ public class SListUsersActivity extends SherlockFragment {
 					int position, long id) {
 				FragmentTransaction transaction = getActivity()
 						.getSupportFragmentManager().beginTransaction();
-				SListUserMessagesActivity sListUserMessagesActivity = new SListUserMessagesActivity();
+				ListUserMessagesFragment sListUserMessagesActivity = new ListUserMessagesFragment();
 				sListUserMessagesActivity.setmISocialNetworks(mISocialNetworks);
 				Bundle bundle = new Bundle();
 				bundle.putString("DialogID", mListUserMess.get(position)
@@ -97,14 +99,35 @@ public class SListUsersActivity extends SherlockFragment {
 
 			}
 		});
-		mListUserMess = mISocialNetworks.getListOfUsers();
-		mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
-				mListUserMess);
-		mListViewUsers.setAdapter(mListUserMessagesAdapter);
-		mProgressBar.setVisibility(View.INVISIBLE);
+		new getData().execute();
+		
 		return view;
 	}
+	
+	private class getData extends AsyncTask<Void, Void, Void> {
 
+		@Override
+		protected Void doInBackground(Void... params) {
+			mListUserMess = mISocialNetworks.getListOfUsers();
+			return null;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Void result) {
+			mListUserMessagesAdapter = new ListUsersAdapter(getActivity(),
+					mListUserMess);
+			mListViewUsers.setAdapter(mListUserMessagesAdapter);
+			mProgressBar.setVisibility(View.INVISIBLE);
+			super.onPostExecute(result);
+		}
+
+	}
+	
 	/**
 	 * Inflate options menu with the layout
 	 */

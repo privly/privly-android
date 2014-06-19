@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui.socialnetworks;
+package ly.priv.mobile.api.gui.socialnetworks;
 
 import java.io.Serializable;
 
