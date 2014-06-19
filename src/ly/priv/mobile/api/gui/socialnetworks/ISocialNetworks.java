@@ -7,5 +7,7 @@ public interface ISocialNetworks {
 	
 	public ArrayList<SUser> getListOfUsers();
 	
-	public Map<String, Object> getListOfMessagesFromFaceBook(String dialogID);
+	public Map<String, Object> getListOfMessages(String dialogID);
+	
+	public Map<String, Object> fetchNextMessages(String url);
 }

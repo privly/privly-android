@@ -17,6 +17,12 @@ import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -268,7 +274,7 @@ public class FaceBookGrabberService extends SherlockFragment implements ISocialN
 	 * Get inbox from FaceBook and show messages in mListViewUserMessages
 	 */
 	@Override
-	public Map<String, Object> getListOfMessagesFromFaceBook(String dialogID) {
+	public Map<String, Object> getListOfMessages(String dialogID) {
 		Log.d(TAG, "getListOfMessagesFromFaceBook");
 		String nextUrlForLoadingMessages = "";
 		ArrayList<SMessage> listOfUsersMessage = new ArrayList<SMessage>();
@@ -304,6 +310,45 @@ public class FaceBookGrabberService extends SherlockFragment implements ISocialN
 			e.printStackTrace();
 		}
 
+		res.put("Array", listOfUsersMessage);
+		res.put("NextLink", nextUrlForLoadingMessages);
+		return res;
+	}
+
+	@Override
+	public Map<String, Object> fetchNextMessages(String url) {
+		String nextUrlForLoadingMessages = "";
+		ArrayList<SMessage> listOfUsersMessage = new ArrayList<SMessage>();
+		Map<String, Object> res = new HashMap<String, Object>();
+		String fbResponse = "";
+		try {
+			// Make GET Request
+			HttpClient client = new DefaultHttpClient();
+			HttpGet get = new HttpGet(url);
+			HttpResponse responseGet = client.execute(get);
+			HttpEntity resEntityGet = responseGet.getEntity();
+			if (resEntityGet != null) {
+				fbResponse = EntityUtils.toString(resEntityGet);
+
+			}
+			JSONObject jsonObjectComments = new JSONObject(fbResponse);
+			JSONArray comments = jsonObjectComments.getJSONArray("data");
+			if (comments.length() != 0) {
+				Gson gson = new Gson();
+				Type collectionType = new TypeToken<List<SMessage>>() {
+				}.getType();
+				listOfUsersMessage = gson.fromJson(comments.toString(),
+						collectionType);
+				nextUrlForLoadingMessages = jsonObjectComments
+						.getJSONObject("paging").getString("next");
+			} else {
+				listOfUsersMessage = null;				
+			}
+		}
+
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		res.put("Array", listOfUsersMessage);
 		res.put("NextLink", nextUrlForLoadingMessages);
 		return res;

@@ -79,7 +79,6 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 	private ListView mListViewUserMessages;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private ProgressBar mProgressBar;
-	private Session mSession;
 	private String mDialogID;
 	private String mNextUrlForLoadingMessages;
 	private Boolean mflNoMoreMessage = false;
@@ -138,7 +137,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		@Override
 		protected Void doInBackground(Void... params) {
 			HashMap<String, Object> res = (HashMap<String, Object>) mISocialNetworks
-					.getListOfMessagesFromFaceBook(mDialogID);
+					.getListOfMessages(mDialogID);
 			if (res != null) {
 				mListUserMess = (ArrayList<SMessage>) res.get("Array");
 				mNextUrlForLoadingMessages = (String) res.get("NextLink");
@@ -181,44 +180,20 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 
 		@Override
 		protected ArrayList<SMessage> doInBackground(String... urls) {
-			String fbResponse = "";
-			ArrayList<SMessage> sMessages = null;
-			try {
-				// Make GET Request
-				HttpClient client = new DefaultHttpClient();
-				HttpGet get = new HttpGet(urls[0]);
-				HttpResponse responseGet = client.execute(get);
-				HttpEntity resEntityGet = responseGet.getEntity();
-				if (resEntityGet != null) {
-					fbResponse = EntityUtils.toString(resEntityGet);
-
-				}
-				JSONObject jsonObjectComments = new JSONObject(fbResponse);
-				JSONArray comments = jsonObjectComments.getJSONArray("data");
-				if (comments.length() != 0) {
-					Gson gson = new Gson();
-					Type collectionType = new TypeToken<List<SMessage>>() {
-					}.getType();
-					sMessages = gson.fromJson(comments.toString(),
-							collectionType);
-					mNextUrlForLoadingMessages = jsonObjectComments
-							.getJSONObject("paging").getString("next");
-				} else {
-					sMessages = null;
-					mflNoMoreMessage = true;
-				}
+			HashMap<String, Object> res = (HashMap<String, Object>) mISocialNetworks
+					.fetchNextMessages(urls[0]);
+			ArrayList<SMessage> sMessages =null;
+			if (res != null) {
+				sMessages = (ArrayList<SMessage>) res.get("Array");
+				mNextUrlForLoadingMessages = (String) res.get("NextLink");
 			}
-
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-
 			return sMessages;
 		}
 
 		@Override
 		protected void onPostExecute(ArrayList<SMessage> result) {
 			if (result != null) {
+				mflNoMoreMessage=false;
 				Integer pos = result.size() - 1;
 				result.addAll(mListUserMess);
 				mListUserMess = result;
@@ -229,6 +204,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			} else {
 				Toast.makeText(getActivity(), R.string.no_more_messages,
 						Toast.LENGTH_SHORT).show();
+				mflNoMoreMessage=true;
 			}
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
