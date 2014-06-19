@@ -136,15 +136,18 @@ public class Home extends SherlockFragment {
 		// LinkGrabber Service of the respective platform.
 		// For Twitter - {@link ly.priv.mobile.TwitterLinkGrabberService}
 		// For Facebook - {@link ly.priv.mobile.FacebookLinkGrabberService}
+		// For Gmail - {@link ly.priv.mobile.GmailLinkGrabberService}
 		readListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 				if (position == 0) {
-					Toast.makeText(getActivity(),
-							"Sorry, Gmail hasn't been integrated yet.",
-							Toast.LENGTH_LONG).show();
+					GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
+					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+					transaction.replace(R.id.container, gmailGrabber);
+					transaction.addToBackStack(null);
+					transaction.commit();
 				} else if (position == 1) {
 					FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
 					FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
