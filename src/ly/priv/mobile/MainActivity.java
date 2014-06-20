@@ -200,10 +200,12 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			if (position == 2 + createList.size() + 1) {
 				mDrawerLayout.closeDrawers();
-				Toast.makeText(getApplicationContext(),
-						"Sorry, Gmail hasn't been merged yet.",
-						Toast.LENGTH_SHORT).show();
-				Log.d("read", "gmail");
+				GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
+				FragmentTransaction transaction = getSupportFragmentManager()
+						.beginTransaction();
+				transaction.replace(R.id.container, gmailGrabber);
+				transaction.addToBackStack(null);
+				transaction.commit();
 			}
 			if (position == 2 + createList.size() + 2) {
 				mDrawerLayout.closeDrawers();

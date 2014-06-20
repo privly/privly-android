@@ -55,6 +55,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		View view = inflater.inflate(R.layout.link_grabber_service, container,
 				false);
 		// Initialises OAuth2 SASL Provider
+		getActivity().setTitle("Privly Gmail");
 		OAuth2Authenticator.initialize();
 		// Shows Account Picker with google accounts
 		Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
