@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName;
  * </p>
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
+ * 
  */
 public class SMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -87,12 +87,15 @@ public class SMessage implements Serializable {
 
 	/**
 	 * Constructor for SMessage
-	 * @param mMessage - message 
-	 * @param mTime - time when created message
-	 * @param mUrlToAvatar - url to avatar
+	 * 
+	 * @param mMessage
+	 *            - message
+	 * @param mTime
+	 *            - time when created message
+	 * @param mUrlToAvatar
+	 *            - url to avatar
 	 */
-	public SMessage(String mMessage, String mTime, String mUrlToAvatar
-			) {
+	public SMessage(String mMessage, String mTime, String mUrlToAvatar) {
 		super();
 		this.mMessage = mMessage;
 		this.mTime = mTime;
@@ -109,15 +112,16 @@ public class SMessage implements Serializable {
 
 	/**
 	 * Set message
+	 * 
 	 * @param mMessage
 	 */
 	public void setMessage(String mMessage) {
 		this.mMessage = mMessage;
 	}
 
-	
 	/**
 	 * Get time
+	 * 
 	 * @return time
 	 */
 	public String getTime() {
@@ -126,6 +130,7 @@ public class SMessage implements Serializable {
 
 	/**
 	 * Set time
+	 * 
 	 * @param mTime
 	 */
 	public void setTime(String mTime) {
@@ -134,15 +139,16 @@ public class SMessage implements Serializable {
 
 	/**
 	 * Get url to avatar from message
+	 * 
 	 * @return
 	 */
 	public String getUrlToAvatar() {
 		return mFrom.mPicture.mData.mUrl;
 	}
 
-
 	/**
 	 * Get id from message
+	 * 
 	 * @return the mId
 	 */
 	public String getId() {

@@ -30,10 +30,6 @@ import com.actionbarsherlock.app.SherlockFragment;
  * <p>
  * <ul>
  * <li>Get mDialogID from Bundle.</li>
- * <li>Get Facebook Session.</li>
- * <li>Makes a Request.newGraphPathRequest to graph api with the Facebook access
- * token.</li>
- * <li>Parses the received json response with Gson library</li>
  * <li>If privly link contained in message then Redirect User to
  * {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
  * </ul>
@@ -42,7 +38,6 @@ import com.actionbarsherlock.app.SherlockFragment;
  * <p>
  * Dependencies :
  * <ul>
- * <li>/privly-android/libs/gson.jar</li>
  * <li>/privly-android/libs/android-support-v4.jar</li>
  * </ul>
  * </p>
@@ -107,11 +102,17 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 				}
 			}
 		});
-		new getData().execute();
+		new GetListOfMessages().execute();
 		return view;
 	}
 
-	private class getData extends AsyncTask<Void, Void, Void> {
+	/**
+	 * AsyncTask for geting messages in chose dialog
+	 * 
+	 * @author Ivan Metla e-mail: metlaivan@gmail.com
+	 * 
+	 */
+	private class GetListOfMessages extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -213,6 +214,8 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 	}
 
 	/**
+	 * Set Interface ISocialNetworks
+	 * 
 	 * @param mISocialNetworks
 	 *            the mISocialNetworks to set
 	 */

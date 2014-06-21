@@ -9,7 +9,6 @@ import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 import twitter4j.Paging;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.URLEntity;
@@ -27,12 +26,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -47,27 +45,29 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  */
 public class MicroblogListPostsActivity extends SherlockFragment implements
-OnRefreshListener{
+		OnRefreshListener {
 	private static final String TAG = "MicroblogListPostsActivity";
 	private ProgressBar mProgressBar;
 	private ListView mListViewPosts;
 	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private ListMicroblogAdapter mListMicroblogAdapter;
 	private Values mValues;
-	private int mPage=1;
+	private int mPage = 1;
 	private ArrayList<twitter4j.Status> mPosts;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView ");
-		View view = inflater.inflate(R.layout.activity_list_pull_refrash, container, false);
+		View view = inflater.inflate(R.layout.activity_list_pull_refrash,
+				container, false);
 		initializeComponent(view);
 		mValues = new Values(getActivity());
 		if (!Utilities.isDataConnectionAvailable(getActivity())) {
 			Log.d(TAG, getString(R.string.no_internet_connection));
 			Utilities.showToast(getActivity(),
 					getString(R.string.no_internet_connection), true);
-		} else {			
+		} else {
 			logIn();
 		}
 		return view;
@@ -83,8 +83,9 @@ OnRefreshListener{
 		setHasOptionsMenu(true);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Twitter);
-		mListViewPosts = ((ListView) view.findViewById(R.id.lView_refresh));		
-		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData_refresh);
+		mListViewPosts = ((ListView) view.findViewById(R.id.lView_refresh));
+		mProgressBar = (ProgressBar) view
+				.findViewById(R.id.pbLoadingData_refresh);
 		mSwipeRefreshLayout = (SwipeRefreshLayout) view
 				.findViewById(R.id.swipe_container);
 		mSwipeRefreshLayout.setRotation(180);
@@ -98,17 +99,17 @@ OnRefreshListener{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				String url="";
-				URLEntity[] entities = mPosts.get(mPosts.size()-position-1).getURLEntities();
+				String url = "";
+				URLEntity[] entities = mPosts.get(mPosts.size() - position - 1)
+						.getURLEntities();
 				for (int i = 0; i < entities.length; i++) {
 					// Since urls are shortened by the twitter t.co
 					// service, get the expanded urls to search for
 					// Privly links
-					url+="  "+ entities[i].getExpandedURL();
+					url += "  " + entities[i].getExpandedURL();
 				}
-				
-				ArrayList<String> listOfUrls = Utilities
-						.fetchPrivlyUrls(url);
+
+				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(url);
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
@@ -214,23 +215,24 @@ OnRefreshListener{
 	 * @author Ivan Metla e-mail: metlaivan@gmail.com
 	 * 
 	 */
-	class TwitterGetAccessTokenTask extends AsyncTask<String, String, List<twitter4j.Status> > {
+	class TwitterGetAccessTokenTask extends
+			AsyncTask<String, String, List<twitter4j.Status>> {
 
 		@Override
-		protected void onPostExecute(List<twitter4j.Status>  statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");			
-			if (statuses != null){			
-			    Log.d(TAG, "Showing home timeline.");
-			    for (twitter4j.Status status : statuses) {
+		protected void onPostExecute(List<twitter4j.Status> statuses) {
+			Log.d(TAG, "TwitterGetAccessTokenTask");
+			if (statuses != null) {
+				Log.d(TAG, "Showing home timeline.");
+				for (twitter4j.Status status : statuses) {
 					Log.d(TAG, status.toString());
 				}
-			    mPosts=new ArrayList<twitter4j.Status>(statuses);
-			    mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-						  mPosts); 
-			    mListViewPosts.setAdapter(mListMicroblogAdapter); 
-			    mListViewPosts.setSelection(statuses.size()-1);
+				mPosts = new ArrayList<twitter4j.Status>(statuses);
+				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
+						mPosts);
+				mListViewPosts.setAdapter(mListMicroblogAdapter);
+				mListViewPosts.setSelection(statuses.size() - 1);
 			}
-				
+
 			mProgressBar.setVisibility(View.INVISIBLE);
 		}
 
@@ -261,7 +263,8 @@ OnRefreshListener{
 
 			try {
 				Paging paging = new Paging(mPage);
-				List<twitter4j.Status> statuses = TwitterUtil.getInstance().getTwitter().getHomeTimeline(paging);
+				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
+						.getTwitter().getHomeTimeline(paging);
 				return statuses;
 			} catch (TwitterException e) {
 				e.printStackTrace();
@@ -276,28 +279,29 @@ OnRefreshListener{
 		mPage++;
 		new TwitterGetTwets().execute(mPage);
 	}
-	
+
 	/**
 	 * AsyncTask for get next tweets
 	 * 
 	 * @author Ivan Metla e-mail: metlaivan@gmail.com
 	 * 
 	 */
-	class TwitterGetTwets extends AsyncTask<Integer, Void, List<twitter4j.Status> > {
+	class TwitterGetTwets extends
+			AsyncTask<Integer, Void, List<twitter4j.Status>> {
 
 		@Override
-		protected void onPostExecute(List<twitter4j.Status>  statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");			
-			if (statuses != null){			
-			    Log.d(TAG, "Showing"+mPage+" page home timeline.");
-			    Integer pos = statuses.size() - 1;
-			    mPosts.addAll(statuses);
-			    mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-						  mPosts); 
-			    mListViewPosts.setAdapter(mListMicroblogAdapter); 
-			    mListViewPosts.setSelection(pos);
-			   
-			}				
+		protected void onPostExecute(List<twitter4j.Status> statuses) {
+			Log.d(TAG, "TwitterGetAccessTokenTask");
+			if (statuses != null) {
+				Log.d(TAG, "Showing" + mPage + " page home timeline.");
+				Integer pos = statuses.size() - 1;
+				mPosts.addAll(statuses);
+				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
+						mPosts);
+				mListViewPosts.setAdapter(mListMicroblogAdapter);
+				mListViewPosts.setSelection(pos);
+
+			}
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
 
@@ -305,7 +309,8 @@ OnRefreshListener{
 		protected List<twitter4j.Status> doInBackground(Integer... params) {
 			try {
 				Paging paging = new Paging(mPage);
-				List<twitter4j.Status> statuses = TwitterUtil.getInstance().getTwitter().getHomeTimeline(paging);
+				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
+						.getTwitter().getHomeTimeline(paging);
 				return statuses;
 			} catch (TwitterException e) {
 				e.printStackTrace();

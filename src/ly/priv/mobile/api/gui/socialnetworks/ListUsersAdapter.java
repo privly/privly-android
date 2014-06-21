@@ -15,8 +15,9 @@ import com.fedorvlasov.lazylist.ImageLoader;
 
 /**
  * Adapter for ListViewUsers.
+ * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
+ * 
  */
 public class ListUsersAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
@@ -26,7 +27,8 @@ public class ListUsersAdapter extends BaseAdapter {
 	private SUser mSUser;
 
 	/**
-	 * Constructor for  ListUsersAdapter
+	 * Constructor for ListUsersAdapter
+	 * 
 	 * @param activity
 	 * @param list
 	 */

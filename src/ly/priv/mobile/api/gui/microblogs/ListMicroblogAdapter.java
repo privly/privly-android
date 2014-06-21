@@ -1,6 +1,7 @@
 package ly.priv.mobile.api.gui.microblogs;
 
 import java.util.ArrayList;
+
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import android.annotation.SuppressLint;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.fedorvlasov.lazylist.ImageLoader;
 
 public class ListMicroblogAdapter extends BaseAdapter {
@@ -20,11 +22,12 @@ public class ListMicroblogAdapter extends BaseAdapter {
 	private ArrayList<twitter4j.Status> mListPosts;
 	private twitter4j.Status mPost;
 
-	public ListMicroblogAdapter(Activity activity, ArrayList<twitter4j.Status> list) {
+	public ListMicroblogAdapter(Activity activity,
+			ArrayList<twitter4j.Status> list) {
 		this.mActivity = activity;
 		this.mListPosts = list;
 		this.mImageLoader = new ImageLoader(
-					this.mActivity.getApplicationContext());
+				this.mActivity.getApplicationContext());
 		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
@@ -58,15 +61,16 @@ public class ListMicroblogAdapter extends BaseAdapter {
 			vi = convertView;
 		}
 
-		mPost = mListPosts.get(getCount()-position-1);
+		mPost = mListPosts.get(getCount() - position - 1);
 		if (this.mPost != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
 			holder.mName.setText(mPost.getUser().getName());
-			holder.mNic.setText("@"+mPost.getUser().getScreenName());
+			holder.mNic.setText("@" + mPost.getUser().getScreenName());
 			holder.mMessage.setText(mPost.getText());
-			holder.mTine.setText(Utilities.getTimeForTwitter(mPost.getCreatedAt()));
-			mImageLoader.DisplayImage(mPost.getUser().getBiggerProfileImageURL(),
-					holder.mAvatar);
+			holder.mTine.setText(Utilities.getTimeForTwitter(mPost
+					.getCreatedAt()));
+			mImageLoader.DisplayImage(mPost.getUser()
+					.getBiggerProfileImageURL(), holder.mAvatar);
 		}
 		return vi;
 	}

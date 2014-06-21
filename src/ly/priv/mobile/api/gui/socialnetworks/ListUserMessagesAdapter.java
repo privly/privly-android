@@ -16,11 +16,12 @@ import android.widget.TextView;
 import com.fedorvlasov.lazylist.ImageLoader;
 
 /**
- * Adapter for ListViewUserMessages. It is showing messages for specific DialogId.
- *	 
+ * Adapter for ListViewUserMessages. It is showing messages for specific
+ * DialogId.
+ * 
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
+ * 
  */
 public class ListUserMessagesAdapter extends BaseAdapter {
 	private static final int TYPE_ITEM_TO = 0;
@@ -36,6 +37,7 @@ public class ListUserMessagesAdapter extends BaseAdapter {
 
 	/**
 	 * Constructor for ListUserMessagesAdapter
+	 * 
 	 * @param activity
 	 * @param list
 	 */

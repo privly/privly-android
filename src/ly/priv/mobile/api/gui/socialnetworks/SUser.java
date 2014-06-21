@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Class for entity SUser
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
- *
+ * 
  */
 public class SUser implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -26,11 +26,16 @@ public class SUser implements Serializable {
 	/**
 	 * Constructor for SUser
 	 * 
-	 * @param mUserName - uusername from which the messages was received
-	 * @param mUrlToAvatar url to avatar of user from which the messages was received
-	 * @param mTime - time when the user received last message
-	 * @param mLastUserMess - last message 
-	 * @param mDialogId - id of dialog
+	 * @param mUserName
+	 *            - uusername from which the messages was received
+	 * @param mUrlToAvatar
+	 *            url to avatar of user from which the messages was received
+	 * @param mTime
+	 *            - time when the user received last message
+	 * @param mLastUserMess
+	 *            - last message
+	 * @param mDialogId
+	 *            - id of dialog
 	 */
 	public SUser(String mUserName, String mUrlToAvatar, String mTime,
 			String mLastUserMess, String mDialogId) {

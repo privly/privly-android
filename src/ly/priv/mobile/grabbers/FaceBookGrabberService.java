@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui.grabbers;
+package ly.priv.mobile.grabbers;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -45,10 +45,31 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
+/**
+ * Fragment for login,logout get inbox and list of messages for chose dialog id For FaceBook
+ * <p>
+ * <ul>
+ * <li>Creates a new Facebook Session.</li>
+ * <li>Needs 'read_mailbox' permission from the user.</li>
+ * <li>Makes an Async GET Request to graph url with the Facebook access token.</li>
+ * <li>Parses the received json response.</li>
+ * <li>Implement interface ISocialNetworks.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Dependencies :
+ * <ul>
+ * <li>/privly-android/libs/gson.jar</li>
+ * <li>FaceBookSDK</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class FaceBookGrabberService extends SherlockFragment implements
 		ISocialNetworks {
-	private static final String TAG = "FaceBookDS";
+	private static final String TAG = FaceBookGrabberService.class.getName();
 	private ArrayList<SUser> mListUserMess;
 	private String mFaceBookUserId;
 	private Session mSession;
@@ -57,13 +78,10 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	private ListUsersFragment mSListUsersActivity;
 	private ProgressBar mProgressBar;
 
-	/**
-	 * 
-	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "FaceBookDS");
+		Log.d(TAG, "Creating "+TAG);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Login_Facebook);
@@ -82,12 +100,15 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		login();
 		return view;
 	}
-
+/**
+ * Run social GUI
+ */
 	private void runSocialGui() {
+		Log.d(TAG, "runSocialGui");
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
 		mSListUsersActivity = new ListUsersFragment();
-		mSListUsersActivity.setmISocialNetworks(this);
+		mSListUsersActivity.setISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
 		transaction.disallowAddToBackStack();
 		// transaction.addToBackStack(null);
@@ -98,6 +119,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 * Login in FaceBook
 	 */
 	private void login() {
+		Log.d(TAG, "login");
 		mSession = Session.getActiveSession();
 		if (mSession == null) {
 			mSession = new Session.Builder(getActivity()).build();
@@ -114,12 +136,10 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				openRequest.setPermissions(permissions);
 				mSession.openForRead(openRequest);
 			} else {
-				// getInboxFromFaceBook();
 				runSocialGui();
 			}
 
 		} else {
-			// getInboxFromFaceBook();
 			runSocialGui();
 		}
 		mProgressBar.setVisibility(View.INVISIBLE);
@@ -169,7 +189,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 
 	/**
 	 * Method for get information about me
-	 * 
 	 */
 	private void makeMeRequest() {
 		Log.d(TAG, "makeMeRequest");
@@ -195,7 +214,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 							mValues.setFacebookID(user.getId());
 						}
 						mProgressBar.setVisibility(View.INVISIBLE);
-						// getInboxFromFaceBook();
 						runSocialGui();
 					}
 				});
@@ -222,14 +240,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
-			if(getActivity()!=null)
-			getActivity().runOnUiThread(new Runnable() {
-				public void run() {
-					AlertDialog dialog = Utilities.showDialog(getActivity(),
-							getString(R.string.error_inbox));
-					dialog.show();
-				}
-			});
+			if (getActivity() != null)
+				getActivity().runOnUiThread(new Runnable() {
+					public void run() {
+						AlertDialog dialog = Utilities.showDialog(
+								getActivity(), getString(R.string.error_inbox));
+						dialog.show();
+					}
+				});
 			return mListUserMess;
 		}
 		JSONArray listUsersWIthLastMessage = null;
@@ -267,11 +285,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		return mListUserMess;
 	}
 
-	// // SListUserMessages methods
 
-	/**
-	 * Get inbox from FaceBook and show messages in mListViewUserMessages
-	 */
 	@Override
 	public Map<String, Object> getListOfMessages(String dialogID) {
 		Log.d(TAG, "getListOfMessagesFromFaceBook");
@@ -355,6 +369,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		res.put("Array", listOfUsersMessage);
 		res.put("NextLink", nextUrlForLoadingMessages);
 		return res;
+	}
+
+	@Override
+	public void logout() {
+		mSession.closeAndClearTokenInformation();
+		mSession = null;
+		Session.setActiveSession(mSession);
+		login();
 	}
 
 }
