@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  */
 public class ListUsersFragment extends SherlockFragment {
-	private static final String TAG = "SListUsersActivity";
+	private static final String TAG = "ListUsersFragment";
 	private ArrayList<SUser> mListUserMess;
 	private ListUsersAdapter mListUserMessagesAdapter;
 	private ListView mListViewUsers;
@@ -82,7 +83,6 @@ public class ListUsersFragment extends SherlockFragment {
 			}
 		});
 		new GetListOfUsers().execute();
-
 		return view;
 	}
 

@@ -25,10 +25,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,11 +112,11 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Log.d(TAG, "runSocialGui");
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
-		mSListUsersActivity = new ListUsersFragment();
+		mSListUsersActivity = new ListUsersFragment();		
 		mSListUsersActivity.setISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
-		transaction.disallowAddToBackStack();
-		// transaction.addToBackStack(null);
+		//transaction.disallowAddToBackStack();
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 

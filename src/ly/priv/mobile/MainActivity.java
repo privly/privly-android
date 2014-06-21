@@ -1,8 +1,10 @@
 package ly.priv.mobile;
 
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsActivity;
+import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -28,5 +30,17 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 		}
 
+	}
+
+	@Override
+	public void onBackPressed() {
+		Fragment fragment = getSupportFragmentManager().findFragmentById(
+				R.id.container);
+		if (fragment instanceof ListUsersFragment) {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.container, new Home()).commit();
+		} else {
+			super.onBackPressed();
+		}
 	}
 }
