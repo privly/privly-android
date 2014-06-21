@@ -45,8 +45,10 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 /**
- * Fragment for login,logout get inbox and list of messages for chose dialog id For FaceBook
+ * Fragment for login,logout get inbox and list of messages for chose dialog id
+ * For FaceBook
  * <p>
  * <ul>
  * <li>Creates a new Facebook Session.</li>
@@ -81,7 +83,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "Creating "+TAG);
+		Log.d(TAG, "Creating " + TAG);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Login_Facebook);
@@ -100,9 +102,10 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		login();
 		return view;
 	}
-/**
- * Run social GUI
- */
+
+	/**
+	 * Run social GUI
+	 */
 	private void runSocialGui() {
 		Log.d(TAG, "runSocialGui");
 		FragmentTransaction transaction = getActivity()
@@ -122,9 +125,11 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Log.d(TAG, "login");
 		mSession = Session.getActiveSession();
 		if (mSession == null) {
+			Log.d(TAG, "mSession == null");
 			mSession = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(mSession);
 			if (!mSession.isOpened()) {
+				Log.d(TAG, "!mSession.isOpened()");
 				ArrayList<String> permissions = new ArrayList<String>();
 				permissions.add("read_mailbox");
 				mSession.addCallback(mSessionStatusCallback);
@@ -138,7 +143,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 			} else {
 				runSocialGui();
 			}
-
 		} else {
 			runSocialGui();
 		}
@@ -165,6 +169,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 */
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception) {
+
 		if (session != mSession) {
 			return;
 		}
@@ -172,7 +177,11 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		if (state.isOpened()) {
 			// Log in just happened.
 			Log.d(TAG, "session opened");
-			makeMeRequest();
+			if (mValues.getFacebookID().equals("")) {
+				makeMeRequest();
+			} else {
+				runSocialGui();
+			}
 		} else if (state.isClosed()) {
 			// Log out just happened. Update the UI.
 
@@ -285,7 +294,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		return mListUserMess;
 	}
 
-
 	@Override
 	public Map<String, Object> getListOfMessages(String dialogID) {
 		Log.d(TAG, "getListOfMessagesFromFaceBook");
@@ -376,6 +384,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		mSession.closeAndClearTokenInformation();
 		mSession = null;
 		Session.setActiveSession(mSession);
+		mValues.setFacebookID("");
 		login();
 	}
 
