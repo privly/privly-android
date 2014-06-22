@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -52,10 +56,17 @@ public class JsObject {
 	public void receiveNewPrivlyURL(String url) {
 		Log.d("androidJSBridge URL Received", url);
 		Utilities.showToast(context, url, true);
-		Intent gotoShare = new Intent(context, Share.class);
-		gotoShare.putExtra("newPrivlyUrl", url);
-		context.startActivity(gotoShare);
-		((Activity) context).finish();
+		Fragment gotoShare = new Share();
+		Bundle args = new Bundle();
+		args.putString("newPrivlyUrl", url);
+		gotoShare.setArguments(args);
+		FragmentTransaction transaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+		transaction.replace(R.id.container, gotoShare);
+		transaction.commit();
+//		Intent gotoShare = new Intent(context, Share.class);
+//		gotoShare.putExtra("newPrivlyUrl", url);
+//		context.startActivity(gotoShare);
+//		((Activity) context).finish();
 
 	}
 

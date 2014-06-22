@@ -1,19 +1,19 @@
 package ly.priv.mobile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.*;
 
 /**
  * Shows the Settings Activity. Currently, supports setting of the
@@ -21,7 +21,7 @@ import android.widget.Toast;
  *
  * @author Shivam Verma
  */
-public class Settings extends Activity {
+public class Settings extends SherlockActivity {
 	/** Called when the activity is first created. */
 	String prefsName, baseUrl;
 	Button save;
@@ -35,7 +35,8 @@ public class Settings extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.settings_layout);
-
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setTitle(R.string.set_content_server);
 		TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");
@@ -80,7 +81,7 @@ public class Settings extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.layout.menu_layout_settings, menu);
 		return true;
 	}
