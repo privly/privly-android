@@ -21,7 +21,7 @@ public class PrivlyActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		// Checks if the content server is set, if not, redirects to settings
 		// page else
 		// to the login page.

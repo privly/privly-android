@@ -1,18 +1,5 @@
 package ly.priv.mobile;
 
-import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,10 +20,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -280,8 +269,7 @@ public class Utilities {
 		db.close();
 	}
 
-	
-	public static void setHederFont(Activity activity){
+	public static void setHederFont(Activity activity) {
 		TextView hederText = (TextView) activity.findViewById(R.id.twHederText);
 		Typeface lobster = Typeface.createFromAsset(activity.getAssets(),
 				"fonts/Lobster.ttf");

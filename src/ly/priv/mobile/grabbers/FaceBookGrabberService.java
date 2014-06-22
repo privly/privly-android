@@ -25,12 +25,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +41,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
@@ -83,7 +80,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	private ListUsersFragment mSListUsersActivity;
 	private ProgressBar mProgressBar;
 
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -114,10 +110,10 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Log.d(TAG, "runSocialGui");
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
-		mSListUsersActivity = new ListUsersFragment();		
+		mSListUsersActivity = new ListUsersFragment();
 		mSListUsersActivity.setISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
-		//transaction.disallowAddToBackStack();
+		// transaction.disallowAddToBackStack();
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -162,7 +158,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
 				resultCode, data);
 	}
-	
+
 	/**
 	 * Manages the session state change. This method is called after the
 	 * <code>login</code> method.

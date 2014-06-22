@@ -63,9 +63,9 @@ public class NewPost extends SherlockFragment {
 
 			w.loadUrl("file:///android_asset/PrivlyApplications/" + JsAppName
 					+ "/new.html");
-			w.loadUrl("javascript: window.onload = function() {document.getElementsByClassName('navbar-toggle')[0].style.visibility = 'hidden';" +
-					"document.getElementsByClassName('collapse navbar-collapse')[0].style.visibility = 'hidden';}");
-			
+			w.loadUrl("javascript: window.onload = function() {document.getElementsByClassName('navbar-toggle')[0].style.visibility = 'hidden';"
+					+ "document.getElementsByClassName('collapse navbar-collapse')[0].style.visibility = 'hidden';}");
+
 		}
 		return view;
 	}

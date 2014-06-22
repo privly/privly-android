@@ -78,7 +78,7 @@ public class Home extends SherlockFragment {
 		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Lobster.ttf");
 		createHeadingEditText.setTypeface(lobster);
-		readHeadingEditText.setTypeface(lobster); 
+		readHeadingEditText.setTypeface(lobster);
 
 		try {
 			Boolean isRedirected = getArguments().getBoolean("isRedirected");
@@ -159,7 +159,7 @@ public class Home extends SherlockFragment {
 				case 1:
 					FaceBookGrabberService faceBookDS = new FaceBookGrabberService();
 					transaction.replace(R.id.container, faceBookDS);
-					//transaction.disallowAddToBackStack();
+					// transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);
 					transaction.commit();
 					break;

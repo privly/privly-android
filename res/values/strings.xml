@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
     <string name="unameHint">EMail ID</string>
@@ -21,15 +22,16 @@
     <string name="app_id">1412217835697847</string>
     <string name="logoutTwitter"> Logout From Twitter</string>
     <string name="logoutFacebook"> Logout From Facebook</string>
-        <string name="hederText">&#160;&#160;privlyalpha.org&#160;&#160;</string>
+    <string name="hederText">&#160;&#160;privlyalpha.org&#160;&#160;</string>
     <string name="privly_home">Privly Home</string>
     <string name="privly_Facebook">Privly Facebook</string>
     <string name="privly_Login_Facebook">Login to Facebook</string>
-     <string name="privly_Twitter">Privly Twitter</string>
+    <string name="privly_Twitter">Privly Twitter</string>
     <string name="set_content_server">Content Server Location</string>
-	<string name="dialog_info_title">Info</string>
-	<string name="error_inbox">Inbox is only available when connected to the internet.</string>
-	<string name="message_not_containe_privly_link">Message is not contain privly link.</string>
-	<string name="no_more_messages">No more messages.</string>
-	<string name="no_internet_connection">No internet connection.</string>
+    <string name="dialog_info_title">Info</string>
+    <string name="error_inbox">Inbox is only available when connected to the internet.</string>
+    <string name="message_not_containe_privly_link">Message is not contain privly link.</string>
+    <string name="no_more_messages">No more messages.</string>
+    <string name="no_internet_connection">No internet connection.</string>
+
 </resources>

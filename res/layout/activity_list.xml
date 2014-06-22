@@ -3,11 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/privlyBackgroundColor" >
+
     <ListView
         android:id="@+id/lView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/privlyBackgroundColor" />
+
     <ProgressBar
         android:id="@+id/pbLoadingData"
         style="?android:attr/progressBarStyleLarge"
