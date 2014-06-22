@@ -6,7 +6,7 @@ import java.util.Arrays;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
-import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsActivity;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
 
 import org.apache.http.HttpEntity;
@@ -157,26 +157,14 @@ public class Home extends SherlockFragment {
 							Toast.LENGTH_LONG).show();
 					break;
 				case 1:
-					 FacebookLinkGrabberService fbGrabber = new
-					 FacebookLinkGrabberService();
-					// SListUsersActivity sListUsersActivity = new
-					// SListUsersActivity();
-					// // transaction.replace(R.id.container, fbGrabber);
-					// transaction.replace(R.id.container, sListUsersActivity);
-					// // transaction.disallowAddToBackStack();
-					// transaction.addToBackStack(null);
-					// transaction.commit();
 					FaceBookGrabberService faceBookDS = new FaceBookGrabberService();
-					// // transaction.replace(R.id.container, fbGrabber);
 					transaction.replace(R.id.container, faceBookDS);
 					//transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);
 					transaction.commit();
 					break;
 				case 2:
-					// TwitterLinkGrabberService twitGrabber = new
-					// TwitterLinkGrabberService();
-					MicroblogListPostsActivity twitGrabber = new MicroblogListPostsActivity();
+					MicroblogListPostsFragment twitGrabber = new MicroblogListPostsFragment();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
 					// transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);

@@ -43,6 +43,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
@@ -82,6 +83,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	private ListUsersFragment mSListUsersActivity;
 	private ProgressBar mProgressBar;
 
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -160,7 +162,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
 				resultCode, data);
 	}
-
+	
 	/**
 	 * Manages the session state change. This method is called after the
 	 * <code>login</code> method.
@@ -186,7 +188,6 @@ public class FaceBookGrabberService extends SherlockFragment implements
 			}
 		} else if (state.isClosed()) {
 			// Log out just happened. Update the UI.
-
 			Log.d(TAG, "session closed");
 		}
 	}

@@ -44,7 +44,7 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class MicroblogListPostsActivity extends SherlockFragment implements
+public class MicroblogListPostsFragment extends SherlockFragment implements
 		OnRefreshListener {
 	private static final String TAG = "MicroblogListPostsActivity";
 	private ProgressBar mProgressBar;
