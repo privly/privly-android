@@ -1,19 +1,22 @@
 package ly.priv.mobile;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 /**
- * Acts as a bridge between the Js of the Privly Posting and Reading Applications and
- * the native Android functions.
- *
+ * Acts as a bridge between the Js of the Privly Posting and Reading
+ * Applications and the native Android functions.
+ * 
  * @author Shivam Verma
  */
 public class JsObject {
@@ -24,7 +27,7 @@ public class JsObject {
 
 	/**
 	 * sets current context as the context of the calling class.
-	 *
+	 * 
 	 * @param callingContext
 	 */
 	JsObject(Context callingContext) {
@@ -42,9 +45,9 @@ public class JsObject {
 	}
 
 	/**
-	 * Shows the {@link ly.priv.mobile.Share} Activity to the user on
-	 * receiving a new Privly Url
-	 *
+	 * Shows the {@link ly.priv.mobile.Share} Activity to the user on receiving
+	 * a new Privly Url
+	 * 
 	 * @param url
 	 *            The newly generated Privly Url
 	 */
@@ -52,16 +55,24 @@ public class JsObject {
 	public void receiveNewPrivlyURL(String url) {
 		Log.d("androidJSBridge URL Received", url);
 		Utilities.showToast(context, url, true);
-		Intent gotoShare = new Intent(context, Share.class);
-		gotoShare.putExtra("newPrivlyUrl", url);
-		context.startActivity(gotoShare);
-		((Activity) context).finish();
+		Fragment gotoShare = new Share();
+		Bundle args = new Bundle();
+		args.putString("newPrivlyUrl", url);
+		gotoShare.setArguments(args);
+		FragmentTransaction transaction = ((FragmentActivity) context)
+				.getSupportFragmentManager().beginTransaction();
+		transaction.replace(R.id.container, gotoShare);
+		transaction.commit();
+		// Intent gotoShare = new Intent(context, Share.class);
+		// gotoShare.putExtra("newPrivlyUrl", url);
+		// context.startActivity(gotoShare);
+		// ((Activity) context).finish();
 
 	}
 
 	/**
 	 * Identify the platform the Js is running on.
-	 *
+	 * 
 	 * @return "ANDROID"
 	 */
 	@JavascriptInterface
@@ -72,7 +83,7 @@ public class JsObject {
 
 	/**
 	 * Fetch logged in user's auth_token from the sharedPreferences
-	 *
+	 * 
 	 * @return auth_token {String}
 	 */
 	@JavascriptInterface
@@ -84,7 +95,7 @@ public class JsObject {
 
 	/**
 	 * Fetch the domain name to which all Privly Requests are being made.
-	 *
+	 * 
 	 * @return domainName {String}
 	 */
 	@JavascriptInterface
@@ -132,7 +143,7 @@ public class JsObject {
 
 	/**
 	 * Checks for data connection availability
-	 *
+	 * 
 	 * @return {Boolean}
 	 */
 	@JavascriptInterface

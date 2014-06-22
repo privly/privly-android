@@ -17,22 +17,40 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Contains simple functions that should be used wherever possible.
- *
+ * 
  * @author Shivam Verma
  */
 public class Utilities {
 
+	private static final String MY_PREFERENCES = "privly";
+
 	/**
 	 * Check validity of an EMail address using RegEx
-	 *
+	 * 
 	 * @param {String} emailToCheck
 	 * @return {Boolean}
 	 */
@@ -47,7 +65,7 @@ public class Utilities {
 
 	/**
 	 * Show Toast on screen.
-	 *
+	 * 
 	 * @param {Context} context Context of the calling class.
 	 * @param {String} textToToast
 	 * @param {String} longToast
@@ -64,9 +82,31 @@ public class Utilities {
 	}
 
 	/**
+	 * Show dialog on screen.
+	 * 
+	 * @param activity
+	 * @param mess
+	 * @return
+	 */
+	public static AlertDialog showDialog(final Activity activity, String mess) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(R.string.dialog_info_title);
+		builder.setCancelable(true);
+		builder.setMessage(mess);
+		builder.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		return builder.create();
+	}
+
+	/**
 	 * Returns HTML string which will be loaded in the webview in Share
 	 * Activity.
-	 *
+	 * 
 	 * @param {String} url
 	 * @return {String} html Returns the HTML String which is used to display
 	 *         Privly link in the WebView
@@ -78,7 +118,7 @@ public class Utilities {
 
 	/**
 	 * Checks for data connection availability
-	 *
+	 * 
 	 * @param {Context} context
 	 * @return {Boolean}
 	 */
@@ -92,7 +132,7 @@ public class Utilities {
 
 	/**
 	 * Appends the current auth_token to any url.
-	 *
+	 * 
 	 * @param {String} url The Url to be displayed in the WebWiev
 	 * @param {Context} context Calling Context
 	 * @return {Boolean}
@@ -113,7 +153,7 @@ public class Utilities {
 
 	/**
 	 * This method uses regex to find out any Privly URLs in a given String
-	 *
+	 * 
 	 * @param {String} message
 	 * @return {ArrayList<String>} listOfUrls List of Privly Urls contained in a
 	 *         string.
@@ -134,7 +174,7 @@ public class Utilities {
 
 	/**
 	 * Checks if a link from a source already exists in the database.
-	 *
+	 * 
 	 * @param {Context} context of calling Activity
 	 * @param {String} sourceOfLink Source of the link. Example : FACEBOOK,
 	 *        TWITTER
@@ -207,16 +247,17 @@ public class Utilities {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Insert Links into the Database.
-	 *
+	 * 
 	 * @param {Context} context Application Context
 	 * @param {String} source Source of Privly Link (FACEBOOK, TWITTER etc)
 	 * @param {String} url Privly Link
 	 * @param {String} id unique identifier on the Source Server of the message
 	 * @param {String} userName Name of the user who sent the message / email
 	 *        /tweet.
-	 *
+	 * 
 	 */
 
 	public static void insertIntoDb(Context context, String source, String url,
@@ -238,11 +279,86 @@ public class Utilities {
 		contentValues.clear();
 		db.close();
 	}
+
 	
 	public static void setHederFont(Activity activity){
 		TextView hederText = (TextView) activity.findViewById(R.id.twHederText);
 		Typeface lobster = Typeface.createFromAsset(activity.getAssets(),
 				"fonts/Lobster.ttf");
 		hederText.setTypeface(lobster);
+	}
+
+	/**
+	 * Conversion Facebook time into local time
+	 * 
+	 * @param time
+	 * @return
+	 * @author Ivan Metla
+	 */
+	public static String getTimeForFacebook(String time) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ssZ");
+		Date date = null;
+		try {
+			date = simpleDateFormat.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar fDate = Calendar.getInstance();
+		fDate.setTime(date);
+		Calendar curDate = Calendar.getInstance();
+		if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+			if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
+					.get(Calendar.DAY_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("HH:mm");
+			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
+					.get(Calendar.WEEK_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+			} else
+				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+		} else {
+			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+		}
+		return simpleDateFormat.format(fDate.getTime());
+	}
+
+	/**
+	 * Conversion Twitter time into local time
+	 * 
+	 * @param time
+	 * @return
+	 * @author Ivan Metla
+	 */
+	public static String getTimeForTwitter(Date date) {
+		SimpleDateFormat simpleDateFormat;
+
+		Calendar tDate = Calendar.getInstance();
+		tDate.setTime(date);
+		Calendar curDate = Calendar.getInstance();
+		System.out.println("cur=" + curDate.getTime().toString());
+		System.out.println("tdata=" + tDate.getTime().toString());
+		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
+					.get(Calendar.DAY_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("HH:mm");
+			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == tDate
+					.get(Calendar.WEEK_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+			} else
+				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+		} else {
+			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+		}
+		return simpleDateFormat.format(tDate.getTime());
+	}
+
+	/**
+	 * Check for Null or Whitespace
+	 * 
+	 * @param string
+	 * @return
+	 */
+	public static boolean isNullOrWhitespace(String string) {
+		return string == null || string.isEmpty() || string.trim().isEmpty();
 	}
 }

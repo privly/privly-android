@@ -1,16 +1,16 @@
 package ly.priv.mobile;
 
+import java.util.HashMap;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.view.ViewConfiguration;
 
-import java.util.HashMap;
-
 /**
- * Used to set/get values that should be accessible to all
- * classes throughout the application.
- *
+ * Used to set/get values that should be accessible to all classes throughout
+ * the application.
+ * 
  * <p>
  * Key Pair Values saved in shared preferences
  * <li>uname : email id of user</li>
@@ -21,7 +21,7 @@ import java.util.HashMap;
  * <li>verified_at_login : flag to check if user has been authenticated at
  * login. If true, the auth_token is not verified in Home Activity</li>
  * </p>
- *
+ * 
  * @author Shivam Verma
  */
 public final class Values {
@@ -30,14 +30,14 @@ public final class Values {
 	SharedPreferences sharedPrefs;
 	Context context;
 
-	Values(Context callingContext) {
+	public Values(Context callingContext) {
 		prefsName = "prefsFile";
 		context = callingContext;
 	}
 
 	/**
 	 * The name of the SharedPreference File
-	 *
+	 * 
 	 * @return {String} prefs_name
 	 */
 	String getPrefsName() {
@@ -46,7 +46,7 @@ public final class Values {
 
 	/**
 	 * The content server URL
-	 *
+	 * 
 	 * @return {String} baseUrl
 	 */
 	String getContentServerDomain() {
@@ -57,7 +57,7 @@ public final class Values {
 
 	/**
 	 * Returns Authentication token for user's session
-	 *
+	 * 
 	 * @return {String} authToken
 	 */
 	String getAuthToken() {
@@ -68,7 +68,7 @@ public final class Values {
 
 	/**
 	 * Returns value of remember_me Flag
-	 *
+	 * 
 	 * @return {Boolean} rememberMe
 	 */
 	Boolean getRememberMe() {
@@ -79,7 +79,7 @@ public final class Values {
 
 	/**
 	 * Returns username of the currently logged in user.
-	 *
+	 * 
 	 * @return userName
 	 */
 	String getUserName() {
@@ -90,7 +90,7 @@ public final class Values {
 
 	/**
 	 * Save authentication token to SharedPrefs
-	 *
+	 * 
 	 * @param authToken
 	 */
 	void setAuthToken(String authToken) {
@@ -102,7 +102,7 @@ public final class Values {
 
 	/**
 	 * Save content server to SharedPrefs
-	 *
+	 * 
 	 * @param baseUrl
 	 */
 	void setBaseUrl(String baseUrl) {
@@ -114,7 +114,7 @@ public final class Values {
 
 	/**
 	 * Set Remember me flag
-	 *
+	 * 
 	 * @param rememberMe
 	 */
 	void setRememberMe(Boolean rememberMe) {
@@ -127,7 +127,7 @@ public final class Values {
 	/**
 	 * Returns value of verified_at_login flag. Use this to prevent re
 	 * authentication at Home Screen.
-	 *
+	 * 
 	 * @return {Boolean}
 	 */
 	Boolean isUserVerifiedAtLogin() {
@@ -138,7 +138,7 @@ public final class Values {
 
 	/**
 	 * Sets the value of verified_at_login Flag.
-	 *
+	 * 
 	 * @param {Boolean} bool
 	 */
 	void setUserVerifiedAtLogin(Boolean bool) {
@@ -150,7 +150,7 @@ public final class Values {
 
 	/**
 	 * Get optimal parameter values to determine a swipe on a View.
-	 *
+	 * 
 	 * @return HashMap<String, Integer>
 	 */
 	HashMap<String, Integer> getValuesForSwipe() {
@@ -163,8 +163,103 @@ public final class Values {
 		swipeValues.put("swipeMaxOffPath", vc.getScaledMinimumFlingVelocity());
 		return swipeValues;
 	}
-}
 
-/**
- *
- **/
+	// / -------- FaceBook------------------------
+	/**
+	 * Set FaceBook user ID
+	 * 
+	 * @param id
+	 *            - Facebook user id
+	 * @author Ivan Metla
+	 */
+	public void setFacebookID(String id) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString(ConstantValues.PREFERENCE_FACEBOOK_USER_ID, id);
+		editor.commit();
+	}
+
+	/**
+	 * Get Facebook User ID
+	 * 
+	 * @return Facebook user ID
+	 * @author Ivan Metla
+	 */
+	public String getFacebookID() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_FACEBOOK_USER_ID, "");
+	}
+
+	// / -------- Twitter------------------------
+	/**
+	 * Set Twitter Logged in
+	 * 
+	 * @param loggedIn
+	 */
+	public void setTwitterLoggedIn(boolean loggedIn) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putBoolean(ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN,
+				loggedIn);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Logged in
+	 * 
+	 * @return Twitter Logged in
+	 */
+	public boolean getTwitterLoggedIn() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getBoolean(
+				ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN, false);
+	}
+
+	/**
+	 * Set Twitter Oauth Token
+	 * 
+	 * @param token
+	 */
+	public void setTwitterOauthToken(String token) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, token);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Oauth Token
+	 * 
+	 * @return
+	 */
+	public String getTwitterOauthToken() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, "");
+	}
+
+	/**
+	 * Set Twitter Oauth Token Secret
+	 * 
+	 * @param tokenSecret
+	 */
+	public void setTwitterOauthTokenSecret(String tokenSecret) {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		Editor editor = sharedPrefs.edit();
+		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
+				tokenSecret);
+		editor.commit();
+	}
+
+	/**
+	 * Get Twitter Oauth Token Secret
+	 * 
+	 * @return
+	 */
+	public String getTwitterOauthTokenSecret() {
+		sharedPrefs = context.getSharedPreferences(prefsName, 0);
+		return sharedPrefs.getString(
+				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, "");
+	}
+}

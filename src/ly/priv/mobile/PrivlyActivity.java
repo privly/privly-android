@@ -8,7 +8,7 @@ import android.os.Bundle;
  * Redirects user to {@link ly.priv.mobile.Login} Login Screen or
  * {@link ly.priv.mobile.Settings} Settings Screen to setup the domain name with
  * which the application works.
- *
+ * 
  * @author Shivam Verma
  */
 public class PrivlyActivity extends Activity {

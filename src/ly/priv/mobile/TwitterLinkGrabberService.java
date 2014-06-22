@@ -1,4 +1,10 @@
 package ly.priv.mobile;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import ly.priv.mobile.MainActivity.NewIntentListener;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -8,8 +14,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
-
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,17 +21,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * Grabs Privly links from a twitter user's timeline and stores them in the
  * local database.
- *
+ * 
  * <p>
  * Dependencies :
  * <ul>
@@ -36,7 +43,7 @@ import java.util.List;
  * <li>/privly-android/libs/twitter4j-core-3.0.3.jar</li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <ul>
  * <li>Checks if a user has already granted permissions to the application.</li>
@@ -46,11 +53,12 @@ import java.util.List;
  * Key and Consumer Secret</li>
  * </ul>
  * </p>
- *
+ * 
  * @author Shivam Verma
- *
+ * 
  */
-public class TwitterLinkGrabberService extends Activity {
+public class TwitterLinkGrabberService extends SherlockFragment implements
+		NewIntentListener {
 
 	// TwitterProperties
 	private CommonsHttpOAuthConsumer httpOauthConsumer;
@@ -75,13 +83,20 @@ public class TwitterLinkGrabberService extends Activity {
 	String verifier;
 	Context context;
 	ProgressDialog progressDialog;
+
+	public TwitterLinkGrabberService() {
+
+	}
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
 		Log.d("TAG", "onCreate");
-		setContentView(R.layout.link_grabber_service);
-		context = getApplicationContext();
-		progressDialog = new ProgressDialog(this);
+		View view = inflater.inflate(R.layout.link_grabber_service, container,
+				false);
+		context = getActivity();
+		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCanceledOnTouchOutside(false);
 		Utilities.setHederFont(this);
 		
@@ -98,9 +113,9 @@ public class TwitterLinkGrabberService extends Activity {
 			}).start();
 		} else {
 			String twitterToken = TwitterHelperMethods
-					.getTwitterToken(getApplicationContext());
+					.getTwitterToken(getActivity());
 			String twitterTokenSecret = TwitterHelperMethods
-					.getTwitterTokenSecret(getApplicationContext());
+					.getTwitterTokenSecret(getActivity());
 			Log.d("tokenSecret", twitterTokenSecret);
 			if (twitterToken != null && twitterTokenSecret != null) {
 
@@ -114,6 +129,7 @@ public class TwitterLinkGrabberService extends Activity {
 			}
 
 		}
+		return view;
 
 	}
 
@@ -135,7 +151,7 @@ public class TwitterLinkGrabberService extends Activity {
 			this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
 					.parse(authUrl)));
 		} catch (Exception e) {
-			Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+			Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -144,8 +160,7 @@ public class TwitterLinkGrabberService extends Activity {
 	 * with twitter permissions.
 	 */
 	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
+	public void onNewIntentRead(Intent intent) {
 
 		Uri uri = intent.getData();
 		if (uri != null && uri.toString().startsWith(CALLBACKURL)) {
@@ -185,10 +200,10 @@ public class TwitterLinkGrabberService extends Activity {
 	/**
 	 * Creates a new twitter AccessToken Object and then sets up the twitter
 	 * object with AccessToken, ConsumerKey and Consumer Secret.
-	 *
+	 * 
 	 * @param {String} token
 	 * @param {String} tokenSecret
-	 *
+	 * 
 	 */
 	private void setUpTwitter(String token, String tokenSecret) {
 		accessToken = new AccessToken(token, tokenSecret);
@@ -205,24 +220,22 @@ public class TwitterLinkGrabberService extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-				case THREAD_STARTING :
-					progressDialog
-							.setMessage("Checking for new Privly links from your Twitter timeline..");
-					progressDialog.show();
-					break;
+			case THREAD_STARTING:
+				progressDialog
+						.setMessage("Checking for new Privly links from your Twitter timeline..");
+				progressDialog.show();
+				break;
 
-				case THREAD_COMPLETE :
-					progressDialog.dismiss();
-					Bundle bundle = new Bundle();
-					bundle.putString("contentSource", "TWITTER");
-					Intent showContentIntent = new Intent(
-							TwitterLinkGrabberService.this, ShowContent.class);
-					showContentIntent.putExtras(bundle);
-					startActivity(showContentIntent);
-					// Clear this activity from stack so that the user is taken
-					// to the Home Screen on back press
-					TwitterLinkGrabberService.this.finish();
-
+			case THREAD_COMPLETE:
+				progressDialog.dismiss();
+				Fragment showContent = new ShowContent();
+				Bundle bundle = new Bundle();
+				bundle.putString("contentSource", "TWITTER");
+				showContent.setArguments(bundle);
+				FragmentTransaction transaction = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.container, showContent);
+				transaction.commit();
 			}
 		}
 	};
@@ -230,7 +243,7 @@ public class TwitterLinkGrabberService extends Activity {
 	/**
 	 * Fetch tweets from the twitter timeline. Looks for any Privly links in the
 	 * tweets and store them in the Db.
-	 *
+	 * 
 	 * @param {long} userId Twitter user id for which we want to fetch the
 	 *        timeline.
 	 */
@@ -262,9 +275,8 @@ public class TwitterLinkGrabberService extends Activity {
 								String url = iter.next();
 								// Checks if the link already exists in local
 								// Db. If not, Insert into Db.
-								if (!Utilities.ifLinkExistsInDb(
-										getApplicationContext(), url,
-										SOURCE_TWITTER)) {
+								if (!Utilities.ifLinkExistsInDb(getActivity(),
+										url, SOURCE_TWITTER)) {
 									Log.d("INSERTING URL", url);
 									Utilities.insertIntoDb(context,
 											SOURCE_TWITTER, url,
@@ -280,7 +292,7 @@ public class TwitterLinkGrabberService extends Activity {
 				Message msgFinal = Message.obtain();
 				msgFinal.what = THREAD_COMPLETE;
 				handler.sendMessage(msgFinal);
-
+				Log.d("Twitter", "readDone");
 			}
 		}).start();
 
