@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/customPrivlyTheme" >
         <activity
-            android:name=".PrivlyActivity"
+            android:name="ly.priv.mobile.PrivlyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -27,43 +27,59 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Login"
+            android:name="ly.priv.mobile.Login"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".Settings"
+            android:name="ly.priv.mobile.Settings"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+        </activity>
+<!--    <activity
+            android:name="ly.priv.mobile.Home"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".Home"
+            android:name="ly.priv.mobile.NewPost"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".NewPost"
+            android:name="ly.priv.mobile.Share"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".Share"
+            android:name="ly.priv.mobile.ShowContent"
             android:configChanges="keyboardHidden|orientation|screenSize" >
-        </activity>
-        <activity
-            android:name=".ShowContent"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
-        </activity>
-        <activity android:name=".LinkGrabber" >
+        </activity>-->
+        <activity android:name="ly.priv.mobile.LinkGrabber" >
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
-        <activity
-            android:name=".FacebookLinkGrabberService"
+<!--    <activity
+            android:name="ly.priv.mobile.FacebookLinkGrabberService"
             android:configChanges="keyboardHidden|orientation|screenSize" >
         </activity>
         <activity
-            android:name=".TwitterLinkGrabberService"
+            android:name="ly.priv.mobile.TwitterLinkGrabberService"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance" >
+            
+        </activity>-->
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+        
+        <meta-data 
+            android:name="com.google.android.gms.version" 
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="ly.priv.mobile.MainActivity"
+            android:label="@string/privly_home"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -75,10 +91,6 @@
                     android:scheme="x-oauthflow-twitter" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
     </application>
 
 </manifest>

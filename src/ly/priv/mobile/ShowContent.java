@@ -8,13 +8,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -22,6 +24,11 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuInflater;
 
 import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 
@@ -42,7 +49,7 @@ import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
  *
  * @author Shivam Verma
  */
-public class ShowContent extends Activity {
+public class ShowContent extends SherlockFragment {
 	/** Called when the activity is first created. */
 
 	private GestureDetector gestureDetector;
@@ -53,22 +60,27 @@ public class ShowContent extends Activity {
 	WebView urlContentWebView;
 	Cursor cursor;
 	String contentSource;
+	
+	public ShowContent(){
+		
+	}
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.show_content);
-		Bundle bundle = this.getIntent().getExtras();
-		contentSource = bundle.getString("contentSource");
-		View webView = findViewById(R.id.urlContentWebview);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.show_content, container, false);
+		//Bundle bundle = this.getIntent().getExtras();
+		contentSource = getArguments().getString("contentSource");
+		getActivity().setTitle(contentSource);
+		View webView = view.findViewById(R.id.urlContentWebview);
 		urlContentWebView = (WebView) webView;
-
+		setHasOptionsMenu(true);
 		urlContentWebView.getSettings().setJavaScriptEnabled(true);
 
 		// Add JavaScript Interface to the WebView. This enables the JS to
 		// access Java functions defined in the JsObject Class
-		urlContentWebView.addJavascriptInterface(new JsObject(this),
+		urlContentWebView.addJavascriptInterface(new JsObject(getActivity()),
 				"androidJsBridge");
 
 		// Sets whether JavaScript running in the context of a file scheme URL
@@ -79,7 +91,7 @@ public class ShowContent extends Activity {
 					.setAllowUniversalAccessFromFileURLs(true);
 
 		// Setup WebView to detect swipes.
-		gestureDetector = new GestureDetector(this, new SwipeGestureDetector());
+		gestureDetector = new GestureDetector(getActivity(), new SwipeGestureDetector());
 		gestureListener = new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -89,24 +101,26 @@ public class ShowContent extends Activity {
 		webView.setOnTouchListener(gestureListener);
 
 		// Fetch links for the particular source from the database.
-		LinksDbHelper mDbHelper = new LinksDbHelper(getApplicationContext());
+		LinksDbHelper mDbHelper = new LinksDbHelper(getActivity());
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-		File database = getApplicationContext().getDatabasePath(
+		File database = getActivity().getDatabasePath(
 				"PrivlyLinks.db");
 
 		// Check if database exists, If not, redirect to Home Screen. Else, load
 		// links from Db.
 		if (!database.exists()) {
-			Toast.makeText(getApplicationContext(),
+			Toast.makeText(getActivity(),
 					"No Privly Links found for" + contentSource,
 					Toast.LENGTH_LONG).show();
-			Intent goToHome = new Intent(this, Home.class);
+			Fragment goToIndex = new Index();
+			FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 			Bundle bundle_2 = new Bundle();
 			bundle_2.putBoolean("isRedirected", true);
-			goToHome.putExtras(bundle_2);
-			startActivity(goToHome);
-			finish();
+			goToIndex.setArguments(bundle_2);
+			Log.d("fragments", "go index");
+			transaction.replace(R.id.container, goToIndex);
+			transaction.commit();
 
 		} else {
 			cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
@@ -118,21 +132,22 @@ public class ShowContent extends Activity {
 				cursor.moveToFirst();
 				loadUrlInWebview();
 			} else {
-				Toast.makeText(getApplicationContext(),
+				Toast.makeText(getActivity(),
 						"No Privly Links found for " + contentSource,
 						Toast.LENGTH_LONG).show();
-				Intent goToHome = new Intent(this, Home.class);
-				// Send an isRedirected Flag. The Home Activity checks for the
-				// flag
-				// and does not re authenticate the user.
+				Fragment goToIndex = new Index();
+				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
 				Bundle bundle_2 = new Bundle();
 				bundle_2.putBoolean("isRedirected", true);
-				goToHome.putExtras(bundle_2);
-				startActivity(goToHome);
-				finish();
+				goToIndex.setArguments(bundle_2);
+				Log.d("fragments", "go home");
+				transaction.replace(R.id.container, goToIndex);
+				transaction.commit();
 			}
 
 		}
+		Log.d("fragments", "Inside Show");
+		return view;
 	}
 
 	/**
@@ -150,7 +165,7 @@ public class ShowContent extends Activity {
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
 			try {
-				Values values = new Values(getApplicationContext());
+				Values values = new Values(getActivity());
 				HashMap<String, Integer> valuesForSwipe = values
 						.getValuesForSwipe();
 				if (Math.abs(e1.getY() - e2.getY()) > valuesForSwipe
@@ -161,7 +176,7 @@ public class ShowContent extends Activity {
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
 					if (!cursor.isLast())
-						Toast.makeText(getApplicationContext(),
+						Toast.makeText(getActivity(),
 								"Loading Next Post", Toast.LENGTH_SHORT).show();
 
 					if (cursor.moveToNext()) {
@@ -173,7 +188,7 @@ public class ShowContent extends Activity {
 						&& Math.abs(velocityX) > valuesForSwipe
 								.get("swipeThresholdVelocity")) {
 					if (!cursor.isFirst())
-						Toast.makeText(getApplicationContext(),
+						Toast.makeText(getActivity(),
 								"Loading Previous Post", Toast.LENGTH_SHORT)
 								.show();
 					if (cursor.moveToPrevious()) {
@@ -245,11 +260,11 @@ public class ShowContent extends Activity {
 	 * Inflate options menu with the layout
 	 */
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
-		menuInflater.inflate(R.layout.menu_layout_show_content, menu);
-		return true;
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		//MenuInflater menuInflater = getMenuInflater();
+		inflater.inflate(R.layout.menu_layout_show_content, menu);
+		//return true;
 	}
 
 	/**
@@ -265,10 +280,10 @@ public class ShowContent extends Activity {
 		switch (item.getItemId()) {
 			case R.id.logout :
 				// Logs out User from Privly Application
-				Values values = new Values(getApplicationContext());
+				Values values = new Values(getActivity());
 				values.setAuthToken(null);
 				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(this, Login.class);
+				Intent gotoLogin = new Intent(getActivity(), Login.class);
 				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(gotoLogin);

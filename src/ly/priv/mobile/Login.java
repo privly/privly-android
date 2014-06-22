@@ -87,7 +87,7 @@ public class Login extends SherlockActivity {
 			Boolean rememberMe = values.getRememberMe();
 			if (rememberMe && authToken != null) {
 				Intent gotoHome = new Intent(getApplicationContext(),
-						Home.class);
+						MainActivity.class);
 
 				// Clear activities stack. User wont be able to access Login
 				// Screen on back button press. Since he is already logged in.
@@ -254,7 +254,7 @@ public class Login extends SherlockActivity {
 					// Screen
 					values.setUserVerifiedAtLogin(true);
 					Intent gotoHome = new Intent(getApplicationContext(),
-							Home.class);
+							MainActivity.class);
 					// Clear history stack. You dont want the user to be able to
 					// access the Login Scren again, since he's already logged
 					// in.
