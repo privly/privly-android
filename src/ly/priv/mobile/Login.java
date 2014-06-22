@@ -1,5 +1,10 @@
 package ly.priv.mobile;
 
+import java.util.ArrayList;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -15,7 +20,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,27 +27,24 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays the login screen. Allows the user to authenticate to a Privly Web
  * Server by fetching the auth_token.
- *
+ * 
  * @author Shivam Verma
  */
-public class Login extends Activity {
+public class Login extends SherlockActivity {
 	/** Called when the activity is first created. */
 	String userName, password, loginResponse, contentServerDomain;
 	Button loginButton;
@@ -56,7 +57,7 @@ public class Login extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-
+		getSupportActionBar().hide();
 		// Shared Preference File for storing the domain name, if not
 		// https://privlyalpha.org by
 		// default.
@@ -84,7 +85,7 @@ public class Login extends Activity {
 			Boolean rememberMe = values.getRememberMe();
 			if (rememberMe && authToken != null) {
 				Intent gotoHome = new Intent(getApplicationContext(),
-						Home.class);
+						MainActivity.class);
 
 				// Clear activities stack. User wont be able to access Login
 				// Screen on back button press. Since he is already logged in.
@@ -156,7 +157,7 @@ public class Login extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getMenuInflater();
+		MenuInflater menuInflater = getSupportMenuInflater();
 		menuInflater.inflate(R.layout.menu_layout_login, menu);
 		return true;
 	}
@@ -165,21 +166,21 @@ public class Login extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.settings :
-				Intent gotoSettings = new Intent(this, Settings.class);
-				startActivity(gotoSettings);
-				return true;
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.settings:
+			Intent gotoSettings = new Intent(this, Settings.class);
+			startActivity(gotoSettings);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
 	/**
 	 * Verify user credentials and login. Redirects to
 	 * {@link ly.priv.mobile.Home} Home Activity after successful login.
-	 *
+	 * 
 	 * @author Shivam Verma
-	 *
+	 * 
 	 */
 	private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
@@ -251,7 +252,7 @@ public class Login extends Activity {
 					// Screen
 					values.setUserVerifiedAtLogin(true);
 					Intent gotoHome = new Intent(getApplicationContext(),
-							Home.class);
+							MainActivity.class);
 					// Clear history stack. You dont want the user to be able to
 					// access the Login Scren again, since he's already logged
 					// in.

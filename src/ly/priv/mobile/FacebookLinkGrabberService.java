@@ -1,8 +1,7 @@
 package ly.priv.mobile;
 
-import com.facebook.Session;
-import com.facebook.Session.OpenRequest;
-import com.facebook.SessionLoginBehavior;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,16 +12,22 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.facebook.Session;
+import com.facebook.Session.OpenRequest;
+import com.facebook.SessionLoginBehavior;
 
 /**
  * Authenticates user with Facebook and grabs Privly links from message inbox.
@@ -36,11 +41,11 @@ import java.util.Iterator;
  * <li>Redirect User to {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
  * </ul>
  * </p>
- *
+ * 
  * @author Shivam Verma
- *
+ * 
  */
-public class FacebookLinkGrabberService extends Activity {
+public class FacebookLinkGrabberService extends SherlockFragment {
 	private static final String URL_PREFIX_FRIENDS = "https://graph.facebook.com/me/inbox?access_token=";
 	String fbResponse = "";
 	Session globalSession;
@@ -52,20 +57,29 @@ public class FacebookLinkGrabberService extends Activity {
 	Context context;
 	Session session;
 	final String SOURCE_FACEBOOK = "FACEBOOK";
+	SherlockFragment current;
+
+	public FacebookLinkGrabberService() {
+
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.link_grabber_service);
-		context = getApplicationContext();
-		Log.d("OnCreate", "OnCreate");
-		progressDialog = new ProgressDialog(this);
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.link_grabber_service, container,
+				false);
+
+		context = getActivity();
+		current = this;
+		Log.d("OnCreateView", "OnCreateView");
+		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setCanceledOnTouchOutside(false);
 		session = Session.getActiveSession();
 		if (session == null) {
 			Log.d("Session", "null");
-			session = new Session.Builder(this).build();
+			session = new Session.Builder(getActivity()).build();
 			Session.setActiveSession(session);
 			if (!session.isOpened()) {
 				ArrayList<String> permissions = new ArrayList<String>();
@@ -86,27 +100,28 @@ public class FacebookLinkGrabberService extends Activity {
 			FetchFbMessages task = new FetchFbMessages();
 			task.execute();
 		}
-
-	}
-	@Override
-	public void onResume() {
-		super.onResume();
+		return view;
 	}
 
-	@Override
-	public void onStart() {
-		super.onStart();
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+	// @Override
+	// public void onResume() {
+	// super.onResume();
+	// }
+	//
+	// @Override
+	// public void onStart() {
+	// super.onStart();
+	// }
+	//
+	// @Override
+	// public void onStop() {
+	// super.onStop();
+	// }
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode,
+		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
 				resultCode, data);
 		Log.d("OnActivityResult", "Log");
 		FetchFbMessages task = new FetchFbMessages();
@@ -114,7 +129,7 @@ public class FacebookLinkGrabberService extends Activity {
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Session session = Session.getActiveSession();
 		Session.saveSession(session, outState);
@@ -130,13 +145,13 @@ public class FacebookLinkGrabberService extends Activity {
 	 * <li>Insert new links into the local Db.</li>
 	 * </ul>
 	 * </p>
-	 *
-	 *
+	 * 
+	 * 
 	 */
 	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
-		volatile ProgressDialog dialog = new ProgressDialog(
-				FacebookLinkGrabberService.this);
+		volatile ProgressDialog dialog = new ProgressDialog(getActivity());
+
 		@Override
 		protected void onPreExecute() {
 			dialog.setMessage("Checking for new Privly links from your Facebook inbox..");
@@ -210,7 +225,7 @@ public class FacebookLinkGrabberService extends Activity {
 													String url = iter.next();
 													if (!Utilities
 															.ifLinkExistsInDb(
-																	getApplicationContext(),
+																	getActivity(),
 																	url,
 																	SOURCE_FACEBOOK)) {
 
@@ -243,13 +258,20 @@ public class FacebookLinkGrabberService extends Activity {
 
 			// Redirect user to {@link ly.priv.mobile.ShowContent} ShowContent
 			// Class
-			Intent showContentIntent = new Intent(
-					FacebookLinkGrabberService.this, ShowContent.class);
-			showContentIntent.putExtras(bundle);
-			startActivity(showContentIntent);
+			Fragment showContent = new ShowContent();
+			FragmentTransaction transaction = getActivity()
+					.getSupportFragmentManager().beginTransaction();
+			showContent.setArguments(bundle);
+			transaction.replace(R.id.container, showContent);
+			transaction.commit();
+			Log.d("fragments", "showContent");
+			// Intent showContentIntent = new Intent(
+			// getActivity(), ShowContent.class);
+			// showContentIntent.putExtras(bundle);
+			// startActivity(showContentIntent);
 			// Clear this activity from stack so that the user is taken
 			// to the Home Screen on back press
-			FacebookLinkGrabberService.this.finish();
+			// FacebookLinkGrabberService.this.finish();
 		}
 	}
 
