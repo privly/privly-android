@@ -6,9 +6,7 @@ import java.util.HashMap;
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
-import android.annotation.TargetApi;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -58,7 +56,6 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 	private Boolean mflNoMoreMessage = false;
 	private ISocialNetworks mISocialNetworks;
 
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -119,8 +116,10 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			HashMap<String, Object> res = (HashMap<String, Object>) mISocialNetworks
 					.getListOfMessages(mDialogID);
 			if (res != null) {
-				mListUserMess = (ArrayList<SMessage>) res.get("Array");
-				mNextUrlForLoadingMessages = (String) res.get("NextLink");
+				mListUserMess = (ArrayList<SMessage>) res
+						.get(ISocialNetworks.ARRAY);
+				mNextUrlForLoadingMessages = (String) res
+						.get(ISocialNetworks.NEXTLINK);
 			}
 			return null;
 		}
@@ -165,8 +164,10 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 					.fetchNextMessages(urls[0]);
 			ArrayList<SMessage> sMessages = null;
 			if (res != null) {
-				sMessages = (ArrayList<SMessage>) res.get("Array");
-				mNextUrlForLoadingMessages = (String) res.get("NextLink");
+				sMessages = (ArrayList<SMessage>) res
+						.get(ISocialNetworks.ARRAY);
+				mNextUrlForLoadingMessages = (String) res
+						.get(ISocialNetworks.NEXTLINK);
 			}
 			return sMessages;
 		}
@@ -177,7 +178,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 				mflNoMoreMessage = false;
 				Integer pos = result.size() - 1;
 				result.addAll(mListUserMess);
-				mListUserMess = result;
+				mListUserMess = new ArrayList<SMessage>(result);
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
 						getActivity(), mListUserMess);
 				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);

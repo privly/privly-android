@@ -78,6 +78,9 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	 * 
 	 * @param view
 	 */
+	// API level 11
+	// TODO fix it next release ( reduce API level to 10), delete
+	// 'mSwipeRefreshLayout.setRotation(180);'
 	@SuppressLint("NewApi")
 	private void initializeComponent(View view) {
 		setHasOptionsMenu(true);
@@ -219,24 +222,6 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			AsyncTask<String, String, List<twitter4j.Status>> {
 
 		@Override
-		protected void onPostExecute(List<twitter4j.Status> statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");
-			if (statuses != null) {
-				Log.d(TAG, "Showing home timeline.");
-				for (twitter4j.Status status : statuses) {
-					Log.d(TAG, status.toString());
-				}
-				mPosts = new ArrayList<twitter4j.Status>(statuses);
-				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-						mPosts);
-				mListViewPosts.setAdapter(mListMicroblogAdapter);
-				mListViewPosts.setSelection(statuses.size() - 1);
-			}
-
-			mProgressBar.setVisibility(View.INVISIBLE);
-		}
-
-		@Override
 		protected List<twitter4j.Status> doInBackground(String... params) {
 
 			Twitter twitter = TwitterUtil.getInstance().getTwitter();
@@ -271,6 +256,25 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 				return null;
 			}
 		}
+
+		@Override
+		protected void onPostExecute(List<twitter4j.Status> statuses) {
+			Log.d(TAG, "TwitterGetAccessTokenTask");
+			if (statuses != null) {
+				Log.d(TAG, "Showing home timeline.");
+				for (twitter4j.Status status : statuses) {
+					Log.d(TAG, status.toString());
+				}
+				mPosts = new ArrayList<twitter4j.Status>(statuses);
+				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
+						mPosts);
+				mListViewPosts.setAdapter(mListMicroblogAdapter);
+				mListViewPosts.setSelection(statuses.size() - 1);
+			}
+
+			mProgressBar.setVisibility(View.INVISIBLE);
+		}
+
 	}
 
 	@Override
@@ -290,22 +294,6 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			AsyncTask<Integer, Void, List<twitter4j.Status>> {
 
 		@Override
-		protected void onPostExecute(List<twitter4j.Status> statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");
-			if (statuses != null) {
-				Log.d(TAG, "Showing" + mPage + " page home timeline.");
-				Integer pos = statuses.size() - 1;
-				mPosts.addAll(statuses);
-				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-						mPosts);
-				mListViewPosts.setAdapter(mListMicroblogAdapter);
-				mListViewPosts.setSelection(pos);
-
-			}
-			mSwipeRefreshLayout.setRefreshing(false);
-		}
-
-		@Override
 		protected List<twitter4j.Status> doInBackground(Integer... params) {
 			try {
 				Paging paging = new Paging(mPage);
@@ -316,6 +304,21 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 				e.printStackTrace();
 				return null;
 			}
+		}
+
+		@Override
+		protected void onPostExecute(List<twitter4j.Status> statuses) {
+			Log.d(TAG, "TwitterGetAccessTokenTask");
+			if (statuses != null) {
+				Log.d(TAG, "Showing" + mPage + " page home timeline.");
+				Integer pos = statuses.size() - 1;
+				mPosts.addAll(statuses);
+				mListMicroblogAdapter.notifyDataSetChanged();
+				mListViewPosts.setSelection(pos);
+				
+
+			}
+			mSwipeRefreshLayout.setRefreshing(false);
 		}
 
 	}

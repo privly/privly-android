@@ -334,8 +334,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 			e.printStackTrace();
 		}
 
-		res.put("Array", listOfUsersMessage);
-		res.put("NextLink", nextUrlForLoadingMessages);
+		res.put(ARRAY, listOfUsersMessage);
+		res.put(NEXTLINK, nextUrlForLoadingMessages);
 		return res;
 	}
 
@@ -373,8 +373,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		res.put("Array", listOfUsersMessage);
-		res.put("NextLink", nextUrlForLoadingMessages);
+		res.put(ARRAY, listOfUsersMessage);
+		res.put(NEXTLINK, nextUrlForLoadingMessages);
 		return res;
 	}
 

@@ -43,6 +43,9 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		return paramInt;
 	}
 
+	// API level 11
+	// TODO fix it next release ( reduce API level to 10), delete
+	// 'vi.setRotation(180);'
 	@SuppressLint("NewApi")
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = null;

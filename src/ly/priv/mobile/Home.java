@@ -54,10 +54,8 @@ import com.actionbarsherlock.view.MenuItem;
  */
 public class Home extends SherlockFragment {
 
-	ListView readListView, createListView;
-	String loginResponse;
+	ListView readListView, createListView;	
 	private static final String TAG = "Home";
-
 	public Home() {
 
 	}
@@ -88,7 +86,7 @@ public class Home extends SherlockFragment {
 			// If yes, prevents re authentication. If not, creates and executes
 			// a VerifyAuthToken task.
 			if (!values.isUserVerifiedAtLogin()) {
-				VerifyAuthToken task = new VerifyAuthToken();
+				VerifyAuthToken task = new VerifyAuthToken(getActivity());
 				task.execute(values.getContentServerDomain()
 						+ "/token_authentications.json");
 			} else
@@ -221,85 +219,7 @@ public class Home extends SherlockFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	/**
-	 * Verifies the validity of existing auth_token. If expired, redirect to
-	 * {@link ly.priv.mobile.Login}
-	 * 
-	 * @author Shivam Verma
-	 * 
-	 */
-	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
-
-		volatile ProgressDialog dialog = new ProgressDialog(getActivity());
-
-		@Override
-		protected void onPreExecute() {
-			dialog.setCanceledOnTouchOutside(false);
-			dialog.setMessage("Verifying session..");
-			dialog.show();
-		}
-
-		@Override
-		protected String doInBackground(String... urls) {
-
-			String authenticatedUrl = Utilities.getGetRequestUrl(urls[0],
-					getActivity());
-			try {
-				// Setting Up for a secure connection
-				HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-				DefaultHttpClient client = new DefaultHttpClient();
-				SchemeRegistry registry = new SchemeRegistry();
-				SSLSocketFactory socketFactory = SSLSocketFactory
-						.getSocketFactory();
-				socketFactory
-						.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-				registry.register(new Scheme("https", socketFactory, 443));
-				SingleClientConnManager mgr = new SingleClientConnManager(
-						client.getParams(), registry);
-				DefaultHttpClient httpClient = new DefaultHttpClient(mgr,
-						client.getParams());
-				HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-				HttpGet httpget = new HttpGet(authenticatedUrl);
-				HttpResponse response = httpClient.execute(httpget);
-				HttpEntity entity = response.getEntity();
-				loginResponse = EntityUtils.toString(entity);
-			} catch (Exception e) {
-			} finally {
-
-			}
-
-			return loginResponse;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			dialog.dismiss();
-			try {
-				JSONObject jObject = new JSONObject(loginResponse);
-				if (!jObject.has("error") && jObject.has("auth_key")) {
-					String authToken = jObject.getString("auth_key");
-					Values values = new Values(getActivity());
-					values.setAuthToken(authToken);
-					values.setUserVerifiedAtLogin(false);
-					Utilities.showToast(getActivity(),
-							"Good to go! Select an option.", false);
-				} else {
-					Values values = new Values(getActivity());
-					values.setAuthToken(null);
-					Intent gotoLogin = new Intent(getActivity(), Login.class);
-					// Clear history stack. User should not be able to access
-					// any activity since his session has expired.
-					gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-					startActivity(gotoLogin);
-					Utilities.showToast(getActivity(),
-							"Your session has expired. Please login again.",
-							true);
-				}
-			} catch (Exception e) {
-			}
-		}
-	}
+	
+	
 
 }

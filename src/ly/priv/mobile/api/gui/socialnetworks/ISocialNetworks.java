@@ -10,6 +10,10 @@ import java.util.Map;
  * 
  */
 public interface ISocialNetworks {
+	// constants for exchange data
+	public static final String ARRAY = "Array";
+	public static final String NEXTLINK = "NextLink";
+
 	/**
 	 * Get inbox(List of users with last message and time)
 	 * 
@@ -38,10 +42,10 @@ public interface ISocialNetworks {
 	 *         Map<String, Object> res = new HashMap<String, Object>();
 	 *         </p>
 	 *         <p>
-	 *         res.put("Array", listOfUsersMessage);
+	 *         res.put(ARRAY, listOfUsersMessage);
 	 *         </p>
 	 *         <p>
-	 *         res.put("NextLink", nextUrlForLoadingMessages);
+	 *         res.put(NEXTLINK, nextUrlForLoadingMessages);
 	 *         </p>
 	 * 
 	 */
@@ -68,10 +72,10 @@ public interface ISocialNetworks {
 	 *         Map<String, Object> res = new HashMap<String, Object>();
 	 *         </p>
 	 *         <p>
-	 *         res.put("Array", listOfUsersMessage);
+	 *         res.put(ARRAY, listOfUsersMessage);
 	 *         </p>
 	 *         <p>
-	 *         res.put("NextLink", nextUrlForLoadingMessages);
+	 *         res.put(NEXTLINK, nextUrlForLoadingMessages);
 	 *         </p>
 	 * 
 	 */

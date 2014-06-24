@@ -32,6 +32,8 @@
     <string name="error_inbox">Inbox is only available when connected to the internet.</string>
     <string name="message_not_containe_privly_link">Message is not contain privly link.</string>
     <string name="no_more_messages">No more messages.</string>
-    <string name="no_internet_connection">No internet connection.</string>
-
+    <string name="verifying_session">Verifying session..</string>
+	<string name="good_to_go_select_an_option.">Good to go! Select an option.</string>
+	<string name="your_session_has_expired">Your session has expired. Please login again.</string>
+	<string name="no_internet_connection">No internet connection.</string>
 </resources>
