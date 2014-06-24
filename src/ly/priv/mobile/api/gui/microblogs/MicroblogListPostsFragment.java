@@ -96,7 +96,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				String url = "";
-				URLEntity[] entities = mPosts.get(mPosts.size() - position - 1)
+				URLEntity[] entities = mPosts.get(position)
 						.getURLEntities();
 				for (int i = 0; i < entities.length; i++) {
 					// Since urls are shortened by the twitter t.co
