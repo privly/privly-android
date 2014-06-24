@@ -49,6 +49,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class MicroblogListPostsFragment extends SherlockFragment implements
 		OnScrollListener {
 	private static final String TAG = "MicroblogListPostsFragment";
+	private static final int COUNT_OF_TWEETS=100;
 	private ProgressBar mProgressBar;
 	private View mFooterView;
 	private ListView mListViewPosts;
@@ -241,7 +242,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			}
 
 			try {
-				Paging paging = new Paging(mPage);
+				Paging paging = new Paging(mPage,COUNT_OF_TWEETS);
 				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
 						.getTwitter().getHomeTimeline(paging);
 				return statuses;
@@ -283,7 +284,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 		@Override
 		protected List<twitter4j.Status> doInBackground(Integer... params) {
 			try {
-				Paging paging = new Paging(mPage);
+				Paging paging = new Paging(mPage,COUNT_OF_TWEETS);
 				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
 						.getTwitter().getHomeTimeline(paging);
 				return statuses;
