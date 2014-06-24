@@ -38,23 +38,24 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 /**
- * Displays the Index application for a user after authentication. 
- *
+ * Displays the Index application for a user after authentication.
+ * 
  * @author Gitanshu Sardana
  */
-@SuppressLint("NewApi")
+
 public class Index extends SherlockFragment {
 
 	ListView readListView, createListView;
 	String loginResponse;
 	WebView w;
 
-	public Index(){
-		Log.d("jsgfwef","kwjebfkjef");
+	public Index() {
+		
 	}
-	
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.new_post, container, false);
@@ -63,14 +64,13 @@ public class Index extends SherlockFragment {
 		container.removeAllViews();
 		w = (WebView) view.findViewById(R.id.webview_1);
 		w.getSettings().setJavaScriptEnabled(true);
-		w.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		Boolean isRedirected = null;
 		try {
 			isRedirected = getArguments().getBoolean("isRedirected");
 			getActivity().setTitle("Index");
 			loadIndex();
 		} catch (NullPointerException e) {
-			Log.d("isRedirected",""+isRedirected);
+			Log.d("isRedirected", "" + isRedirected);
 			Values values = new Values(getActivity());
 			// Checks if the User has already been verified at the Login Screen.
 			// If yes, prevents re authentication. If not, creates and executes
@@ -81,16 +81,18 @@ public class Index extends SherlockFragment {
 						+ "/token_authentications.json");
 			} else
 				values.setUserVerifiedAtLogin(false);
-				loadIndex();
+			loadIndex();
 		}
 		return view;
 	}
-	
-	void loadIndex(){
+
+	@SuppressLint("NewApi")
+	void loadIndex() {
 		w.addJavascriptInterface(new JsObject(getActivity()), "androidJsBridge");
 
-		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
+		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN){
 			w.getSettings().setAllowUniversalAccessFromFileURLs(true);
+		}
 		// Logs all Js Console messages on the logcat.
 		w.setWebChromeClient(new WebChromeClient() {
 			@Override
@@ -125,33 +127,33 @@ public class Index extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.settings :
-				Intent gotoSettings = new Intent(getActivity(), Settings.class);
-				startActivity(gotoSettings);
-				return true;
+		case R.id.settings:
+			Intent gotoSettings = new Intent(getActivity(), Settings.class);
+			startActivity(gotoSettings);
+			return true;
 
-			case R.id.logout :
-				// Logs out User from Privly Application
-				Values values = new Values(getActivity());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(getActivity(), Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
+		case R.id.logout:
+			// Logs out User from Privly Application
+			Values values = new Values(getActivity());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-			default :
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	/**
 	 * Verifies the validity of existing auth_token. If expired, redirect to
 	 * {@link ly.priv.mobile.Login}
-	 *
+	 * 
 	 * @author Shivam Verma
-	 *
+	 * 
 	 */
 	private class VerifyAuthToken extends AsyncTask<String, Void, String> {
 
@@ -212,8 +214,7 @@ public class Index extends SherlockFragment {
 				} else {
 					Values values = new Values(getActivity());
 					values.setAuthToken(null);
-					Intent gotoLogin = new Intent(getActivity(),
-							Login.class);
+					Intent gotoLogin = new Intent(getActivity(), Login.class);
 					// Clear history stack. User should not be able to access
 					// any activity since his session has expired.
 					gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -225,7 +226,7 @@ public class Index extends SherlockFragment {
 				}
 			} catch (Exception e) {
 			}
-			
+
 		}
 	}
 

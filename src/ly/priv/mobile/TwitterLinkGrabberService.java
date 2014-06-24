@@ -1,4 +1,9 @@
 package ly.priv.mobile;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import ly.priv.mobile.MainActivity.NewIntentListener;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -8,8 +13,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
-import android.app.Activity;
-import android.support.v4.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,17 +21,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import ly.priv.mobile.MainActivity.NewIntentListener;
 
 import com.actionbarsherlock.app.SherlockFragment;
 

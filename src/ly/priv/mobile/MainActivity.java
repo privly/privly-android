@@ -12,7 +12,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -20,7 +19,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -57,12 +55,14 @@ public class MainActivity extends SherlockFragmentActivity {
 				R.drawable.ic_navigation_drawer, R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
+				super.onDrawerClosed(view);
 				getSupportActionBar().setTitle(mTitle);
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
+				super.onDrawerClosed(drawerView);
 				getSupportActionBar().setTitle(R.string.app_name);
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()

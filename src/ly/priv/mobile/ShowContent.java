@@ -1,7 +1,12 @@
 package ly.priv.mobile;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+
+import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,17 +25,10 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuInflater;
-
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays the Home Activity for a user after authentication.
