@@ -43,16 +43,11 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		return paramInt;
 	}
 
-	// API level 11
-	// TODO fix it next release ( reduce API level to 10), delete
-	// 'vi.setRotation(180);'
-	@SuppressLint("NewApi")
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View vi = null;
 		if (convertView == null) {
 			inflater = this.mActivity.getLayoutInflater();
 			vi = inflater.inflate(R.layout.item_microblog_list_users, null);
-			vi.setRotation(180);
 			ViewHolder viewHolder = new ViewHolder();
 			viewHolder.mName = ((TextView) vi.findViewById(R.id.tvUserName));
 			viewHolder.mNic = ((TextView) vi.findViewById(R.id.tvNic));
@@ -64,7 +59,7 @@ public class ListMicroblogAdapter extends BaseAdapter {
 			vi = convertView;
 		}
 
-		mPost = mListPosts.get(getCount() - position - 1);
+		mPost = mListPosts.get(position);
 		if (this.mPost != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
 			holder.mName.setText(mPost.getUser().getName());

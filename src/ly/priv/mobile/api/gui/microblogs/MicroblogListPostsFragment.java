@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -45,22 +47,24 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  */
 public class MicroblogListPostsFragment extends SherlockFragment implements
-		OnRefreshListener {
-	private static final String TAG = "MicroblogListPostsActivity";
+		OnScrollListener {
+	private static final String TAG = "MicroblogListPostsFragment";
 	private ProgressBar mProgressBar;
+	private View mFooterView;
 	private ListView mListViewPosts;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private ListMicroblogAdapter mListMicroblogAdapter;
 	private Values mValues;
 	private int mPage = 1;
+	private boolean mIsLoading;
 	private ArrayList<twitter4j.Status> mPosts;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView ");
-		View view = inflater.inflate(R.layout.activity_list_pull_refrash,
+		View view = inflater.inflate(R.layout.activity_list,
 				container, false);
+		mFooterView = (View) inflater.inflate(R.layout.loading_layout, null);
 		initializeComponent(view);
 		mValues = new Values(getActivity());
 		if (!Utilities.isDataConnectionAvailable(getActivity())) {
@@ -78,25 +82,14 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	 * 
 	 * @param view
 	 */
-	// API level 11
-	// TODO fix it next release ( reduce API level to 10), delete
-	// 'mSwipeRefreshLayout.setRotation(180);'
-	@SuppressLint("NewApi")
 	private void initializeComponent(View view) {
 		setHasOptionsMenu(true);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Twitter);
-		mListViewPosts = ((ListView) view.findViewById(R.id.lView_refresh));
+		mListViewPosts = ((ListView) view.findViewById(R.id.lView));
+		mListViewPosts.addFooterView(mFooterView);
 		mProgressBar = (ProgressBar) view
-				.findViewById(R.id.pbLoadingData_refresh);
-		mSwipeRefreshLayout = (SwipeRefreshLayout) view
-				.findViewById(R.id.swipe_container);
-		mSwipeRefreshLayout.setRotation(180);
-		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
-				android.R.color.holo_green_light,
-				android.R.color.holo_orange_light,
-				android.R.color.holo_red_light);
+				.findViewById(R.id.pbLoadingData);		
 		mListViewPosts.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -130,6 +123,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 				}
 			}
 		});
+		mListViewPosts.setOnScrollListener(this);
 	}
 
 	/**
@@ -268,8 +262,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 				mPosts = new ArrayList<twitter4j.Status>(statuses);
 				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
 						mPosts);
-				mListViewPosts.setAdapter(mListMicroblogAdapter);
-				mListViewPosts.setSelection(statuses.size() - 1);
+				mListViewPosts.setAdapter(mListMicroblogAdapter);				
 			}
 
 			mProgressBar.setVisibility(View.INVISIBLE);
@@ -277,12 +270,6 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 
 	}
 
-	@Override
-	public void onRefresh() {
-		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
-		mPage++;
-		new TwitterGetTwets().execute(mPage);
-	}
 
 	/**
 	 * AsyncTask for get next tweets
@@ -310,17 +297,38 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 		protected void onPostExecute(List<twitter4j.Status> statuses) {
 			Log.d(TAG, "TwitterGetAccessTokenTask");
 			if (statuses != null) {
-				Log.d(TAG, "Showing" + mPage + " page home timeline.");
-				Integer pos = statuses.size() - 1;
+				Log.d(TAG, "Showing" + mPage + " page home timeline.");			
 				mPosts.addAll(statuses);
 				mListMicroblogAdapter.notifyDataSetChanged();
-				mListViewPosts.setSelection(pos);
-				
-
+				mListViewPosts.setSelection(mPosts.size()-1);				
+				mListViewPosts.removeFooterView(mFooterView);
+				mIsLoading=false;
 			}
-			mSwipeRefreshLayout.setRefreshing(false);
 		}
 
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		if (mListMicroblogAdapter == null)
+			return ;
+
+		if (mListMicroblogAdapter.getCount() == 0)
+			return ;
+
+		int l = visibleItemCount + firstVisibleItem;
+		if (l >= totalItemCount && !mIsLoading) {
+			// It is time to add new data. We call the listener	
+			mListViewPosts.addFooterView(mFooterView);
+			mIsLoading = true;
+			mPage++;
+			new TwitterGetTwets().execute(mPage);
+		}
+		
 	}
 
 }
