@@ -18,18 +18,20 @@ import com.actionbarsherlock.view.MenuItem;
 /**
  * Shows the newly generated Privly URL and allows the user to share it to
  * various platforms.
- *
+ * 
  * @author Shivam Verma
  */
 public class Share extends SherlockFragment {
 	/** Called when the activity is first created. */
 	String newPrivlyUrl;
 
-	public Share(){
-		
+	public Share() {
+
 	}
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.share, container, false);
 		setHasOptionsMenu(true);
@@ -37,7 +39,7 @@ public class Share extends SherlockFragment {
 		Typeface lobster = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Lobster.ttf");
 		newUrlHeader.setTypeface(lobster);
-		
+
 		// Receive new Privly URL from intent
 
 		Bundle bundle = getArguments();
@@ -84,18 +86,18 @@ public class Share extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.logout :
-				Values values = new Values(getActivity());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(getActivity(), Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
+		case R.id.logout:
+			Values values = new Values(getActivity());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-			default :
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

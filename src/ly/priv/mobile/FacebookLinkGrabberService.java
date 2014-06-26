@@ -41,9 +41,9 @@ import com.facebook.SessionLoginBehavior;
  * <li>Redirect User to {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
  * </ul>
  * </p>
- *
+ * 
  * @author Shivam Verma
- *
+ * 
  */
 public class FacebookLinkGrabberService extends SherlockFragment {
 	private static final String URL_PREFIX_FRIENDS = "https://graph.facebook.com/me/inbox?access_token=";
@@ -58,16 +58,19 @@ public class FacebookLinkGrabberService extends SherlockFragment {
 	Session session;
 	final String SOURCE_FACEBOOK = "FACEBOOK";
 	SherlockFragment current;
-	
-	public FacebookLinkGrabberService(){
-		
+
+	public FacebookLinkGrabberService() {
+
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.link_grabber_service, container, false);
+		View view = inflater.inflate(R.layout.link_grabber_service, container,
+				false);
+
 		context = getActivity();
 		current = this;
 		getActivity().setTitle("FACEBOOK");
@@ -100,20 +103,21 @@ public class FacebookLinkGrabberService extends SherlockFragment {
 		}
 		return view;
 	}
-//	@Override
-//	public void onResume() {
-//		super.onResume();
-//	}
-//
-//	@Override
-//	public void onStart() {
-//		super.onStart();
-//	}
-//
-//	@Override
-//	public void onStop() {
-//		super.onStop();
-//	}
+
+	// @Override
+	// public void onResume() {
+	// super.onResume();
+	// }
+	//
+	// @Override
+	// public void onStart() {
+	// super.onStart();
+	// }
+	//
+	// @Override
+	// public void onStop() {
+	// super.onStop();
+	// }
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -142,13 +146,13 @@ public class FacebookLinkGrabberService extends SherlockFragment {
 	 * <li>Insert new links into the local Db.</li>
 	 * </ul>
 	 * </p>
-	 *
-	 *
+	 * 
+	 * 
 	 */
 	private class FetchFbMessages extends AsyncTask<String, Void, String> {
 
-		volatile ProgressDialog dialog = new ProgressDialog(
-				getActivity());
+		volatile ProgressDialog dialog = new ProgressDialog(getActivity());
+
 		@Override
 		protected void onPreExecute() {
 			dialog.setMessage("Checking for new Privly links from your Facebook inbox..");
@@ -256,18 +260,19 @@ public class FacebookLinkGrabberService extends SherlockFragment {
 			// Redirect user to {@link ly.priv.mobile.ShowContent} ShowContent
 			// Class
 			Fragment showContent = new ShowContent();
-			FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+			FragmentTransaction transaction = getActivity()
+					.getSupportFragmentManager().beginTransaction();
 			showContent.setArguments(bundle);
 			transaction.replace(R.id.container, showContent);
 			transaction.commit();
-			Log.d("fragments","showContent");
-			//Intent showContentIntent = new Intent(
-			//		getActivity(), ShowContent.class);
-			//showContentIntent.putExtras(bundle);
-			//startActivity(showContentIntent);
+			Log.d("fragments", "showContent");
+			// Intent showContentIntent = new Intent(
+			// getActivity(), ShowContent.class);
+			// showContentIntent.putExtras(bundle);
+			// startActivity(showContentIntent);
 			// Clear this activity from stack so that the user is taken
 			// to the Home Screen on back press
-			//FacebookLinkGrabberService.this.finish();
+			// FacebookLinkGrabberService.this.finish();
 		}
 	}
 

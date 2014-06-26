@@ -12,6 +12,9 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
+import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
+import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -19,6 +22,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -40,6 +44,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	ActionBarDrawerToggle hamburger;
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
+	private static final String TAG = "MainActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,10 +113,36 @@ public class MainActivity extends SherlockFragmentActivity {
 		mDrawerList.setAdapter(drawerAdapter);
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		// loads 'Home' as the default fragment
-		if (savedInstanceState == null) {
+		Log.d(TAG, "onCreate MainActivity");
+		uri = getIntent().getData();
+		if (uri != null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new Index()).commit();
+					.add(R.id.container, new MicroblogListPostsFragment())
+					.commit();
+		} else {
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.add(R.id.container, new Index()).commit();
+			}
+		}
+//
+//		// loads 'Home' as the default fragment
+//		if (savedInstanceState == null) {
+//			getSupportFragmentManager().beginTransaction()
+//					.add(R.id.container, new Index()).commit();
+//		}
+	}
+	
+
+	@Override
+	public void onBackPressed() {
+		Fragment fragment = getSupportFragmentManager().findFragmentById(
+				R.id.container);
+		if (fragment instanceof ListUsersFragment) {
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.container, new Index()).commit();
+		} else {
+			super.onBackPressed();
 		}
 	}
 
@@ -200,17 +231,11 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			if (position == 2 + createList.size() + 1) {
 				mDrawerLayout.closeDrawers();
-				GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
-				FragmentTransaction transaction = getSupportFragmentManager()
-						.beginTransaction();
-				transaction.replace(R.id.container, gmailGrabber);
-				transaction.addToBackStack(null);
-				transaction.commit();
+				Toast.makeText(getApplication(), "Gmail hasn't been merged yet", Toast.LENGTH_SHORT).show();
 			}
 			if (position == 2 + createList.size() + 2) {
 				mDrawerLayout.closeDrawers();
-				Log.d("read", "fb");
-				FacebookLinkGrabberService fbGrabber = new FacebookLinkGrabberService();
+				FaceBookGrabberService fbGrabber = new FaceBookGrabberService();
 				FragmentTransaction transaction = getSupportFragmentManager()
 						.beginTransaction();
 				transaction.replace(R.id.container, fbGrabber);
@@ -219,9 +244,8 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 			if (position == 2 + createList.size() + 3) {
 				mDrawerLayout.closeDrawers();
-				Log.d("read", "tweet");
-				TwitterLinkGrabberService twitGrabber = 
-						new TwitterLinkGrabberService();
+				MicroblogListPostsFragment twitGrabber = 
+						new MicroblogListPostsFragment();
 				FragmentTransaction transaction = getSupportFragmentManager()
 						.beginTransaction();
 				transaction.replace(R.id.container, twitGrabber, "Twitter");

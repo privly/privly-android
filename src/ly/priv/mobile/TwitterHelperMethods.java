@@ -7,15 +7,15 @@ import android.util.Log;
 
 /**
  * Provides access to methods required by the TwitterLinkGrabberService
- *
+ * 
  * @author Shivam Verma
- *
+ * 
  */
 public class TwitterHelperMethods {
 
 	/**
 	 * Saves the login status of a twitter user into SharedPreferences.
-	 *
+	 * 
 	 * Example :
 	 * <p>
 	 * Key Values pair saved in SharedPrefrences
@@ -23,7 +23,7 @@ public class TwitterHelperMethods {
 	 * <li>twitter_token : twitter access token</li>
 	 * <li>twitter_token_secret : twitter access token secret</li>
 	 * </p>
-	 *
+	 * 
 	 * @param {Context} context Context of the calling Activity
 	 * @param {Boolean} status Logged in status to be set.
 	 */
@@ -39,7 +39,7 @@ public class TwitterHelperMethods {
 
 	/**
 	 * Returns the login status of a twitter user.
-	 *
+	 * 
 	 * @param {Context} context Context of the calling Activity
 	 * @return {Boolean}
 	 */
@@ -53,7 +53,7 @@ public class TwitterHelperMethods {
 	/**
 	 * Save the twitter access token and token secret values to
 	 * SharedPreferences
-	 *
+	 * 
 	 * @param {Context} context Context of the Calling Activity
 	 * @param {String} token Token value fetched after making a request to the
 	 *        twitter api.
@@ -77,7 +77,7 @@ public class TwitterHelperMethods {
 
 	/**
 	 * Returns the token string after fetching it from SharedPreferences
-	 *
+	 * 
 	 * @param {Context} context Context of the calling Activity
 	 * @return {String} Token string
 	 */
@@ -91,7 +91,7 @@ public class TwitterHelperMethods {
 
 	/**
 	 * Returns the token secret string after fetching it from SharedPreferences
-	 *
+	 * 
 	 * @param {Context} context Context of the calling Activity
 	 * @return {String} Token secret string
 	 */

@@ -11,14 +11,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.*;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
- * Shows the Settings Activity. Currently, supports setting of the
- * domain name with which the application works.
- *
+ * Shows the Settings Activity. Currently, supports setting of the domain name
+ * with which the application works.
+ * 
  * @author Shivam Verma
  */
 public class Settings extends SherlockActivity {
@@ -90,18 +92,18 @@ public class Settings extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.logout :
-				Values values = new Values(getApplicationContext());
-				values.setAuthToken(null);
-				values.setRememberMe(false);
-				Intent gotoLogin = new Intent(this, Login.class);
-				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-				startActivity(gotoLogin);
-				return true;
+		case R.id.logout:
+			Values values = new Values(getApplicationContext());
+			values.setAuthToken(null);
+			values.setRememberMe(false);
+			Intent gotoLogin = new Intent(this, Login.class);
+			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+			startActivity(gotoLogin);
+			return true;
 
-			default :
-				return super.onOptionsItemSelected(item);
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 }

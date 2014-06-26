@@ -41,7 +41,7 @@ import com.actionbarsherlock.view.MenuItem;
 /**
  * Displays the login screen. Allows the user to authenticate to a Privly Web
  * Server by fetching the auth_token.
- *
+ * 
  * @author Shivam Verma
  */
 public class Login extends SherlockActivity {
@@ -166,21 +166,21 @@ public class Login extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-			case R.id.settings :
-				Intent gotoSettings = new Intent(this, Settings.class);
-				startActivity(gotoSettings);
-				return true;
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.settings:
+			Intent gotoSettings = new Intent(this, Settings.class);
+			startActivity(gotoSettings);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
 	/**
 	 * Verify user credentials and login. Redirects to
 	 * {@link ly.priv.mobile.Home} Home Activity after successful login.
-	 *
+	 * 
 	 * @author Shivam Verma
-	 *
+	 * 
 	 */
 	private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
