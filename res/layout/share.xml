@@ -4,13 +4,25 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
-
-    <ImageView
+  <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10sp"
-        android:contentDescription="@string/headerDescription"
-        android:src="@drawable/privlyheader" />
+        android:background="@color/hederprivlyBackgroundColor"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/twHederText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/marginHederText"
+            android:layout_marginTop="@dimen/marginHederText"
+            android:text="@string/hederText"
+            android:textColor="@color/hederText"
+            android:textSize="@dimen/sizeHederFont" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/newUrlHeader"

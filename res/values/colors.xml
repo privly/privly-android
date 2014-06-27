@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="privlyBackgroundColor">#E0D8C9</color>
+    <color name="hederprivlyBackgroundColor">#222222</color>
+    <color name="hederText">#999999</color>
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="light_gray">#ff6a7180</color>
+    <color name="gray">#ff7c7c7c</color>
+    <color name="blue">#ff3b5998</color>
+
 </resources>

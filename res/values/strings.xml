@@ -19,8 +19,23 @@
     <string name="defaultContentServer">https://privlyalpha.org</string>
     <string name="saveButtonLabel">Save</string>
     <string name="loginUnsure">This is the web address of the server where your Privly data is stored. If you\'re unsure of what this means, please leave the default setting.</string>
-    <string name="app_id">157708894428970</string>
+    <string name="app_id">1412217835697847</string>
     <string name="logoutTwitter"> Logout From Twitter</string>
     <string name="logoutFacebook"> Logout From Facebook</string>
-
+    <string name="privly_home">Privly Home</string>
+    <string name="set_content_server">Content Server Location</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="hederText">&#160;&#160;privlyalpha.org&#160;&#160;</string>
+    <string name="privly_Facebook">Privly Facebook</string>
+    <string name="privly_Login_Facebook">Login to Facebook</string>
+    <string name="privly_Twitter">Privly Twitter</string>
+    <string name="dialog_info_title">Info</string>
+    <string name="error_inbox">Inbox is only available when connected to the internet.</string>
+    <string name="message_not_containe_privly_link">Message does not contain a privly link.</string>
+    <string name="no_more_messages">No more messages.</string>
+    <string name="verifying_session">Verifying session..</string>
+	<string name="good_to_go_select_an_option.">Good to go! Select an option.</string>
+	<string name="your_session_has_expired">Your session has expired. Please login again.</string>
+	<string name="no_internet_connection">No internet connection.</string>
 </resources>
