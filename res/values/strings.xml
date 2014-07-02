@@ -29,6 +29,7 @@
     <string name="hederText">&#160;&#160;privlyalpha.org&#160;&#160;</string>
     <string name="privly_Facebook">Privly Facebook</string>
     <string name="privly_Login_Facebook">Login to Facebook</string>
+    <string name="privly_Login_Twitter">Login to Twitter</string>
     <string name="privly_Twitter">Privly Twitter</string>
     <string name="dialog_info_title">Info</string>
     <string name="error_inbox">Inbox is only available when connected to the internet.</string>
