@@ -79,40 +79,31 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Twitter);
 		mListViewPosts = ((ListView) view.findViewById(R.id.lView));
-		//mListViewPosts.addFooterView(mFooterView);
+		mListViewPosts.addFooterView(mFooterView);
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mListViewPosts.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// String url = "";
-				// URLEntity[] entities = mPosts.get(position)
-				// .getURLEntities();
-				// for (int i = 0; i < entities.length; i++) {
-				// // Since urls are shortened by the twitter t.co
-				// // service, get the expanded urls to search for
-				// // Privly links
-				// url += "  " + entities[i].getExpandedURL();
-				// }
-				//
-				// ArrayList<String> listOfUrls =
-				// Utilities.fetchPrivlyUrls(url);
-				// if (listOfUrls.size() > 0) {
-				// FragmentTransaction transaction = getActivity()
-				// .getSupportFragmentManager().beginTransaction();
-				// ShowContent showContent = new ShowContent();
-				// Bundle bundle = new Bundle();
-				// bundle.putStringArrayList("listOfLinks", listOfUrls);
-				// showContent.setArguments(bundle);
-				// transaction.replace(R.id.container, showContent);
-				// transaction.addToBackStack(null);
-				// transaction.commit();
-				// } else {
-				// Toast.makeText(getActivity(),
-				// R.string.message_not_containe_privly_link,
-				// Toast.LENGTH_SHORT).show();
-				// }
+
+				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(mPosts
+						.get(position).getMessage());
+				if (listOfUrls.size() > 0) {
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ShowContent showContent = new ShowContent();
+					Bundle bundle = new Bundle();
+					bundle.putStringArrayList("listOfLinks", listOfUrls);
+					showContent.setArguments(bundle);
+					transaction.replace(R.id.container, showContent);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					Toast.makeText(getActivity(),
+							R.string.message_not_containe_privly_link,
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		mListViewPosts.setOnScrollListener(this);
@@ -159,8 +150,8 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 		@Override
 		protected void onPreExecute() {
 			Log.d(TAG, "GetPostsTask");
-			if(mPage==1)
-			mProgressBar.setVisibility(View.VISIBLE);
+			if (mPage == 1)
+				mProgressBar.setVisibility(View.VISIBLE);
 		}
 
 		@Override
@@ -179,8 +170,8 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 					mIsLoading = false;
 				}
 			}
-			if(mPage==1)
-			mProgressBar.setVisibility(View.INVISIBLE);
+			if (mPage == 1)
+				mProgressBar.setVisibility(View.INVISIBLE);
 		}
 
 	}
