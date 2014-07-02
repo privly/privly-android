@@ -6,6 +6,7 @@ import java.util.Arrays;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
+import ly.priv.mobile.grabbers.TwitterGrabberService;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -117,7 +118,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		uri = getIntent().getData();
 		if (uri != null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new MicroblogListPostsFragment())
+					.add(R.id.container, new TwitterGrabberService())
 					.commit();
 		} else {
 			if (savedInstanceState == null) {
@@ -138,7 +139,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	public void onBackPressed() {
 		Fragment fragment = getSupportFragmentManager().findFragmentById(
 				R.id.container);
-		if (fragment instanceof ListUsersFragment) {
+		if (fragment instanceof ListUsersFragment || fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new Index()).commit();
 		} else {
@@ -244,8 +245,8 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 			if (position == 2 + createList.size() + 3) {
 				mDrawerLayout.closeDrawers();
-				MicroblogListPostsFragment twitGrabber = 
-						new MicroblogListPostsFragment();
+				TwitterGrabberService twitGrabber = 
+						new TwitterGrabberService();
 				FragmentTransaction transaction = getSupportFragmentManager()
 						.beginTransaction();
 				transaction.replace(R.id.container, twitGrabber, "Twitter");

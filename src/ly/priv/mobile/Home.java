@@ -8,6 +8,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
+import ly.priv.mobile.grabbers.TwitterGrabberService;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -163,7 +164,7 @@ public class Home extends SherlockFragment {
 					transaction.commit();
 					break;
 				case 2:
-					MicroblogListPostsFragment twitGrabber = new MicroblogListPostsFragment();
+					TwitterGrabberService twitGrabber = new TwitterGrabberService();
 					transaction.replace(R.id.container, twitGrabber, "Twitter");
 					// transaction.disallowAddToBackStack();
 					transaction.addToBackStack(null);

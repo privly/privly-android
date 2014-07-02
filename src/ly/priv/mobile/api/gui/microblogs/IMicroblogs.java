@@ -15,12 +15,12 @@ public interface IMicroblogs {
 	 * 
 	 * @return list of Post object
 	 */
-	public ArrayList<Post> getFirstPost();
+	public ArrayList<Post> getPost(int page);
+
+	
 	/**
-	 * Get next post for microblogs
-	 * 
-	 * @return list of Post object
+	 * Logout from microblogs
 	 */
-	public ArrayList<Post> getNextPost();
+	public void logout();
 	
 }

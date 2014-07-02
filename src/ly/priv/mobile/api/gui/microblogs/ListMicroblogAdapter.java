@@ -19,11 +19,11 @@ public class ListMicroblogAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
 	private ImageLoader mImageLoader;
-	private ArrayList<twitter4j.Status> mListPosts;
-	private twitter4j.Status mPost;
+	private ArrayList<Post> mListPosts;
+	private Post mPost;
 
 	public ListMicroblogAdapter(Activity activity,
-			ArrayList<twitter4j.Status> list) {
+			ArrayList<Post> list) {
 		this.mActivity = activity;
 		this.mListPosts = list;
 		this.mImageLoader = new ImageLoader(
@@ -62,13 +62,12 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		mPost = mListPosts.get(position);
 		if (this.mPost != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mName.setText(mPost.getUser().getName());
-			holder.mNic.setText("@" + mPost.getUser().getScreenName());
-			holder.mMessage.setText(mPost.getText());
+			holder.mName.setText(mPost.getName());
+			holder.mNic.setText("@" + mPost.getNic());
+			holder.mMessage.setText(mPost.getMessage());
 			holder.mTine.setText(Utilities.getTimeForTwitter(mPost
-					.getCreatedAt()));
-			mImageLoader.DisplayImage(mPost.getUser()
-					.getBiggerProfileImageURL(), holder.mAvatar);
+					.getTime()));
+			mImageLoader.DisplayImage(mPost.getUrlAvatar(), holder.mAvatar);
 		}
 		return vi;
 	}

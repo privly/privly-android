@@ -1,5 +1,5 @@
 package ly.priv.mobile.api.gui.microblogs;
-
+import java.util.Date;
 /**
  * Class for entity Post
  * 
@@ -9,11 +9,11 @@ package ly.priv.mobile.api.gui.microblogs;
 public class Post {
 	private String mName;
 	private String mNic;
-	private String mTime;
+	private Date mTime;
 	private String mMessage;
 	private String mUrlAvatar;
 
-	public Post(String name, String nic, String time, String mess,
+	public Post(String name, String nic, Date time, String mess,
 			String urlAvatar) {
 		super();
 		this.mName = name;
@@ -27,7 +27,7 @@ public class Post {
 		super();
 		this.mName = "";
 		this.mNic = "";
-		this.mTime = "";
+		this.mTime = null;
 		this.mMessage = "";
 		this.mUrlAvatar = "";
 	}
@@ -48,11 +48,11 @@ public class Post {
 		this.mNic = nic;
 	}
 
-	public String getTime() {
+	public Date getTime() {
 		return mTime;
 	}
 
-	public void setTime(String time) {
+	public void setTime(Date time) {
 		this.mTime = time;
 	}
 
