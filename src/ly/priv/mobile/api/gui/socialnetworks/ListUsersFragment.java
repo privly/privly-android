@@ -97,7 +97,7 @@ public class ListUsersFragment extends SherlockFragment {
 	/**
 	 * Item click listener for options menu.
 	 * <p>
-	 * relogin
+	 * logout
 	 * </p>
 	 */
 	@Override

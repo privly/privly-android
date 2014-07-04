@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,13 @@ import android.widget.TextView;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
+/**
+ * Adapter for ListViewPosts. It is showing posts.
+ * 
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class ListMicroblogAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
@@ -22,8 +28,13 @@ public class ListMicroblogAdapter extends BaseAdapter {
 	private ArrayList<Post> mListPosts;
 	private Post mPost;
 
-	public ListMicroblogAdapter(Activity activity,
-			ArrayList<Post> list) {
+	/**
+	 * Constructor for ListMicroblogAdapter
+	 * 
+	 * @param activity
+	 * @param list
+	 */
+	public ListMicroblogAdapter(Activity activity, ArrayList<Post> list) {
 		this.mActivity = activity;
 		this.mListPosts = list;
 		this.mImageLoader = new ImageLoader(
@@ -65,8 +76,7 @@ public class ListMicroblogAdapter extends BaseAdapter {
 			holder.mName.setText(mPost.getName());
 			holder.mNic.setText("@" + mPost.getNic());
 			holder.mMessage.setText(mPost.getMessage());
-			holder.mTine.setText(Utilities.getTimeForTwitter(mPost
-					.getTime()));
+			holder.mTine.setText(Utilities.getTimeForTwitter(mPost.getTime()));
 			mImageLoader.DisplayImage(mPost.getUrlAvatar(), holder.mAvatar);
 		}
 		return vi;

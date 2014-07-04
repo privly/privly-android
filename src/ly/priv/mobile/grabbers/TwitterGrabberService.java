@@ -3,12 +3,6 @@ package ly.priv.mobile.grabbers;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import ly.priv.mobile.ConstantValues;
 import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
@@ -17,7 +11,13 @@ import ly.priv.mobile.Values;
 import ly.priv.mobile.api.gui.microblogs.IMicroblogs;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.microblogs.Post;
-import android.content.Intent;
+import twitter4j.Paging;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.URLEntity;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,11 +26,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 
+/**
+ * Fragment for login,logout get posts for Twitter
+ * <p>
+ * <ul>
+ * <li>Implement interface IMicroblogs.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * Dependencies :
+ * <ul>
+ * <li>/privly-android/libs/twitter4j-core-4.0.1.jar</li>
+ * </ul>
+ * </p>
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class TwitterGrabberService extends SherlockFragment implements
 		IMicroblogs {
 	private static final String TAG = TwitterGrabberService.class
@@ -38,16 +57,34 @@ public class TwitterGrabberService extends SherlockFragment implements
 	private static final int COUNT_OF_TWEETS = 100;
 	private Values mValues;
 	private ProgressBar mProgressBar;
+	private WebView twitterLoginWebView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView ");
-		View view = inflater.inflate(R.layout.activity_list, container, false);
+		View view = inflater.inflate(R.layout.activity_login_twitter,
+				container, false);
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(R.string.privly_Login_Twitter);
 		mValues = new Values(getActivity());
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
+		twitterLoginWebView = (WebView) view.findViewById(R.id.wvLoginTwitters);
+		twitterLoginWebView.setBackgroundColor(Color.TRANSPARENT);
+		twitterLoginWebView.setWebViewClient(new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				if (url.contains(ConstantValues.TWITTER_CALLBACK_URL)) {
+					Uri uri = Uri.parse(url);
+					String verifier = uri
+							.getQueryParameter(ConstantValues.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
+					mValues.setTwitterLoggedIn(true);
+					new TwitterGetAccessTokenTask().execute(verifier);
+					return true;
+				}
+				return false;
+			}
+		});
 		if (!Utilities.isDataConnectionAvailable(getActivity())) {
 			Log.d(TAG, getString(R.string.no_internet_connection));
 			Utilities.showToast(getActivity(),
@@ -55,6 +92,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 		} else {
 			logIn();
 		}
+
 		return view;
 
 	}
@@ -82,7 +120,6 @@ public class TwitterGrabberService extends SherlockFragment implements
 		mProgressBar.setVisibility(View.VISIBLE);
 		if (!mValues.getTwitterLoggedIn()) {
 			new TwitterAuthenticateTask().execute();
-			mValues.setTwitterLoggedIn(true);
 		} else {
 			Uri uri = getActivity().getIntent().getData();
 			if (uri != null
@@ -115,9 +152,8 @@ public class TwitterGrabberService extends SherlockFragment implements
 		protected void onPostExecute(RequestToken requestToken) {
 			Log.d(TAG, "TwitterAuthenticateTask");
 			if (requestToken != null) {
-				Intent intent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse(requestToken.getAuthenticationURL()));
-				startActivity(intent);
+				twitterLoginWebView
+						.loadUrl(requestToken.getAuthenticationURL());
 			}
 			mProgressBar.setVisibility(View.INVISIBLE);
 		}
@@ -171,6 +207,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 
 	}
 
+	// Overridden method for implementing IMicroblogs
 	@Override
 	public void logout() {
 		Log.d(TAG, "logout()");
@@ -191,17 +228,17 @@ public class TwitterGrabberService extends SherlockFragment implements
 			List<twitter4j.Status> statuses = TwitterUtil.getInstance()
 					.getTwitter().getHomeTimeline(paging);
 			for (twitter4j.Status status : statuses) {
-				String url="";
-				URLEntity[] entities = status .getURLEntities();
-						 for (int i = 0; i < entities.length; i++) {
-						 // Since urls are shortened by the twitter t.co
-						 // service, get the expanded urls to search for
-						 // Privly links
-						 url += "  " + entities[i].getExpandedURL();
-						 }
+				String url = "";
+				URLEntity[] entities = status.getURLEntities();
+				for (int i = 0; i < entities.length; i++) {
+					// Since urls are shortened by the twitter t.co
+					// service, get the expanded urls to search for
+					// Privly links
+					url += "  " + entities[i].getExpandedURL();
+				}
 				listPost.add(new Post(status.getUser().getName(), status
 						.getUser().getScreenName(), status.getCreatedAt(),
-						status.getText()+url, status.getUser()
+						status.getText() + url, status.getUser()
 								.getBiggerProfileImageURL()));
 			}
 		} catch (TwitterException e) {

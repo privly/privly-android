@@ -11,8 +11,9 @@ import java.util.ArrayList;
 
 public interface IMicroblogs {
 	/**
-	 * Get first post for microblogs
+	 * Get posts for microblogs
 	 * 
+	 * @param page - page for loading data
 	 * @return list of Post object
 	 */
 	public ArrayList<Post> getPost(int page);

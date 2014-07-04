@@ -1,24 +1,10 @@
 package ly.priv.mobile.api.gui.microblogs;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
 import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
-import ly.priv.mobile.grabbers.TwitterUtil;
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -41,7 +27,19 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 /**
- * Clas for login and showing twets from Twitter
+ * 
+ * Clas for showing posts for microblogs
+ * <p>
+ * For using this api you must realize interface
+ * {@link ly.priv.mobile.api.gui.microblogs.IMicroblogs} and set it with method
+ * <code>setIMicroblogs</code>
+ * </p>
+ * <p>
+ * <ul>
+ * <li>If privly link contained in message then Redirect User to
+ * {@link ly.priv.mobile.ShowContent} ShowContent Activity</li> *
+ * </ul>
+ * </p>
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
@@ -53,7 +51,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	private View mFooterView;
 	private ListView mListViewPosts;
 	private ListMicroblogAdapter mListMicroblogAdapter;
-	private int mPage = 1;
+	private int mPage;
 	private boolean mIsLoading;
 	private ArrayList<Post> mPosts;
 	private IMicroblogs mIMicroblogs;
@@ -90,6 +88,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(mPosts
 						.get(position).getMessage());
 				if (listOfUrls.size() > 0) {
+					mPage = 1;
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
 					ShowContent showContent = new ShowContent();
@@ -110,6 +109,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 		mPosts = new ArrayList<Post>();
 		mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(), mPosts);
 		mListViewPosts.setAdapter(mListMicroblogAdapter);
+		mPage = 1;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	/**
 	 * Item click listener for options menu.
 	 * <p>
-	 * relogin
+	 * logout
 	 * </p>
 	 */
 	@Override
@@ -140,7 +140,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	}
 
 	/**
-	 * AsyncTask for get Access Token and get tweets
+	 * AsyncTask for get posts
 	 * 
 	 * @author Ivan Metla e-mail: metlaivan@gmail.com
 	 * 
@@ -176,6 +176,17 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 
 	}
 
+	/**
+	 * Set Interface IMicroblogs
+	 * 
+	 * @param mIMicroblogs
+	 *            the mIMicroblogs to set
+	 */
+	public void setIMicroblogs(IMicroblogs iMicroblogs) {
+		this.mIMicroblogs = iMicroblogs;
+	}
+
+	// overridden methods for implementing endless loading
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 	}
@@ -198,14 +209,6 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			new GetPostsTask().execute(mPage);
 		}
 
-	}
-
-	/**
-	 * @param mIMicroblogs
-	 *            the mIMicroblogs to set
-	 */
-	public void setIMicroblogs(IMicroblogs iMicroblogs) {
-		this.mIMicroblogs = iMicroblogs;
 	}
 
 }

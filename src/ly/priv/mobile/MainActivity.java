@@ -142,7 +142,9 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (fragment instanceof ListUsersFragment || fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new Index()).commit();
-		} else {
+		} else if(fragment instanceof Index){
+			 finish();
+		}else {		
 			super.onBackPressed();
 		}
 	}
