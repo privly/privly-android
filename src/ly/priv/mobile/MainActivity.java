@@ -39,13 +39,14 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  */
 public class MainActivity extends SherlockFragmentActivity {
+	private static final String TAG = "MainActivity";
 	Uri uri;
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle hamburger;
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
-	private static final String TAG = "MainActivity";
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

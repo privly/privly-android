@@ -44,7 +44,7 @@ import com.actionbarsherlock.view.MenuItem;
  */
 
 public class Index extends SherlockFragment {
-
+	private static final String TAG = "Index";
 	ListView readListView, createListView;
 	String loginResponse;
 	WebView w;
@@ -70,7 +70,7 @@ public class Index extends SherlockFragment {
 			getActivity().setTitle("Index");
 			loadIndex();
 		} catch (NullPointerException e) {
-			Log.d("isRedirected", "" + isRedirected);
+			Log.d(TAG, "" + isRedirected);
 			Values values = new Values(getActivity());
 			// Checks if the User has already been verified at the Login Screen.
 			// If yes, prevents re authentication. If not, creates and executes
@@ -97,7 +97,7 @@ public class Index extends SherlockFragment {
 		w.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public boolean onConsoleMessage(ConsoleMessage cm) {
-				Log.d("JsApplication",
+				Log.d(TAG,
 						cm.message() + " -- From line " + cm.lineNumber()
 								+ " of " + cm.sourceId());
 				return true;

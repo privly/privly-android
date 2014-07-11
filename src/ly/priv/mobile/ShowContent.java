@@ -99,7 +99,7 @@ public class ShowContent extends SherlockFragment {
 		webView.setOnTouchListener(gestureListener);
 
 		loadUrlInWebview(mId);
-		Log.d("fragments", "Inside Show");
+		Log.d(TAG, "Inside Show");
 		return view;
 	}
 

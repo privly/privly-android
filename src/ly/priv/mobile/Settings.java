@@ -25,6 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
  */
 public class Settings extends SherlockActivity {
 	/** Called when the activity is first created. */
+	private static final String TAG = "Settings";
 	String prefsName, baseUrl;
 	Button save;
 	Intent gotoLogin;
@@ -43,7 +44,7 @@ public class Settings extends SherlockActivity {
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");
 		baseUrlHeading.setTypeface(lobster);
-		Log.d("Settings", "Settings");
+		Log.d(TAG, "Settings");
 		gotoLogin = new Intent(this, Login.class);
 		save = (Button) findViewById(R.id.save);
 		urlEditText = (EditText) findViewById(R.id.baseUrlEditText);

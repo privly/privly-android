@@ -20,7 +20,7 @@ import android.webkit.JavascriptInterface;
  * @author Shivam Verma
  */
 public class JsObject {
-
+	private static final String TAG = "JsObject";
 	Context context;
 	SharedPreferences sharedPrefs;
 	static ProgressDialog dialog;
@@ -40,7 +40,7 @@ public class JsObject {
 	@JavascriptInterface
 	public String getDeviceVersion() {
 		String deviceVersion = Build.VERSION.RELEASE;
-		Log.d("androidJSBridge Version Request", deviceVersion);
+		Log.d(TAG, deviceVersion);
 		return deviceVersion;
 	}
 
@@ -53,7 +53,7 @@ public class JsObject {
 	 */
 	@JavascriptInterface
 	public void receiveNewPrivlyURL(String url) {
-		Log.d("androidJSBridge URL Received", url);
+		Log.d(TAG, url);
 		Utilities.showToast(context, url, true);
 		Fragment gotoShare = new Share();
 		Bundle args = new Bundle();
@@ -77,7 +77,7 @@ public class JsObject {
 	 */
 	@JavascriptInterface
 	public String fetchPlatformName() {
-		Log.d("androidJSBridge Request", "Platform Identification");
+		Log.d(TAG, "Platform Identification");
 		return "ANDROID";
 	}
 

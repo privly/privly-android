@@ -25,7 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Shivam Verma
  */
 public class NewPost extends SherlockFragment {
-
+	private static final String TAG = "NewPost";
 	public NewPost() {
 
 	}
@@ -55,7 +55,7 @@ public class NewPost extends SherlockFragment {
 			w.setWebChromeClient(new WebChromeClient() {
 				@Override
 				public boolean onConsoleMessage(ConsoleMessage cm) {
-					Log.d("JsApplication",
+					Log.d(TAG,
 							cm.message() + " -- From line " + cm.lineNumber()
 									+ " of " + cm.sourceId());
 					return true;
