@@ -162,7 +162,7 @@ public class Index extends SherlockFragment {
 		@Override
 		protected void onPreExecute() {
 			dialog.setCanceledOnTouchOutside(false);
-			dialog.setMessage("Verifying session..");
+			dialog.setMessage(getString(R.string.verifying_session));
 			dialog.show();
 		}
 
@@ -210,7 +210,8 @@ public class Index extends SherlockFragment {
 					values.setUserVerifiedAtLogin(false);
 					loadIndex();
 					Utilities.showToast(getActivity(),
-							"Good to go! Select an option.", false);
+							getString(R.string.good_to_go_select_an_option_),
+							false);
 				} else {
 					Values values = new Values(getActivity());
 					values.setAuthToken(null);
@@ -221,8 +222,7 @@ public class Index extends SherlockFragment {
 							| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 					startActivity(gotoLogin);
 					Utilities.showToast(getActivity(),
-							"Your session has expired. Please login again.",
-							true);
+							getString(R.string.your_session_has_expired), true);
 				}
 			} catch (Exception e) {
 			}

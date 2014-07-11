@@ -50,6 +50,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate MainActivity");
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		getSupportActionBar().setDisplayOptions(
@@ -82,12 +83,12 @@ public class MainActivity extends SherlockFragmentActivity {
 		ArrayList<DrawerObject> drawerItems = new ArrayList<DrawerObject>();
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
-		obj.setTitle("Index");
+		obj.setTitle(getString(R.string.index));
 		drawerItems.add(obj);
 
 		obj = new DrawerObject();
 		obj.setType("header");
-		obj.setSectionheader("Create New Privly Content");
+		obj.setSectionheader(getString(R.string.createListViewLabel));
 		drawerItems.add(obj);
 
 		for (String s : createList) {
@@ -99,7 +100,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		obj = new DrawerObject();
 		obj.setType("header");
-		obj.setSectionheader("Read Privly Content");
+		obj.setSectionheader(getString(R.string.readListViewLabel));
 		drawerItems.add(obj);
 
 		for (String s : readList) {
@@ -114,7 +115,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		mDrawerList.setAdapter(drawerAdapter);
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		Log.d(TAG, "onCreate MainActivity");
 		uri = getIntent().getData();
 		if (uri != null) {
 			getSupportFragmentManager().beginTransaction()
@@ -125,12 +125,6 @@ public class MainActivity extends SherlockFragmentActivity {
 						.add(R.id.container, new Index()).commit();
 			}
 		}
-		//
-		// // loads 'Home' as the default fragment
-		// if (savedInstanceState == null) {
-		// getSupportFragmentManager().beginTransaction()
-		// .add(R.id.container, new Index()).commit();
-		// }
 	}
 
 	@Override
@@ -227,8 +221,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					transaction.commit();
 				} else
 					Utilities.showToast(getApplicationContext(),
-							"Oops! Seems like there\'s no data connection.",
-							true);
+							getString(R.string.no_internet_connection), true);
 			}
 
 			if (position == 2 + createList.size() + 1) {

@@ -63,8 +63,8 @@ public class Settings extends SherlockActivity {
 				if (!baseUrl.equalsIgnoreCase("")) {
 					values.setBaseUrl(baseUrl);
 					Toast.makeText(getApplicationContext(),
-							"Saved! Please login now", Toast.LENGTH_SHORT)
-							.show();
+							getString(R.string.saved_please_login_now),
+							Toast.LENGTH_SHORT).show();
 
 					// Set authToken as null and redirect to login. This'll make
 					// sure that the user is authenticated with the new content
@@ -74,7 +74,7 @@ public class Settings extends SherlockActivity {
 					startActivity(gotoLogin);
 				} else
 					Utilities.showToast(getApplicationContext(),
-							"Please enter a valid URL", true);
+							getString(R.string.please_enter_a_valid_url), true);
 			}
 		});
 

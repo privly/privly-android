@@ -131,10 +131,12 @@ public class ShowContent extends SherlockFragment {
 					if (mId < mListOfLinks.size() - 1) {
 						mId++;
 						loadUrlInWebview(mId);
-						Toast.makeText(getActivity(), "Loading Next Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.loading_next_post),
 								Toast.LENGTH_SHORT).show();
 					} else {
-						Toast.makeText(getActivity(), "This is a last Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.this_is_a_last_post),
 								Toast.LENGTH_SHORT).show();
 					}
 
@@ -145,11 +147,13 @@ public class ShowContent extends SherlockFragment {
 
 					if (mId > 0) {
 						mId--;
-						Toast.makeText(getActivity(), "Loading Previous Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.loading_previous_post),
 								Toast.LENGTH_SHORT).show();
 						loadUrlInWebview(mId);
 					} else {
-						Toast.makeText(getActivity(), "This is a first Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.this_is_a_first_post),
 								Toast.LENGTH_SHORT).show();
 					}
 				}

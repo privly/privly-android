@@ -20,8 +20,8 @@
     <string name="saveButtonLabel">Save</string>
     <string name="loginUnsure">This is the web address of the server where your Privly data is stored. If you\'re unsure of what this means, please leave the default setting.</string>
     <string name="app_id">1412217835697847</string>
-    <string name="logoutTwitter"> Logout From Twitter</string>
-    <string name="logoutFacebook"> Logout From Facebook</string>
+    <string name="logout_twitter"> Logout From Twitter</string>
+    <string name="logout_facebook"> Logout From Facebook</string>
     <string name="privly_home">Privly Home</string>
     <string name="set_content_server">Content Server Location</string>
     <string name="drawer_open">Drawer Open</string>
@@ -39,4 +39,15 @@
 	<string name="good_to_go_select_an_option.">Good to go! Select an option.</string>
 	<string name="your_session_has_expired">Your session has expired. Please login again.</string>
 	<string name="no_internet_connection">No internet connection.</string>
+	<string name="please_enter_a_valid_email_id">Please Enter a valid EMail ID.</string>
+	<string name="please_enter_a_valid_password">Please Enter a valid Password.</string>
+	<string name="please_enter_a_valid_url">Please enter a valid URL.</string>
+	<string name="logging_in_dot_dot_dot">Logging in..</string>
+	<string name="invalid_email_address_or_password">Invalid Email Address or Password. Please Try Again!</string>
+	<string name="index">Index</string>
+	<string name="loading_next_post">Loading Next Post.</string>
+	<string name="this_is_a_last_post">This is a last Post</string>
+	<string name="loading_previous_post">Loading Previous Post</string>
+		<string name="this_is_a_first_post">This is a first Post</string>
+	<string name="saved_please_login_now">Saved! Please login now</string>
 </resources>

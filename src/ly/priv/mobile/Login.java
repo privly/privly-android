@@ -120,11 +120,17 @@ public class Login extends SherlockActivity {
 							// Check if Email is Valid using RegEx and Password
 							// and is not null
 							if (!Utilities.isValidEmail(userName))
-								Utilities.showToast(getApplicationContext(),
-										"Please Enter a valid EMail ID", false);
+								Utilities
+										.showToast(
+												getApplicationContext(),
+												getString(R.string.please_enter_a_valid_email_id),
+												false);
 							else if (password.equalsIgnoreCase(""))
-								Utilities.showToast(getApplicationContext(),
-										"Please Enter a valid Password", false);
+								Utilities
+										.showToast(
+												getApplicationContext(),
+												getString(R.string.please_enter_a_valid_password),
+												false);
 							else {
 								CheckLoginTask task = new CheckLoginTask();
 								task.execute(contentServerDomain
@@ -143,11 +149,9 @@ public class Login extends SherlockActivity {
 								}
 							}
 						} else
-							Utilities
-									.showToast(
-											getApplicationContext(),
-											"Oops! Seems like there\'s no Data connection.",
-											true);
+							Utilities.showToast(getApplicationContext(),
+									getString(R.string.no_internet_connection),
+									true);
 					}
 				});
 			}
@@ -191,7 +195,7 @@ public class Login extends SherlockActivity {
 
 			// Show Progress dialog
 			dialog.setCanceledOnTouchOutside(false);
-			dialog.setMessage("Logging in..");
+			dialog.setMessage(getString(R.string.logging_in_dot_dot_dot));
 			dialog.show();
 		}
 
@@ -263,7 +267,7 @@ public class Login extends SherlockActivity {
 					Utilities
 							.showToast(
 									getApplicationContext(),
-									"Invalid Email Address or Password. Please Try Again!",
+									getString(R.string.invalid_email_address_or_password),
 									true);
 
 			} catch (Exception ex) {
