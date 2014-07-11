@@ -1,12 +1,10 @@
 package ly.priv.mobile;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -99,7 +97,7 @@ public class ShowContent extends SherlockFragment {
 			}
 		};
 		webView.setOnTouchListener(gestureListener);
-		
+
 		loadUrlInWebview(mId);
 		Log.d("fragments", "Inside Show");
 		return view;

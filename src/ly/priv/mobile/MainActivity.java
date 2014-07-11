@@ -118,33 +118,32 @@ public class MainActivity extends SherlockFragmentActivity {
 		uri = getIntent().getData();
 		if (uri != null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new TwitterGrabberService())
-					.commit();
+					.add(R.id.container, new TwitterGrabberService()).commit();
 		} else {
 			if (savedInstanceState == null) {
 				getSupportFragmentManager().beginTransaction()
 						.add(R.id.container, new Index()).commit();
 			}
 		}
-//
-//		// loads 'Home' as the default fragment
-//		if (savedInstanceState == null) {
-//			getSupportFragmentManager().beginTransaction()
-//					.add(R.id.container, new Index()).commit();
-//		}
+		//
+		// // loads 'Home' as the default fragment
+		// if (savedInstanceState == null) {
+		// getSupportFragmentManager().beginTransaction()
+		// .add(R.id.container, new Index()).commit();
+		// }
 	}
-	
 
 	@Override
 	public void onBackPressed() {
 		Fragment fragment = getSupportFragmentManager().findFragmentById(
 				R.id.container);
-		if (fragment instanceof ListUsersFragment || fragment instanceof MicroblogListPostsFragment) {
+		if (fragment instanceof ListUsersFragment
+				|| fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new Index()).commit();
-		} else if(fragment instanceof Index){
-			 finish();
-		}else {		
+		} else if (fragment instanceof Index) {
+			finish();
+		} else {
 			super.onBackPressed();
 		}
 	}
@@ -234,7 +233,9 @@ public class MainActivity extends SherlockFragmentActivity {
 
 			if (position == 2 + createList.size() + 1) {
 				mDrawerLayout.closeDrawers();
-				Toast.makeText(getApplication(), "Gmail hasn't been merged yet", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplication(),
+						"Gmail hasn't been merged yet", Toast.LENGTH_SHORT)
+						.show();
 			}
 			if (position == 2 + createList.size() + 2) {
 				mDrawerLayout.closeDrawers();
@@ -247,8 +248,7 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 			if (position == 2 + createList.size() + 3) {
 				mDrawerLayout.closeDrawers();
-				TwitterGrabberService twitGrabber = 
-						new TwitterGrabberService();
+				TwitterGrabberService twitGrabber = new TwitterGrabberService();
 				FragmentTransaction transaction = getSupportFragmentManager()
 						.beginTransaction();
 				transaction.replace(R.id.container, twitGrabber, "Twitter");

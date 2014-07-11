@@ -78,11 +78,11 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 				ViewGroup viewGroup = (ViewGroup) ((LayoutInflater) mContext
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
 						.inflate(R.layout.nav_item_layout, null);
-				itemHolder = new NavItemHolder((TextView) viewGroup.findViewById(R.id.textview2));
+				itemHolder = new NavItemHolder(
+						(TextView) viewGroup.findViewById(R.id.textview2));
 				viewGroup.setTag(itemHolder);
 				view = viewGroup;
-			}
-			else {
+			} else {
 				itemHolder = (NavItemHolder) convertView.getTag();
 				view = convertView;
 			}
@@ -91,7 +91,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 		return view;
 	}
 
-	//Holder view for Navigation section headers
+	// Holder view for Navigation section headers
 	static class NavHeaderHolder {
 		TextView headerView;
 
@@ -100,7 +100,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 		}
 	}
 
-	//Holder view for Navigation clickable items
+	// Holder view for Navigation clickable items
 	static class NavItemHolder {
 		TextView titleView;
 
@@ -110,7 +110,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 	}
 }
 
-//This class represents the items in Navigation Drawer
+// This class represents the items in Navigation Drawer
 class DrawerObject {
 	String type;
 	String sectionheader;

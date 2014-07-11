@@ -50,7 +50,7 @@ public class Index extends SherlockFragment {
 	WebView w;
 
 	public Index() {
-		
+
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class Index extends SherlockFragment {
 	void loadIndex() {
 		w.addJavascriptInterface(new JsObject(getActivity()), "androidJsBridge");
 
-		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN){
+		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
 			w.getSettings().setAllowUniversalAccessFromFileURLs(true);
 		}
 		// Logs all Js Console messages on the logcat.

@@ -91,7 +91,8 @@ public class VerifyAuthToken extends AsyncTask<String, Void, String> {
 				Values values = new Values(mActivity);
 				values.setAuthToken(authToken);
 				values.setUserVerifiedAtLogin(false);
-				Utilities.showToast(mActivity, mActivity.getString(R.string.good_to_go_select_an_option_),
+				Utilities.showToast(mActivity, mActivity
+						.getString(R.string.good_to_go_select_an_option_),
 						false);
 			} else {
 				Values values = new Values(mActivity);
@@ -103,7 +104,8 @@ public class VerifyAuthToken extends AsyncTask<String, Void, String> {
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				mActivity.startActivity(gotoLogin);
 				Utilities.showToast(mActivity,
-						mActivity.getString(R.string.your_session_has_expired), true);
+						mActivity.getString(R.string.your_session_has_expired),
+						true);
 			}
 		} catch (Exception e) {
 		}
