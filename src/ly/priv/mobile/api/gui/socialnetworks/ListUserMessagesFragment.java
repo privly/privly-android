@@ -61,6 +61,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.activity_list_pull_refrash,
 				container, false);
+		mISocialNetworks.setTitle();
 		mListViewUserMessages = ((ListView) view
 				.findViewById(R.id.lView_refresh));
 		mSwipeRefreshLayout = (SwipeRefreshLayout) view

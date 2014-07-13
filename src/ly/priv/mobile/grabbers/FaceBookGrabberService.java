@@ -108,9 +108,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 * Run social GUI
 	 */
 	private void runSocialGui() {
-		Log.d(TAG, "runSocialGui");
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Facebook);
+		Log.d(TAG, "runSocialGui");		
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
 		mSListUsersActivity = new ListUsersFragment();
@@ -390,6 +388,12 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		mValues.setFacebookID("");
 		getActivity().getSupportFragmentManager().beginTransaction()
 				.replace(R.id.container, new IndexFragment()).commit();
+	}
+
+	@Override
+	public void setTitle() {
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.privly_Facebook);
 	}
 
 }

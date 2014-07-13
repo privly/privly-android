@@ -101,9 +101,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 	 * Run social GUI
 	 */
 	private void runSocialGui() {
-		Log.d(TAG, "runSocialGui");
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Twitter);
+		Log.d(TAG, "runSocialGui");		
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
 		MicroblogListPostsFragment microblogListPostsFragment = new MicroblogListPostsFragment();
@@ -247,5 +245,11 @@ public class TwitterGrabberService extends SherlockFragment implements
 			e.printStackTrace();
 		}
 		return listPost;
+	}
+
+	@Override
+	public void setTitle() {
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.privly_Twitter);		
 	}
 }

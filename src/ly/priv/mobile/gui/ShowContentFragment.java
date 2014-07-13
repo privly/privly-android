@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -55,7 +56,6 @@ public class ShowContentFragment extends SherlockFragment {
 	public int swipeThresholdVelocity;
 	public int swipeMaxOffPath;
 	private WebView mUrlContentWebView;
-	private String mContentSource;
 	private ArrayList<String> mListOfLinks;
 	private Integer mId = 0;
 
@@ -69,8 +69,8 @@ public class ShowContentFragment extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		mContentSource = getArguments().getString("contentSource");
-		getActivity().setTitle(mContentSource);
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.show_content);
 		mListOfLinks = getArguments().getStringArrayList("listOfLinks");
 		View webView = view.findViewById(R.id.urlContentWebview);
 		mUrlContentWebView = (WebView) webView;

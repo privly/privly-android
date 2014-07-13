@@ -24,4 +24,8 @@ public interface IMicroblogs {
 	 */
 	public void logout();
 
+	/**
+	 * Set title
+	 */
+	public void setTitle();
 }
