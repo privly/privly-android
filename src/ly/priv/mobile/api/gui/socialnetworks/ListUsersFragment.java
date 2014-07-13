@@ -56,8 +56,6 @@ public class ListUsersFragment extends SherlockFragment {
 		Log.d(TAG, "Creating ListUsersFragment");
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		setHasOptionsMenu(true);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Facebook);
 		mListViewUsers = ((ListView) view.findViewById(R.id.lView));
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mProgressBar.setVisibility(View.VISIBLE);

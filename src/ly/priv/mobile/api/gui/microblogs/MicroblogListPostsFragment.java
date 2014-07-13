@@ -74,8 +74,6 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	 */
 	private void initializeComponent(View view) {
 		setHasOptionsMenu(true);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Twitter);
 		mListViewPosts = ((ListView) view.findViewById(R.id.lView));
 		mListViewPosts.addFooterView(mFooterView);
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);

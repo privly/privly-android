@@ -109,6 +109,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 */
 	private void runSocialGui() {
 		Log.d(TAG, "runSocialGui");
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.privly_Facebook);
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
 		mSListUsersActivity = new ListUsersFragment();

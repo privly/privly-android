@@ -11,7 +11,6 @@
     <string name="createListViewLabel"> Create New Privly Content </string>
     <string name="newUrlLabel">Here\'s your new Privly Url</string>
     <string name="shareButtonLabel">Share Url</string>
-    <string name="headerDescription">Privly</string>
     <string name="settingsMenuLabel">Change Content Server</string>
     <string name="logoutMenuLabel">Logout From Application</string>
     <string name="baseUrlHeading">Content Server Location</string>
@@ -22,7 +21,6 @@
     <string name="app_id">1412217835697847</string>
     <string name="logout_twitter"> Logout From Twitter</string>
     <string name="logout_facebook"> Logout From Facebook</string>
-    <string name="privly_home">Privly Home</string>
     <string name="set_content_server">Content Server Location</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
