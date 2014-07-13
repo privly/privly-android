@@ -1,7 +1,8 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
 import java.util.ArrayList;
 
+import ly.priv.mobile.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

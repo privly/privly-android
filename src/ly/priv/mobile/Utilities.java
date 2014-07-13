@@ -24,9 +24,6 @@ import android.widget.Toast;
  * @author Shivam Verma
  */
 public class Utilities {
-
-	private static final String MY_PREFERENCES = "privly";
-
 	/**
 	 * Check validity of an EMail address using RegEx
 	 * 

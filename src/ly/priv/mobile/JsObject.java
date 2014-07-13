@@ -1,10 +1,10 @@
 package ly.priv.mobile;
 
+import ly.priv.mobile.gui.LoginActivity;
+import ly.priv.mobile.gui.ShareFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,8 +21,7 @@ import android.webkit.JavascriptInterface;
  */
 public class JsObject {
 	private static final String TAG = "JsObject";
-	Context context;
-	SharedPreferences sharedPrefs;
+	private Context mContext;
 	static ProgressDialog dialog;
 
 	/**
@@ -30,8 +29,8 @@ public class JsObject {
 	 * 
 	 * @param callingContext
 	 */
-	JsObject(Context callingContext) {
-		context = callingContext;
+	public JsObject(Context callingContext) {
+		mContext = callingContext;
 	}
 
 	/**
@@ -45,8 +44,8 @@ public class JsObject {
 	}
 
 	/**
-	 * Shows the {@link ly.priv.mobile.Share} Activity to the user on receiving
-	 * a new Privly Url
+	 * Shows the {@link ly.priv.mobile.gui.ShareFragment} Activity to the user
+	 * on receiving a new Privly Url
 	 * 
 	 * @param url
 	 *            The newly generated Privly Url
@@ -54,20 +53,15 @@ public class JsObject {
 	@JavascriptInterface
 	public void receiveNewPrivlyURL(String url) {
 		Log.d(TAG, url);
-		Utilities.showToast(context, url, true);
-		Fragment gotoShare = new Share();
+		Utilities.showToast(mContext, url, true);
+		Fragment gotoShare = new ShareFragment();
 		Bundle args = new Bundle();
-		args.putString("newPrivlyUrl", url);
+		args.putString(ConstantValues.NEW_PRIVLY_URL, url);
 		gotoShare.setArguments(args);
-		FragmentTransaction transaction = ((FragmentActivity) context)
+		FragmentTransaction transaction = ((FragmentActivity) mContext)
 				.getSupportFragmentManager().beginTransaction();
 		transaction.replace(R.id.container, gotoShare);
 		transaction.commit();
-		// Intent gotoShare = new Intent(context, Share.class);
-		// gotoShare.putExtra("newPrivlyUrl", url);
-		// context.startActivity(gotoShare);
-		// ((Activity) context).finish();
-
 	}
 
 	/**
@@ -88,7 +82,7 @@ public class JsObject {
 	 */
 	@JavascriptInterface
 	public String fetchAuthToken() {
-		Values values = new Values(context);
+		Values values = new Values(mContext);
 		String auth_token = values.getAuthToken();
 		return auth_token;
 	}
@@ -100,14 +94,14 @@ public class JsObject {
 	 */
 	@JavascriptInterface
 	public String fetchDomainName() {
-		Values values = new Values(context);
+		Values values = new Values(mContext);
 		String domainName = values.getContentServerDomain();
 		return domainName;
 	}
 
 	@JavascriptInterface
 	public void showWaitDialog(String message) {
-		dialog = new ProgressDialog(context);
+		dialog = new ProgressDialog(mContext);
 		dialog.setMessage(message);
 		dialog.show();
 	}
@@ -119,26 +113,22 @@ public class JsObject {
 
 	@JavascriptInterface
 	public void showLoginActivity() {
-		Intent gotoLogin = new Intent(context, Login.class);
+		Intent gotoLogin = new Intent(mContext, LoginActivity.class);
 		/**
 		 * Set authToken null so that the Login Activity does not redirect the
 		 * user to Home Activity.
 		 */
 
-		Values values = new Values(context);
-		String prefsName = values.getPrefsName();
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor e = sharedPrefs.edit();
-		e.putString("auth_token", null);
-		e.commit();
-		gotoLogin.putExtra("isRedirected", true);
+		Values values = new Values(mContext);
+		values.setAuthToken(null);
+		gotoLogin.putExtra(ConstantValues.IS_REDIRECTED, true);
 
 		// Clear the history stack. Once the user is redirected to the Login
 		// Activity. The user should not be able to access previous activities.
 
 		gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		context.startActivity(gotoLogin);
+		mContext.startActivity(gotoLogin);
 	}
 
 	/**
@@ -149,7 +139,7 @@ public class JsObject {
 	@JavascriptInterface
 	public String isDataConnectionAvailable() {
 		Boolean dataConnectionAvailability = Utilities
-				.isDataConnectionAvailable(context);
+				.isDataConnectionAvailable(mContext);
 		if (dataConnectionAvailability)
 			return "true";
 		else
@@ -158,6 +148,6 @@ public class JsObject {
 
 	@JavascriptInterface
 	public void showToast(String textToToast) {
-		Utilities.showToast(context, textToToast, true);
+		Utilities.showToast(mContext, textToToast, true);
 	}
 }

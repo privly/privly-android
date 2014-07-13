@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
+import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -29,7 +29,7 @@ import com.actionbarsherlock.app.SherlockFragment;
  * <ul>
  * <li>Get mDialogID from Bundle.</li>
  * <li>If privly link contained in message then Redirect User to
- * {@link ly.priv.mobile.ShowContent} ShowContent Activity</li>
+ * {@link ly.priv.mobile.gui.ShowContentFragment} ShowContent Activity</li>
  * </ul>
  * </p>
  * 
@@ -85,7 +85,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
-					ShowContent showContent = new ShowContent();
+					ShowContentFragment showContent = new ShowContentFragment();
 					Bundle bundle = new Bundle();
 					bundle.putStringArrayList("listOfLinks", listOfUrls);
 					showContent.setArguments(bundle);

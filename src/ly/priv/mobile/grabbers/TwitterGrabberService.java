@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
 import ly.priv.mobile.api.gui.microblogs.IMicroblogs;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.microblogs.Post;
+import ly.priv.mobile.gui.IndexFragment;
 import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -216,7 +216,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 		mValues.setTwitterOauthTokenSecret("");
 		TwitterUtil.getInstance().reset();
 		getActivity().getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, new Index()).commit();
+				.replace(R.id.container, new IndexFragment()).commit();
 	}
 
 	@Override

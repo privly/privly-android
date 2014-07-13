@@ -1,5 +1,9 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
+import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.JsObject;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Values;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -24,9 +28,10 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class NewPost extends SherlockFragment {
+public class NewPostFragment extends SherlockFragment {
 	private static final String TAG = "NewPost";
-	public NewPost() {
+
+	public NewPostFragment() {
 
 	}
 
@@ -41,10 +46,10 @@ public class NewPost extends SherlockFragment {
 		// Fetch selected Js app's name and load the respective JS app into
 		// WebView.
 
-		if (bundle.getString("JsAppName") != null) {
-			String JsAppName = bundle.getString("JsAppName");
+		if (bundle.getString(ConstantValues.JS_APP_NAME) != null) {
+			String JsAppName = bundle.getString(ConstantValues.JS_APP_NAME);
 			getActivity().setTitle(JsAppName);
-			WebView w = (WebView) view.findViewById(R.id.webview_1);
+			WebView w = (WebView) view.findViewById(R.id.webview_new_post);
 			w.getSettings().setJavaScriptEnabled(true);
 			w.addJavascriptInterface(new JsObject(getActivity()),
 					"androidJsBridge");
@@ -81,7 +86,8 @@ public class NewPost extends SherlockFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
-			Intent gotoSettings = new Intent(getActivity(), Settings.class);
+			Intent gotoSettings = new Intent(getActivity(),
+					SettingsActivity.class);
 			startActivity(gotoSettings);
 			return true;
 		case R.id.logout:
@@ -89,7 +95,7 @@ public class NewPost extends SherlockFragment {
 			Values values = new Values(getActivity());
 			values.setAuthToken(null);
 			values.setRememberMe(false);
-			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			Intent gotoLogin = new Intent(getActivity(), LoginActivity.class);
 			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(gotoLogin);

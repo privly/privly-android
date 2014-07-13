@@ -1,8 +1,10 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
@@ -46,7 +48,6 @@ public class MainActivity extends SherlockFragmentActivity {
 	ActionBarDrawerToggle hamburger;
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		} else {
 			if (savedInstanceState == null) {
 				getSupportFragmentManager().beginTransaction()
-						.add(R.id.container, new Index()).commit();
+						.add(R.id.container, new IndexFragment()).commit();
 			}
 		}
 	}
@@ -135,8 +136,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (fragment instanceof ListUsersFragment
 				|| fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.container, new Index()).commit();
-		} else if (fragment instanceof Index) {
+					.replace(R.id.container, new IndexFragment()).commit();
+		} else if (fragment instanceof IndexFragment) {
 			finish();
 		} else {
 			super.onBackPressed();
@@ -197,7 +198,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				long id) {
 			if (position == 0) {
 				mDrawerLayout.closeDrawers();
-				Fragment index = new Index();
+				Fragment index = new IndexFragment();
 				Bundle bundle = new Bundle();
 				bundle.putBoolean("isRedirected", true);
 				index.setArguments(bundle);
@@ -211,7 +212,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				if (Utilities
 						.isDataConnectionAvailable(getApplicationContext())) {
 					mDrawerLayout.closeDrawers();
-					Fragment gotoCreateNewPost = new NewPost();
+					Fragment gotoCreateNewPost = new NewPostFragment();
 					Bundle bundle = new Bundle();
 					bundle.putString("JsAppName", createList.get(position - 2));
 					gotoCreateNewPost.setArguments(bundle);

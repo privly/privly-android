@@ -3,6 +3,8 @@ package ly.priv.mobile;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import ly.priv.mobile.gui.LoginActivity;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,13 +24,13 @@ import android.os.AsyncTask;
 
 /**
  * Verifies the validity of existing auth_token. If expired, redirect to
- * {@link ly.priv.mobile.Login}
+ * {@link ly.priv.mobile.gui.LoginActivity}
  * 
  * @author Shivam Verma
  * 
  */
 public class VerifyAuthToken extends AsyncTask<String, Void, String> {
-
+	private static final String TAG = "VerifyAuthToken";
 	volatile ProgressDialog mDialog;
 	private Activity mActivity;
 	private String mLoginResponse;
@@ -97,7 +99,7 @@ public class VerifyAuthToken extends AsyncTask<String, Void, String> {
 			} else {
 				Values values = new Values(mActivity);
 				values.setAuthToken(null);
-				Intent gotoLogin = new Intent(mActivity, Login.class);
+				Intent gotoLogin = new Intent(mActivity, LoginActivity.class);
 				// Clear history stack. User should not be able to access
 				// any activity since his session has expired.
 				gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

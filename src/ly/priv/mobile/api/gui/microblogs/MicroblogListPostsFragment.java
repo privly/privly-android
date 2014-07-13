@@ -3,8 +3,8 @@ package ly.priv.mobile.api.gui.microblogs;
 import java.util.ArrayList;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
+import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -37,7 +37,7 @@ import com.actionbarsherlock.view.MenuItem;
  * <p>
  * <ul>
  * <li>If privly link contained in message then Redirect User to
- * {@link ly.priv.mobile.ShowContent} ShowContent Activity</li> *
+ * {@link ly.priv.mobile.gui.ShowContentFragment} ShowContent Activity</li> *
  * </ul>
  * </p>
  * 
@@ -91,7 +91,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 					mPage = 1;
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
-					ShowContent showContent = new ShowContent();
+					ShowContentFragment showContent = new ShowContentFragment();
 					Bundle bundle = new Bundle();
 					bundle.putStringArrayList("listOfLinks", listOfUrls);
 					showContent.setArguments(bundle);

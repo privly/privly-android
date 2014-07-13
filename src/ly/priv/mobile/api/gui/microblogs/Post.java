@@ -1,5 +1,7 @@
 package ly.priv.mobile.api.gui.microblogs;
+
 import java.util.Date;
+
 /**
  * Class for entity Post
  * 

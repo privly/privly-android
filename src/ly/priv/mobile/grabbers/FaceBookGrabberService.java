@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
@@ -14,6 +13,7 @@ import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
+import ly.priv.mobile.gui.IndexFragment;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -136,7 +136,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				mSession.addCallback(mSessionStatusCallback);
 				Session.OpenRequest openRequest = new Session.OpenRequest(
 						FaceBookGrabberService.this);
-				openRequest.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
+				openRequest
+						.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
 				openRequest
 						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
 				openRequest.setPermissions(permissions);
@@ -386,7 +387,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Session.setActiveSession(mSession);
 		mValues.setFacebookID("");
 		getActivity().getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new Index()).commit();
+				.replace(R.id.container, new IndexFragment()).commit();
 	}
 
 }

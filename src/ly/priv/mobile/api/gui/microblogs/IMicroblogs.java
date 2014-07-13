@@ -13,15 +13,15 @@ public interface IMicroblogs {
 	/**
 	 * Get posts for microblogs
 	 * 
-	 * @param page - page for loading data
+	 * @param page
+	 *            - page for loading data
 	 * @return list of Post object
 	 */
 	public ArrayList<Post> getPost(int page);
 
-	
 	/**
 	 * Logout from microblogs
 	 */
 	public void logout();
-	
+
 }

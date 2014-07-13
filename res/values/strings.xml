@@ -48,6 +48,8 @@
 	<string name="loading_next_post">Loading Next Post.</string>
 	<string name="this_is_a_last_post">This is a last Post</string>
 	<string name="loading_previous_post">Loading Previous Post</string>
-		<string name="this_is_a_first_post">This is a first Post</string>
+	<string name="this_is_a_first_post">This is a first Post</string>
 	<string name="saved_please_login_now">Saved! Please login now</string>
+	<string name="share_privly_url">Share Privly Url</string>
+	
 </resources>
