@@ -4,15 +4,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -56,6 +63,10 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	ListView threadListView;
 	ArrayList<Thread> mailThreads;
 	ProgressBar progressBar;
+	OnItemClickListener listener;
+	Thread currentThread;
+	SharedPreferences sharedPrefs;
+	String prefsName;
 
 	public GmailLinkGrabberService() {
 
@@ -68,11 +79,47 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		View view = inflater.inflate(R.layout.activity_list, container,
 				false);
 		threadListView = (ListView) view.findViewById(R.id.lView);
-		// Shows Account Picker with google accounts
-		Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
+		progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
+		prefsName = new Values(getActivity()).getPrefsName();
+		sharedPrefs = getActivity().getSharedPreferences(prefsName, 0);
+		threadListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Thread thread = mailThreads.get(arg2);
+				Fragment mailThread = new GmailSingleThreadFragment();
+				Bundle args = new Bundle();
+				((MainActivity) getActivity()).setCurrentThread(thread);
+				mailThread.setArguments(args);
+				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+				transaction.replace(R.id.container, mailThread);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+			
+		});
+		
+		// Shows Account Picker with google accounts if not stored in shared preferences
+		Boolean accountFound = false;
+		if (sharedPrefs.contains("gmailId")){
+			Account[] accounts = AccountManager.get(getActivity()).getAccounts();
+			accountName = sharedPrefs.getString("gmailId", null);
+			for (Account a: accounts){
+				if (a.name.equals(accountName)){
+					accountFound = true; 
+					progressBar.setVisibility(View.VISIBLE);
+					new getAuthToken().execute();
+				}
+			}
+		}
+		if (!accountFound) {
+			Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
 				new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, true,
 				null, null, null, null);
-		startActivityForResult(googlePicker, 1);
+			startActivityForResult(googlePicker, 1);
+		}
+			
 		return view;
 	}
 
@@ -80,15 +127,16 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		progressBar = (ProgressBar) getActivity().findViewById(R.id.pbLoadingData);
-		progressBar.setEnabled(true);
+		progressBar.setVisibility(View.VISIBLE);
 		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-			Log.d("Gmail", accountName);
+			Editor editor = sharedPrefs.edit();
+			editor.putString("gmailId", accountName);
+			editor.commit();
 			new getAuthToken().execute();
 		}
 	}
-
+	
 	// Gets oauth2 token using Play Services SDK and runs connectIMAP task after receiving token
 	public class getAuthToken extends AsyncTask<Void, Void, List<Thread>> {
 
@@ -124,7 +172,6 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		@Override
 		protected void onPostExecute(List<Thread> result) {
 			if (result != null) {
-				Log.d("thread", result.get(0).getId());
 				new getThreads().execute(result);
 			} else {
 				Log.d("token", "is null");
@@ -173,7 +220,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		@Override
 		protected void onPostExecute(ArrayList<Thread> threads) {
 			if (threads != null) {
-				progressBar.setEnabled(false);
+				progressBar.setVisibility(View.GONE);
 				ListMailThreadsAdapter threadAdapter = new ListMailThreadsAdapter(getActivity(), threads);
 				threadListView.setAdapter(threadAdapter);
 			} else {

@@ -1,32 +1,27 @@
 package ly.priv.mobile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fedorvlasov.lazylist.ImageLoader;
+import com.google.api.services.gmail.model.MessagePartHeader;
 import com.google.api.services.gmail.model.Thread;
 
 public class ListMailThreadsAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
-	private ImageLoader mImageLoader;
 	private ArrayList<Thread> mListThreads;
 	private Thread mailThread;
 
-	public ListMailThreadsAdapter(Activity activity,
-			ArrayList<Thread> list) {
+	public ListMailThreadsAdapter(Activity activity, ArrayList<Thread> list) {
 		this.mActivity = activity;
 		this.mListThreads = list;
-		this.mImageLoader = new ImageLoader(
-				this.mActivity.getApplicationContext());
-		this.mImageLoader.setStub_id(R.drawable.ava);
 	}
 
 	public int getCount() {
@@ -34,7 +29,7 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 	}
 
 	public Object getItem(int paramInt) {
-		return Integer.valueOf(paramInt);
+		return this.mListThreads.size();
 	}
 
 	public long getItemId(int paramInt) {
@@ -42,40 +37,71 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View vi = null;
+		final ViewHolder viewHolder;
 		if (convertView == null) {
 			inflater = this.mActivity.getLayoutInflater();
-			vi = inflater.inflate(R.layout.item_microblog_list_users, null);
-			ViewHolder viewHolder = new ViewHolder();
-			viewHolder.mName = ((TextView) vi.findViewById(R.id.tvUserName));
-			viewHolder.mNic = ((TextView) vi.findViewById(R.id.tvNic));
-			viewHolder.mMessage = ((TextView) vi.findViewById(R.id.tvMessage));
-			viewHolder.mTine = ((TextView) vi.findViewById(R.id.tvTime));
-			viewHolder.mAvatar = ((ImageView) vi.findViewById(R.id.ivAvaFriend));
-			vi.setTag(viewHolder);
+			convertView = inflater.inflate(R.layout.item_mail_list_threads, null);
+			viewHolder = new ViewHolder();
+			viewHolder.mailSender = (TextView) convertView
+					.findViewById(R.id.mailSender);
+			viewHolder.mailCount = (TextView) convertView.findViewById(R.id.mailCount);
+			viewHolder.mailSnippet = (TextView) convertView
+					.findViewById(R.id.mailSnippet);
+			viewHolder.mailTime = (TextView) convertView.findViewById(R.id.mailTime);
+			convertView.setTag(viewHolder);
 		} else {
-			vi = convertView;
+			viewHolder = (ViewHolder) convertView.getTag();
 		}
 
 		mailThread = mListThreads.get(position);
 		if (this.mailThread != null) {
-			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mName.setText(mailThread.getSnippet());
-//			holder.mNic.setText("@" + mPost.getUser().getScreenName());
-//			holder.mMessage.setText(mPost.getText());
-//			holder.mTine.setText(Utilities.getTimeForTwitter(mPost
-//					.getCreatedAt()));
-//			mImageLoader.DisplayImage(mPost.getUser()
-//					.getBiggerProfileImageURL(), holder.mAvatar);
+			//ViewHolder holder = (ViewHolder) convertView.getTag();
+			int mailCount = mailThread.getMessages().size();
+			if (mailCount!=1){
+				viewHolder.mailCount.setText(" (" + String.valueOf(mailCount) + ") ");
+			}
+//			SimpleDateFormat dateParser = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+//			SimpleDateFormat shortDate = new SimpleDateFormat("d MMM");
+//			SimpleDateFormat shortTime = new SimpleDateFormat("HH:mm");
+//			dateParser.setTimeZone(TimeZone.getDefault());
+			List<MessagePartHeader> headers = mailThread.getMessages().get(mailCount-1).getPayload().getHeaders();
+			for (MessagePartHeader m: headers){
+				if (m.getName().equals("From")){
+					viewHolder.mailSender.setText(m.getValue());
+				}
+				else if (m.getName().equals("Date")){
+					viewHolder.mailTime.setText(m.getValue());
+//					try{
+//						Date d = dateParser.parse(m.getValue());
+//						
+//						Log.d("time",(formatSameDayTimeCustom(mActivity, d.getTime()).toString()));
+//					}
+//					catch(Exception e){
+//						e.printStackTrace();
+//					}
+				}
+				else if (m.getName().equals("Subject")){
+					viewHolder.mailSnippet.setText(m.getValue());
+				}
+			}
 		}
-		return vi;
+		return convertView;
 	}
+	
+//	public static final CharSequence formatSameDayTimeCustom(Context context, long then) {
+//	    if (DateUtils.isToday(then)) {
+//	        return android.text.format.DateFormat.getTimeFormat(context).format(new Date(then));
+//	    }
+//	    else {
+//	        final String format = android.text.format.DateFormat.getDateFormat(context).toString();
+//	        return new SimpleDateFormat(format).format(new Date(then));
+//	    }
+//	}
 
 	static class ViewHolder {
-		protected ImageView mAvatar;
-		protected TextView mMessage;
-		protected TextView mName;
-		protected TextView mNic;
-		protected TextView mTine;
+		protected TextView mailSnippet;
+		protected TextView mailSender;
+		protected TextView mailCount;
+		protected TextView mailTime;
 	}
 }

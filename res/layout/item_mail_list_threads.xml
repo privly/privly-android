@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5.0dip" >
+
+    <TextView
+        android:id="@+id/mailSender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_toLeftOf="@+id/mailCount"
+        android:layout_alignParentLeft="true"
+        android:text="@string/name"
+        android:textSize="15.0sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/mailSnippet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/mailSender"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/mailSender"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/mailTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/time"
+        android:textColor="@color/gray" />
+
+    <TextView
+        android:id="@+id/mailCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mailSnippet"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/mailTime"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:maxLines="1"
+        android:textSize="13sp" />
+
+</RelativeLayout>

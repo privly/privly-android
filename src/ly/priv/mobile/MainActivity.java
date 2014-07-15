@@ -28,6 +28,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.google.api.services.gmail.model.Thread;
 
 /**
  * This activity holds all the fragments which are intended to have a navigation
@@ -45,6 +46,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
 	private static final String TAG = "MainActivity";
+	Thread currentThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -520,4 +522,13 @@ public class MainActivity extends SherlockFragmentActivity {
 		mTitle = title;
 		getSupportActionBar().setTitle(mTitle);
 	}
+	
+	public void setCurrentThread(Thread t){
+		currentThread = t;
+	}
+	
+	public Thread getCurrentThread(){
+		return currentThread;
+	}
+
 }
