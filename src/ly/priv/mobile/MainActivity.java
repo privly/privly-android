@@ -46,7 +46,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
 	private static final String TAG = "MainActivity";
-	Thread currentThread;
+	EmailThreadObject currentThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -523,11 +523,11 @@ public class MainActivity extends SherlockFragmentActivity {
 		getSupportActionBar().setTitle(mTitle);
 	}
 	
-	public void setCurrentThread(Thread t){
+	public void setCurrentThread(EmailThreadObject t){
 		currentThread = t;
 	}
 	
-	public Thread getCurrentThread(){
+	public EmailThreadObject getCurrentThread(){
 		return currentThread;
 	}
 

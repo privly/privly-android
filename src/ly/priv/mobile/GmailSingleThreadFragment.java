@@ -18,7 +18,7 @@ import com.google.api.services.gmail.model.Thread;
 public class GmailSingleThreadFragment extends SherlockFragment{
 	ListView mailsListView;
 	String currentThreadId;
-	Thread currentThread;
+	EmailThreadObject currentThread;
 	ArrayList<String> messages;
 	StringBuilder builder;
 	
@@ -33,7 +33,6 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		mailsListView = (ListView) view.findViewById(R.id.lView);
 		currentThread = ((MainActivity) getActivity()).getCurrentThread();
-		currentThreadId = getArguments().getString("threadId");
 		messages = new ArrayList<String>();
 		for (Message m: currentThread.getMessages()){
 			if (m.getPayload().getMimeType().contains("multipart")){

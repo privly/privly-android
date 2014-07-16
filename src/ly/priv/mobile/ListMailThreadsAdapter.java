@@ -16,10 +16,10 @@ import com.google.api.services.gmail.model.Thread;
 public class ListMailThreadsAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
-	private ArrayList<Thread> mListThreads;
-	private Thread mailThread;
+	private ArrayList<EmailThreadObject> mListThreads;
+	private EmailThreadObject mailThread;
 
-	public ListMailThreadsAdapter(Activity activity, ArrayList<Thread> list) {
+	public ListMailThreadsAdapter(Activity activity, ArrayList<EmailThreadObject> list) {
 		this.mActivity = activity;
 		this.mListThreads = list;
 	}
@@ -54,37 +54,10 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 		}
 
 		mailThread = mListThreads.get(position);
-		if (this.mailThread != null) {
-			//ViewHolder holder = (ViewHolder) convertView.getTag();
-			int mailCount = mailThread.getMessages().size();
-			if (mailCount!=1){
-				viewHolder.mailCount.setText(" (" + String.valueOf(mailCount) + ") ");
-			}
-//			SimpleDateFormat dateParser = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-//			SimpleDateFormat shortDate = new SimpleDateFormat("d MMM");
-//			SimpleDateFormat shortTime = new SimpleDateFormat("HH:mm");
-//			dateParser.setTimeZone(TimeZone.getDefault());
-			List<MessagePartHeader> headers = mailThread.getMessages().get(mailCount-1).getPayload().getHeaders();
-			for (MessagePartHeader m: headers){
-				if (m.getName().equals("From")){
-					viewHolder.mailSender.setText(m.getValue());
-				}
-				else if (m.getName().equals("Date")){
-					viewHolder.mailTime.setText(m.getValue());
-//					try{
-//						Date d = dateParser.parse(m.getValue());
-//						
-//						Log.d("time",(formatSameDayTimeCustom(mActivity, d.getTime()).toString()));
-//					}
-//					catch(Exception e){
-//						e.printStackTrace();
-//					}
-				}
-				else if (m.getName().equals("Subject")){
-					viewHolder.mailSnippet.setText(m.getValue());
-				}
-			}
-		}
+		viewHolder.mailCount.setText(mailThread.getMailCount());
+		viewHolder.mailSender.setText(mailThread.getMailSender());
+		viewHolder.mailSnippet.setText(mailThread.getMailSnippet());
+		viewHolder.mailTime.setText(mailThread.getMailTime());
 		return convertView;
 	}
 	

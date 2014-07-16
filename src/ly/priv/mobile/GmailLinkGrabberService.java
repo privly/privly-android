@@ -39,6 +39,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListThreadsResponse;
+import com.google.api.services.gmail.model.MessagePartHeader;
 import com.google.api.services.gmail.model.Thread;
 
 /**
@@ -61,12 +62,13 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	String accountName;
 	Gmail mailService;
 	ListView threadListView;
-	ArrayList<Thread> mailThreads;
+	ArrayList<EmailThreadObject> mailThreads;
 	ProgressBar progressBar;
 	OnItemClickListener listener;
 	Thread currentThread;
 	SharedPreferences sharedPrefs;
 	String prefsName;
+	ListMailThreadsAdapter threadAdapter;
 
 	public GmailLinkGrabberService() {
 
@@ -76,8 +78,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.activity_list, container,
-				false);
+		View view = inflater.inflate(R.layout.activity_list, container, false);
 		threadListView = (ListView) view.findViewById(R.id.lView);
 		progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		prefsName = new Values(getActivity()).getPrefsName();
@@ -87,43 +88,47 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				Thread thread = mailThreads.get(arg2);
+				EmailThreadObject thread = mailThreads.get(arg2);
 				Fragment mailThread = new GmailSingleThreadFragment();
 				Bundle args = new Bundle();
 				((MainActivity) getActivity()).setCurrentThread(thread);
 				mailThread.setArguments(args);
-				FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+				FragmentTransaction transaction = getActivity()
+						.getSupportFragmentManager().beginTransaction();
 				transaction.replace(R.id.container, mailThread);
 				transaction.addToBackStack(null);
 				transaction.commit();
 			}
-			
+
 		});
-		
-		// Shows Account Picker with google accounts if not stored in shared preferences
+
+		// Shows Account Picker with google accounts if not stored in shared
+		// preferences
 		Boolean accountFound = false;
-		if (sharedPrefs.contains("gmailId")){
-			Account[] accounts = AccountManager.get(getActivity()).getAccounts();
+		if (sharedPrefs.contains("gmailId")) {
+			Account[] accounts = AccountManager.get(getActivity())
+					.getAccounts();
 			accountName = sharedPrefs.getString("gmailId", null);
-			for (Account a: accounts){
-				if (a.name.equals(accountName)){
-					accountFound = true; 
+			for (Account a : accounts) {
+				if (a.name.equals(accountName)) {
+					accountFound = true;
 					progressBar.setVisibility(View.VISIBLE);
 					new getAuthToken().execute();
 				}
 			}
 		}
 		if (!accountFound) {
-			Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null,
-				new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, true,
-				null, null, null, null);
+			Intent googlePicker = AccountPicker.newChooseAccountIntent(null,
+					null, new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE },
+					true, null, null, null, null);
 			startActivityForResult(googlePicker, 1);
 		}
-			
+
 		return view;
 	}
 
-	// Gets selected email account and runs getAuthToken AsyncTask for selected account
+	// Gets selected email account and runs getAuthToken AsyncTask for selected
+	// account
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -136,23 +141,27 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			new getAuthToken().execute();
 		}
 	}
-	
-	// Gets oauth2 token using Play Services SDK and runs connectIMAP task after receiving token
+
+	// Gets oauth2 token using Play Services SDK and runs connectIMAP task after
+	// receiving token
 	public class getAuthToken extends AsyncTask<Void, Void, List<Thread>> {
 
 		@Override
 		protected List<Thread> doInBackground(Void... params) {
 			try {
-				String token = GoogleAuthUtil.getToken(getActivity(), accountName,
-						GMAIL_SCOPE);
-				GoogleCredential credential = new GoogleCredential().setAccessToken(token);
+				String token = GoogleAuthUtil.getToken(getActivity(),
+						accountName, GMAIL_SCOPE);
+				GoogleCredential credential = new GoogleCredential()
+						.setAccessToken(token);
 				HttpTransport httpTransport = new NetHttpTransport();
-			    JsonFactory jsonFactory = new JacksonFactory();
-			    mailService = new Gmail.Builder(httpTransport, jsonFactory, credential).setApplicationName(APP_NAME).build();
-			    ListThreadsResponse threadsResponse;
-			    List<Thread> threads =  null;
+				JsonFactory jsonFactory = new JacksonFactory();
+				mailService = new Gmail.Builder(httpTransport, jsonFactory,
+						credential).setApplicationName(APP_NAME).build();
+				ListThreadsResponse threadsResponse;
+				List<Thread> threads = null;
 				try {
-					threadsResponse = mailService.users().threads().list("me").execute();
+					threadsResponse = mailService.users().threads().list("me")
+							.execute();
 					threads = threadsResponse.getThreads();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -172,61 +181,80 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		@Override
 		protected void onPostExecute(List<Thread> result) {
 			if (result != null) {
-				new getThreads().execute(result);
-			} else {
-				Log.d("token", "is null");
+				generateBatch(result);
 			}
 		}
 
 	}
-	
-	public class getThreads extends AsyncTask<List<Thread>, Void, ArrayList<Thread>>{
+
+	//async task to execute batch request that gets all threads
+	public class getThreads extends
+			AsyncTask<BatchRequest, Void, Void> {
 
 		@Override
-		protected void onPreExecute(){
-			mailThreads = new ArrayList<Thread>();
-		}
-		
-		@Override
-		protected ArrayList<Thread> doInBackground(List<Thread>... params) {
-			BatchRequest b = mailService.batch();
-			JsonBatchCallback<Thread> bc = new JsonBatchCallback<Thread>() {
-
-				@Override
-				public void onSuccess(Thread t, HttpHeaders responseHeaders)
-						throws IOException {
-					// TODO Auto-generated method stub
-					mailThreads.add(t);
-				}
-
-				@Override
-				public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders)
-						throws IOException {
-					// TODO Auto-generated method stub
-					
-				}
-			};
+		protected Void doInBackground(
+				BatchRequest... params) {
 			try {
-				for (Thread thread: params[0]){
-					mailService.users().threads().get("me", thread.getId()).queue(b, bc);
-				}
-				b.execute();
+				params[0].execute();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			return mailThreads;
+			return null;
 		}
-		
+
 		@Override
-		protected void onPostExecute(ArrayList<Thread> threads) {
-			if (threads != null) {
-				progressBar.setVisibility(View.GONE);
-				ListMailThreadsAdapter threadAdapter = new ListMailThreadsAdapter(getActivity(), threads);
-				threadListView.setAdapter(threadAdapter);
-			} else {
-				Log.d("token", "is null");
+		protected void onPostExecute(Void threads) {
+			progressBar.setVisibility(View.GONE);
+			threadAdapter.notifyDataSetChanged();
+		}
+
+	}
+
+	//generate batch request and execute async task to get all threads in single request
+	public void generateBatch(List<Thread> threadsList) {
+		BatchRequest b = mailService.batch();
+		mailThreads = new ArrayList<EmailThreadObject>();
+		threadAdapter = new ListMailThreadsAdapter(
+				getActivity(), mailThreads);
+		threadListView.setAdapter(threadAdapter);
+		JsonBatchCallback<Thread> bc = new JsonBatchCallback<Thread>() {
+
+			@Override
+			public void onSuccess(Thread t, HttpHeaders responseHeaders)
+					throws IOException {
+				int mailCount = t.getMessages().size();
+				EmailThreadObject thread = new EmailThreadObject();
+				thread.setMailCount(" (" + String.valueOf(mailCount) + ") ");
+				thread.setMessages(t.getMessages());
+				thread.setId(t.getId());
+				List<MessagePartHeader> headers = t.getMessages()
+						.get(mailCount - 1).getPayload().getHeaders();
+				for (MessagePartHeader m : headers) {
+					if (m.getName().equals("From")) {
+						thread.setMailSender(m.getValue());
+					} else if (m.getName().equals("Date")) {
+						thread.setMailTime(m.getValue());
+					} else if (m.getName().equals("Subject")) {
+						thread.setMailSnippet(m.getValue());
+					}
+				}
+				mailThreads.add(thread);
+			}
+
+			@Override
+			public void onFailure(GoogleJsonError e, HttpHeaders responseHeaders)
+					throws IOException {
+				
+			}
+		};
+
+		for (Thread thread : threadsList) {
+			try {
+				mailService.users().threads().get("me", thread.getId()).queue(b, bc);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
 		}
-		
+		new getThreads().execute(b);
 	}
 }
