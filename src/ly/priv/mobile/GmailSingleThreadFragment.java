@@ -32,7 +32,8 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		mailsListView = (ListView) view.findViewById(R.id.lView);
-		currentThread = ((MainActivity) getActivity()).getCurrentThread();
+		currentThread = getArguments().getParcelable("currentThread");
+		//currentThread = ((MainActivity) getActivity()).getCurrentThread();
 		messages = new ArrayList<String>();
 		for (Message m: currentThread.getMessages()){
 			if (m.getPayload().getMimeType().contains("multipart")){

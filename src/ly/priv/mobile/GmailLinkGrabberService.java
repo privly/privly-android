@@ -92,6 +92,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 				Fragment mailThread = new GmailSingleThreadFragment();
 				Bundle args = new Bundle();
 				((MainActivity) getActivity()).setCurrentThread(thread);
+				args.putParcelable("currentThread", thread);
 				mailThread.setArguments(args);
 				FragmentTransaction transaction = getActivity()
 						.getSupportFragmentManager().beginTransaction();

@@ -22,9 +22,27 @@ public class EmailThreadObject implements Parcelable{
 	public void setId(String id) {
 		Id = id;
 	}
-
+	
 	public EmailThreadObject(){
 		
+	}
+	
+	public EmailThreadObject(Parcel in){
+		this.mailCount = in.readString();
+		this.mailSender = in.readString();
+		this.mailSnippet = in.readString();
+		this.mailTime = in.readString();
+		this.Id = in.readString();
+		in.readList(messages, null);
+	}
+
+	public EmailThreadObject(String mailSnippet, String mailCount, String mailTime, String mailSender, String Id, List<Message> messages){
+		this.mailSnippet = mailSnippet;
+		this.mailCount =  mailCount;
+		this.mailSender = mailSender;
+		this.mailTime =  mailTime;
+		this.Id =  Id;
+		this.messages =  messages;
 	}
 	
 	public List<Message> getMessages() {
@@ -76,8 +94,28 @@ public class EmailThreadObject implements Parcelable{
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
-		
+		dest.writeString(mailCount);
+		dest.writeString(mailSender);
+		dest.writeString(mailSnippet);
+		dest.writeString(mailTime);
+		dest.writeString(Id);
+		dest.writeList(messages);
 	}
 	
+	public static final Parcelable.Creator<EmailThreadObject> Creator = new Parcelable.Creator<EmailThreadObject>() {
+
+		@Override
+		public EmailThreadObject createFromParcel(Parcel source) {
+			// TODO Auto-generated method stub
+			return new EmailThreadObject(source);
+		}
+
+		@Override
+		public EmailThreadObject[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return new EmailThreadObject[size];
+		}
+		
+	};
 	
 }
