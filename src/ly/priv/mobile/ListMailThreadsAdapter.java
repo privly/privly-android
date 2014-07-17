@@ -61,16 +61,6 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 		return convertView;
 	}
 	
-//	public static final CharSequence formatSameDayTimeCustom(Context context, long then) {
-//	    if (DateUtils.isToday(then)) {
-//	        return android.text.format.DateFormat.getTimeFormat(context).format(new Date(then));
-//	    }
-//	    else {
-//	        final String format = android.text.format.DateFormat.getDateFormat(context).toString();
-//	        return new SimpleDateFormat(format).format(new Date(then));
-//	    }
-//	}
-
 	static class ViewHolder {
 		protected TextView mailSnippet;
 		protected TextView mailSender;

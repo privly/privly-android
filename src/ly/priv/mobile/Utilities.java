@@ -218,6 +218,32 @@ public class Utilities {
 		}
 		return simpleDateFormat.format(tDate.getTime());
 	}
+	
+	public static String getTimeForGmail(String time) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+		Date date = null;
+		try {
+			date = simpleDateFormat.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar fDate = Calendar.getInstance();
+		fDate.setTime(date);
+		Calendar curDate = Calendar.getInstance();
+		if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+			if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
+					.get(Calendar.DAY_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("HH:mm");
+			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
+					.get(Calendar.WEEK_OF_YEAR)) {
+				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+			} else
+				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+		} else {
+			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+		}
+		return simpleDateFormat.format(fDate.getTime());
+	}
 
 	/**
 	 * Check for Null or Whitespace

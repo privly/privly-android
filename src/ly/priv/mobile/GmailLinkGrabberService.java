@@ -1,12 +1,15 @@
 package ly.priv.mobile;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,7 +241,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 					if (m.getName().equals("From")) {
 						thread.setMailSender(m.getValue());
 					} else if (m.getName().equals("Date")) {
-						thread.setMailTime(m.getValue());
+						thread.setMailTime(Utilities.getTimeForGmail(m.getValue()));
 					} else if (m.getName().equals("Subject")) {
 						thread.setMailSnippet(m.getValue());
 					}

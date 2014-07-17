@@ -46,16 +46,12 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 						for (MessagePart part2: part.getParts()){
 							if (part2.getMimeType().equals("text/plain")){
 								builder.append(new String(Base64.decodeBase64(part2.getBody().getData())));
-//								Log.d("part2", 
-//										new String(Base64.decodeBase64(part2.getBody().getData())));
 							}
 						}
 					}
 					
 					else if (part.getMimeType().equals("text/plain")){
 						builder.append(new String(Base64.decodeBase64(part.getBody().getData())));
-							//Log.d("part", 
-									//new String(Base64.decodeBase64(part.getBody().getData())));
 					}
 				}
 				messages.add(builder.toString());
@@ -63,14 +59,9 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 			//if mimetype is not multipart, there is just one part for each message
 			else {
 				messages.add(new String(Base64.decodeBase64(m.getPayload().getBody().getData())));
-//				Log.d(m.getPayload().getMimeType(), 
-//						new String(Base64.decodeBase64(m.getPayload().getBody().getData())));
 			}
 		}
 
-//		for (int i=0; i< messages.size();i++){
-//			Log.d(i+"",messages.get(i));
-//		}
 		mailsListView.setAdapter(new ListSingleMailThreadAdapter(getActivity(), messages));
 		mailsListView.setOnItemClickListener(new OnItemClickListener() {
 
