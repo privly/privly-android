@@ -2,18 +2,21 @@ package ly.priv.mobile;
 
 import java.util.ArrayList;
 
+import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
-import com.google.api.services.gmail.model.Thread;
 
 public class GmailSingleThreadFragment extends SherlockFragment{
 	ListView mailsListView;
@@ -69,7 +72,31 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 //			Log.d(i+"",messages.get(i));
 //		}
 		mailsListView.setAdapter(new ListSingleMailThreadAdapter(getActivity(), messages));
-	
+		mailsListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(messages
+						.get(position));
+				if (listOfUrls.size() > 0) {
+					FragmentTransaction transaction = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ShowContentFragment showContent = new ShowContentFragment();
+					Bundle bundle = new Bundle();
+					bundle.putStringArrayList("listOfLinks", listOfUrls);
+					showContent.setArguments(bundle);
+					transaction.replace(R.id.container, showContent);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				} else {
+					Toast.makeText(getActivity(),
+							R.string.message_not_containe_privly_link,
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 		return view;
 	}
 }
