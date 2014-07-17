@@ -110,15 +110,21 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			Account[] accounts = AccountManager.get(getActivity())
 					.getAccounts();
 			accountName = sharedPrefs.getString("gmailId", null);
+			Log.d("accountName",accountName);
 			for (Account a : accounts) {
-				if (a.name.equals(accountName)) {
+				Log.d(a.name,a.type);
+				if (a.type.equals(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE) && a.name.equals(accountName)) {
+					Log.d("efwef","wefwf");
 					accountFound = true;
 					progressBar.setVisibility(View.VISIBLE);
 					new getAuthToken().execute();
+					break;
 				}
 			}
 		}
+		
 		if (!accountFound) {
+			Log.d("get","Authnotfound");
 			Intent googlePicker = AccountPicker.newChooseAccountIntent(null,
 					null, new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE },
 					true, null, null, null, null);
@@ -206,6 +212,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		@Override
 		protected void onPostExecute(Void threads) {
 			progressBar.setVisibility(View.GONE);
+			Log.d("notify","dataset changed");
 			threadAdapter.notifyDataSetChanged();
 		}
 
@@ -240,6 +247,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 					}
 				}
 				mailThreads.add(thread);
+				Log.d("added","to list"+mailCount);
 			}
 
 			@Override
