@@ -4,6 +4,6 @@
     <item
         android:id="@+id/logout"
         android:icon="@drawable/settings"
-        android:title="@string/logoutFacebook"/>
+        android:title="@string/logout_facebook"/>
 
 </menu>

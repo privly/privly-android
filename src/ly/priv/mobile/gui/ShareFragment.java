@@ -1,5 +1,8 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -21,11 +24,11 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class Share extends SherlockFragment {
+public class ShareFragment extends SherlockFragment {
 	/** Called when the activity is first created. */
-	String newPrivlyUrl;
+	private String mNewPrivlyUrl;
 
-	public Share() {
+	public ShareFragment() {
 
 	}
 
@@ -43,13 +46,13 @@ public class Share extends SherlockFragment {
 		// Receive new Privly URL from intent
 
 		Bundle bundle = getArguments();
-		newPrivlyUrl = bundle.getString("newPrivlyUrl");
+		mNewPrivlyUrl = bundle.getString("newPrivlyUrl");
 		WebView urlWebview = (WebView) view.findViewById(R.id.urlWebview);
 		/**
 		 * Load HTML content of the form <a href="http://priv.ly#params">
 		 * http://priv.ly#params </a> in the WebView
 		 */
-		String html = Utilities.getShareableHTML(newPrivlyUrl);
+		String html = Utilities.getShareableHTML(mNewPrivlyUrl);
 		urlWebview.loadData(html, "text/html", "utf-8");
 
 		/**
@@ -64,10 +67,10 @@ public class Share extends SherlockFragment {
 				// TODO Auto-generated method stub
 				final Intent intent = new Intent(Intent.ACTION_SEND);
 				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_TEXT, newPrivlyUrl);
+				intent.putExtra(Intent.EXTRA_TEXT, mNewPrivlyUrl);
 				try {
 					startActivity(Intent.createChooser(intent,
-							"Share Privly Url"));
+							getString(R.string.share_privly_url)));
 				} catch (android.content.ActivityNotFoundException ex) {
 					// (handle error)
 				}
@@ -90,7 +93,7 @@ public class Share extends SherlockFragment {
 			Values values = new Values(getActivity());
 			values.setAuthToken(null);
 			values.setRememberMe(false);
-			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			Intent gotoLogin = new Intent(getActivity(), LoginActivity.class);
 			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(gotoLogin);

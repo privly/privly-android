@@ -1,15 +1,16 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
+import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.JsObject;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Values;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -45,63 +47,61 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class ShowContent extends SherlockFragment {
+public class ShowContentFragment extends SherlockFragment {
 	/** Called when the activity is first created. */
 	private static final String TAG = "ShowContent";
-	private GestureDetector gestureDetector;
-	View.OnTouchListener gestureListener;
+	private GestureDetector mGestureDetector;
+	private View.OnTouchListener mGestureListener;
 	public int swipeMinDistance;
 	public int swipeThresholdVelocity;
 	public int swipeMaxOffPath;
-	WebView urlContentWebView;
-	Cursor cursor;
-	String contentSource;
+	private WebView mUrlContentWebView;
 	private ArrayList<String> mListOfLinks;
 	private Integer mId = 0;
 
-	public ShowContent() {
+	public ShowContentFragment() {
 
 	}
 
-	@SuppressLint("SetJavaScriptEnabled")
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		contentSource = getArguments().getString("contentSource");
-		getActivity().setTitle(contentSource);
+		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setTitle(R.string.show_content);
 		mListOfLinks = getArguments().getStringArrayList("listOfLinks");
 		View webView = view.findViewById(R.id.urlContentWebview);
-		urlContentWebView = (WebView) webView;
+		mUrlContentWebView = (WebView) webView;
 		setHasOptionsMenu(true);
-		urlContentWebView.getSettings().setJavaScriptEnabled(true);
+		mUrlContentWebView.getSettings().setJavaScriptEnabled(true);
 
 		// Add JavaScript Interface to the WebView. This enables the JS to
 		// access Java functions defined in the JsObject Class
-		urlContentWebView.addJavascriptInterface(new JsObject(getActivity()),
+		mUrlContentWebView.addJavascriptInterface(new JsObject(getActivity()),
 				"androidJsBridge");
 
 		// Sets whether JavaScript running in the context of a file scheme URL
 		// should be allowed to access content from any origin. This includes
 		// access to content from other file scheme URLs.
 		if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN)
-			urlContentWebView.getSettings()
+			mUrlContentWebView.getSettings()
 					.setAllowUniversalAccessFromFileURLs(true);
 
 		// Setup WebView to detect swipes.
-		gestureDetector = new GestureDetector(getActivity(),
+		mGestureDetector = new GestureDetector(getActivity(),
 				new SwipeGestureDetector());
-		gestureListener = new View.OnTouchListener() {
+		mGestureListener = new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				return gestureDetector.onTouchEvent(event);
+				return mGestureDetector.onTouchEvent(event);
 			}
 		};
-		webView.setOnTouchListener(gestureListener);
-		
+		webView.setOnTouchListener(mGestureListener);
+
 		loadUrlInWebview(mId);
-		Log.d("fragments", "Inside Show");
+		Log.d(TAG, "Inside Show");
 		return view;
 	}
 
@@ -124,34 +124,38 @@ public class ShowContent extends SherlockFragment {
 				HashMap<String, Integer> valuesForSwipe = values
 						.getValuesForSwipe();
 				if (Math.abs(e1.getY() - e2.getY()) > valuesForSwipe
-						.get("swipeMaxOffPath"))
+						.get(ConstantValues.SWIPE_MAX_OFF_PATH))
 					return false;
 				if (e1.getX() - e2.getX() > valuesForSwipe
-						.get("swipeMinDistance")
+						.get(ConstantValues.SWIPE_MIN_DISTANCE)
 						&& Math.abs(velocityX) > valuesForSwipe
-								.get("swipeThresholdVelocity")) {
+								.get(ConstantValues.SWIPE_THRESHOLD_VELOCITY)) {
 					if (mId < mListOfLinks.size() - 1) {
 						mId++;
 						loadUrlInWebview(mId);
-						Toast.makeText(getActivity(), "Loading Next Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.loading_next_post),
 								Toast.LENGTH_SHORT).show();
 					} else {
-						Toast.makeText(getActivity(), "This is a last Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.this_is_a_last_post),
 								Toast.LENGTH_SHORT).show();
 					}
 
 				} else if (e2.getX() - e1.getX() > valuesForSwipe
-						.get("swipeMinDistance")
+						.get(ConstantValues.SWIPE_MIN_DISTANCE)
 						&& Math.abs(velocityX) > valuesForSwipe
-								.get("swipeThresholdVelocity")) {
+								.get(ConstantValues.SWIPE_THRESHOLD_VELOCITY)) {
 
 					if (mId > 0) {
 						mId--;
-						Toast.makeText(getActivity(), "Loading Previous Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.loading_previous_post),
 								Toast.LENGTH_SHORT).show();
 						loadUrlInWebview(mId);
 					} else {
-						Toast.makeText(getActivity(), "This is a first Post",
+						Toast.makeText(getActivity(),
+								getString(R.string.this_is_a_first_post),
 								Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -204,7 +208,7 @@ public class ShowContent extends SherlockFragment {
 			urlForExtension = "PrivlyApplications/PlainPost/show.html?privlyOriginalURL="
 					+ url;
 		}
-		urlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
+		mUrlContentWebView.loadUrl("file:///android_asset/" + urlForExtension);
 	}
 
 	/**
@@ -221,8 +225,8 @@ public class ShowContent extends SherlockFragment {
 	/**
 	 * Item click listener for options menu.
 	 * <p>
-	 * Redirect to {@link ly.priv.mobile.Settings} Or
-	 * {@link ly.priv.mobile.Login}
+	 * Redirect to {@link ly.priv.mobile.gui.SettingsActivity} Or
+	 * {@link ly.priv.mobile.gui.LoginActivity}
 	 * </p>
 	 */
 	@Override
@@ -234,7 +238,7 @@ public class ShowContent extends SherlockFragment {
 			Values values = new Values(getActivity());
 			values.setAuthToken(null);
 			values.setRememberMe(false);
-			Intent gotoLogin = new Intent(getActivity(), Login.class);
+			Intent gotoLogin = new Intent(getActivity(), LoginActivity.class);
 			gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 					| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 			startActivity(gotoLogin);

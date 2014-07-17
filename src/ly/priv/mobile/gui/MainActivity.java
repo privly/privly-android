@@ -1,8 +1,16 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import ly.priv.mobile.EmailThreadObject;
+import ly.priv.mobile.GmailLinkGrabberService;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
+import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
+import ly.priv.mobile.grabbers.FaceBookGrabberService;
+import ly.priv.mobile.grabbers.TwitterGrabberService;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -12,9 +20,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
-import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
-import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -22,13 +27,11 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.api.services.gmail.model.Thread;
 
 /**
  * This activity holds all the fragments which are intended to have a navigation
@@ -39,18 +42,19 @@ import com.google.api.services.gmail.model.Thread;
  * 
  */
 public class MainActivity extends SherlockFragmentActivity {
+	private static final String TAG = "MainActivity";
 	Uri uri;
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle hamburger;
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
-	private static final String TAG = "MainActivity";
 	EmailThreadObject currentThread;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate MainActivity");
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		getSupportActionBar().setDisplayOptions(
@@ -83,12 +87,12 @@ public class MainActivity extends SherlockFragmentActivity {
 		ArrayList<DrawerObject> drawerItems = new ArrayList<DrawerObject>();
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
-		obj.setTitle("Index");
+		obj.setTitle(getString(R.string.index));
 		drawerItems.add(obj);
 
 		obj = new DrawerObject();
 		obj.setType("header");
-		obj.setSectionheader("Create New Privly Content");
+		obj.setSectionheader(getString(R.string.createListViewLabel));
 		drawerItems.add(obj);
 
 		for (String s : createList) {
@@ -100,7 +104,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		obj = new DrawerObject();
 		obj.setType("header");
-		obj.setSectionheader("Read Privly Content");
+		obj.setSectionheader(getString(R.string.readListViewLabel));
 		drawerItems.add(obj);
 
 		for (String s : readList) {
@@ -115,34 +119,28 @@ public class MainActivity extends SherlockFragmentActivity {
 		mDrawerList.setAdapter(drawerAdapter);
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		Log.d(TAG, "onCreate MainActivity");
 		uri = getIntent().getData();
 		if (uri != null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new MicroblogListPostsFragment())
-					.commit();
+					.add(R.id.container, new TwitterGrabberService()).commit();
 		} else {
 			if (savedInstanceState == null) {
 				getSupportFragmentManager().beginTransaction()
-						.add(R.id.container, new Index()).commit();
+						.add(R.id.container, new IndexFragment()).commit();
 			}
 		}
-//
-//		// loads 'Home' as the default fragment
-//		if (savedInstanceState == null) {
-//			getSupportFragmentManager().beginTransaction()
-//					.add(R.id.container, new Index()).commit();
-//		}
 	}
-	
 
 	@Override
 	public void onBackPressed() {
 		Fragment fragment = getSupportFragmentManager().findFragmentById(
 				R.id.container);
-		if (fragment instanceof ListUsersFragment) {
+		if (fragment instanceof ListUsersFragment
+				|| fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.container, new Index()).commit();
+					.replace(R.id.container, new IndexFragment()).commit();
+		} else if (fragment instanceof IndexFragment) {
+			finish();
 		} else {
 			super.onBackPressed();
 		}
@@ -202,7 +200,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				long id) {
 			if (position == 0) {
 				mDrawerLayout.closeDrawers();
-				Fragment index = new Index();
+				Fragment index = new IndexFragment();
 				Bundle bundle = new Bundle();
 				bundle.putBoolean("isRedirected", true);
 				index.setArguments(bundle);
@@ -216,7 +214,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				if (Utilities
 						.isDataConnectionAvailable(getApplicationContext())) {
 					mDrawerLayout.closeDrawers();
-					Fragment gotoCreateNewPost = new NewPost();
+					Fragment gotoCreateNewPost = new NewPostFragment();
 					Bundle bundle = new Bundle();
 					bundle.putString("JsAppName", createList.get(position - 2));
 					gotoCreateNewPost.setArguments(bundle);
@@ -227,8 +225,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					transaction.commit();
 				} else
 					Utilities.showToast(getApplicationContext(),
-							"Oops! Seems like there\'s no data connection.",
-							true);
+							getString(R.string.no_internet_connection), true);
 			}
 
 			if (position == 2 + createList.size() + 1) {
@@ -251,8 +248,7 @@ public class MainActivity extends SherlockFragmentActivity {
 			}
 			if (position == 2 + createList.size() + 3) {
 				mDrawerLayout.closeDrawers();
-				MicroblogListPostsFragment twitGrabber = 
-						new MicroblogListPostsFragment();
+				TwitterGrabberService twitGrabber = new TwitterGrabberService();
 				FragmentTransaction transaction = getSupportFragmentManager()
 						.beginTransaction();
 				transaction.replace(R.id.container, twitGrabber, "Twitter");
@@ -522,13 +518,4 @@ public class MainActivity extends SherlockFragmentActivity {
 		mTitle = title;
 		getSupportActionBar().setTitle(mTitle);
 	}
-	
-	public void setCurrentThread(EmailThreadObject t){
-		currentThread = t;
-	}
-	
-	public EmailThreadObject getCurrentThread(){
-		return currentThread;
-	}
-
 }

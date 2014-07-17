@@ -1,9 +1,13 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui;
 
 import java.util.ArrayList;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,8 +26,6 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,14 +46,13 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class Login extends SherlockActivity {
+public class LoginActivity extends SherlockActivity {
 	/** Called when the activity is first created. */
-	String userName, password, loginResponse, contentServerDomain;
-	Button loginButton;
-	EditText unameEditText, pwdEditText;
-	SharedPreferences sharedPrefs;
-	CheckBox rememberMeCheckBox;
-	Values values;
+	private String mUserName, mPassword, mLoginResponse, mContentServerDomain;
+	private Button mLoginButton;
+	private EditText mUnameEditText, mPwdEditText;
+	private CheckBox mRememberMeCheckBox;
+	private Values mValues;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,24 +66,20 @@ public class Login extends SherlockActivity {
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");
 		loginHeader.setTypeface(lobster);
-		values = new Values(getApplicationContext());
-		contentServerDomain = values.getContentServerDomain();
-
-		String prefsName = values.getPrefsName();
-		sharedPrefs = getSharedPreferences(prefsName, 0);
+		mValues = new Values(getApplicationContext());
+		mContentServerDomain = mValues.getContentServerDomain();
 
 		// If no content server has been defined,
 		// the user is taken to the settings screen where he needs to add it.
-		String authToken = values.getAuthToken();
-		if (contentServerDomain == null) {
-			Intent settings_it = new Intent(this, Settings.class);
+		String authToken = mValues.getAuthToken();
+		if (mContentServerDomain == null) {
+			Intent settings_it = new Intent(this, SettingsActivity.class);
 			startActivity(settings_it);
 			finish();
 		} else {
-
 			// Checks if the user selected the Remember Me option while loggin
 			// in. If Yes, Redirect to Home Screen.
-			Boolean rememberMe = values.getRememberMe();
+			Boolean rememberMe = mValues.getRememberMe();
 			if (rememberMe && authToken != null) {
 				Intent gotoHome = new Intent(getApplicationContext(),
 						MainActivity.class);
@@ -93,13 +90,13 @@ public class Login extends SherlockActivity {
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(gotoHome);
 			} else {
-				unameEditText = (EditText) findViewById(R.id.uname);
-				pwdEditText = (EditText) findViewById(R.id.pwd);
-				loginButton = (Button) findViewById(R.id.login);
+				mUnameEditText = (EditText) findViewById(R.id.uname);
+				mPwdEditText = (EditText) findViewById(R.id.pwd);
+				mLoginButton = (Button) findViewById(R.id.login);
 
 				// Set OnClickListener for Login Button. Executes a new
 				// CheckLoginTask()
-				loginButton.setOnClickListener(new View.OnClickListener() {
+				mLoginButton.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
@@ -108,46 +105,46 @@ public class Login extends SherlockActivity {
 						// authentication request
 						if (Utilities
 								.isDataConnectionAvailable(getApplicationContext())) {
-							userName = unameEditText.getText().toString();
-							password = pwdEditText.getText().toString();
-							rememberMeCheckBox = (CheckBox) findViewById(R.id.remember_me);
+							mUserName = mUnameEditText.getText().toString();
+							mPassword = mPwdEditText.getText().toString();
+							mRememberMeCheckBox = (CheckBox) findViewById(R.id.remember_me);
 
 							// Remove any unwanted spaces before and after the
 							// EmailID and Password
-							userName = userName.trim();
-							password = password.trim();
+							mUserName = mUserName.trim();
+							mPassword = mPassword.trim();
 
 							// Check if Email is Valid using RegEx and Password
 							// and is not null
-							if (!Utilities.isValidEmail(userName))
-								Utilities.showToast(getApplicationContext(),
-										"Please Enter a valid EMail ID", false);
-							else if (password.equalsIgnoreCase(""))
-								Utilities.showToast(getApplicationContext(),
-										"Please Enter a valid Password", false);
+							if (!Utilities.isValidEmail(mUserName))
+								Utilities
+										.showToast(
+												getApplicationContext(),
+												getString(R.string.please_enter_a_valid_email_id),
+												false);
+							else if (mPassword.equalsIgnoreCase(""))
+								Utilities
+										.showToast(
+												getApplicationContext(),
+												getString(R.string.please_enter_a_valid_password),
+												false);
 							else {
 								CheckLoginTask task = new CheckLoginTask();
-								task.execute(contentServerDomain
+								task.execute(mContentServerDomain
 										+ "/token_authentications.json");
-
+								mValues.setUserName(mUserName);
 								// Flag to check if Remember me option was
 								// selected
-								Editor editor = sharedPrefs.edit();
-								editor.putString("uname", userName);
-								if (rememberMeCheckBox.isChecked()) {
-									editor.putBoolean("remember_me", true);
-									editor.commit();
+								if (mRememberMeCheckBox.isChecked()) {
+									mValues.setRememberMe(true);
 								} else {
-									editor.putBoolean("remember_me", false);
-									editor.commit();
+									mValues.setRememberMe(false);
 								}
 							}
 						} else
-							Utilities
-									.showToast(
-											getApplicationContext(),
-											"Oops! Seems like there\'s no Data connection.",
-											true);
+							Utilities.showToast(getApplicationContext(),
+									getString(R.string.no_internet_connection),
+									true);
 					}
 				});
 			}
@@ -167,7 +164,7 @@ public class Login extends SherlockActivity {
 
 		switch (item.getItemId()) {
 		case R.id.settings:
-			Intent gotoSettings = new Intent(this, Settings.class);
+			Intent gotoSettings = new Intent(this, SettingsActivity.class);
 			startActivity(gotoSettings);
 			return true;
 		default:
@@ -177,21 +174,21 @@ public class Login extends SherlockActivity {
 
 	/**
 	 * Verify user credentials and login. Redirects to
-	 * {@link ly.priv.mobile.Home} Home Activity after successful login.
+	 * {@link ly.priv.mobile.gui.IndexFragment} Index Activity after successful
+	 * login.
 	 * 
 	 * @author Shivam Verma
 	 * 
 	 */
 	private class CheckLoginTask extends AsyncTask<String, Void, String> {
 
-		private ProgressDialog dialog = new ProgressDialog(Login.this);
+		private ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
 		@Override
 		protected void onPreExecute() {
-
 			// Show Progress dialog
 			dialog.setCanceledOnTouchOutside(false);
-			dialog.setMessage("Logging in..");
+			dialog.setMessage(getString(R.string.logging_in_dot_dot_dot));
 			dialog.show();
 		}
 
@@ -199,13 +196,11 @@ public class Login extends SherlockActivity {
 		protected String doInBackground(String... urls) {
 			for (String url : urls) {
 				ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-
 				// NameValuePairs for POST Request
-				nameValuePairs.add(new BasicNameValuePair("email", userName));
+				nameValuePairs.add(new BasicNameValuePair("email", mUserName));
 				nameValuePairs
-						.add(new BasicNameValuePair("password", password));
+						.add(new BasicNameValuePair("password", mPassword));
 				try {
-
 					// Setting Up for a secure connection
 					HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
 					DefaultHttpClient client = new DefaultHttpClient();
@@ -225,15 +220,15 @@ public class Login extends SherlockActivity {
 					httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 					HttpResponse response = httpClient.execute(httpPost);
 					HttpEntity entity = response.getEntity();
-					loginResponse = EntityUtils.toString(entity);
+					mLoginResponse = EntityUtils.toString(entity);
 				} catch (Exception e) {
 				}
 			}
-			return loginResponse;
+			return mLoginResponse;
 		}
 
 		/**
-		 * Saves auth_token to the SharedPreferences and redirects to Home
+		 * Saves auth_token to the SharedPreferences and redirects to Index
 		 * Screen.
 		 */
 		@Override
@@ -242,7 +237,7 @@ public class Login extends SherlockActivity {
 			// Dismiss progress dialog
 			dialog.dismiss();
 			try {
-				JSONObject jObject = new JSONObject(loginResponse);
+				JSONObject jObject = new JSONObject(mLoginResponse);
 				if (!jObject.has("error") && jObject.has("auth_key")) {
 					String authToken = jObject.getString("auth_key");
 					Values values = new Values(getApplicationContext());
@@ -263,7 +258,7 @@ public class Login extends SherlockActivity {
 					Utilities
 							.showToast(
 									getApplicationContext(),
-									"Invalid Email Address or Password. Please Try Again!",
+									getString(R.string.invalid_email_address_or_password),
 									true);
 
 			} catch (Exception ex) {

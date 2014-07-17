@@ -25,23 +25,13 @@ import android.view.ViewConfiguration;
  * @author Shivam Verma
  */
 public final class Values {
-
-	String prefsName;
-	SharedPreferences sharedPrefs;
-	Context context;
+	private SharedPreferences mSharedPrefs;
+	private Context mContext;
 
 	public Values(Context callingContext) {
-		prefsName = "prefsFile";
-		context = callingContext;
-	}
-
-	/**
-	 * The name of the SharedPreference File
-	 * 
-	 * @return {String} prefs_name
-	 */
-	String getPrefsName() {
-		return prefsName;
+		mContext = callingContext;
+		mSharedPrefs = mContext.getSharedPreferences(
+				ConstantValues.APP_PREFERENCES, 0);
 	}
 
 	/**
@@ -49,9 +39,9 @@ public final class Values {
 	 * 
 	 * @return {String} baseUrl
 	 */
-	String getContentServerDomain() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		String baseUrl = sharedPrefs.getString("base_url", null);
+	public String getContentServerDomain() {
+		String baseUrl = mSharedPrefs.getString(
+				ConstantValues.APP_PREFERENCES_BASE_URL, null);
 		return baseUrl;
 	}
 
@@ -60,9 +50,9 @@ public final class Values {
 	 * 
 	 * @return {String} authToken
 	 */
-	String getAuthToken() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		String authToken = sharedPrefs.getString("auth_token", null);
+	public String getAuthToken() {
+		String authToken = mSharedPrefs.getString(
+				ConstantValues.APP_PREFERENCES_AUTH_TOKEN, null);
 		return authToken;
 	}
 
@@ -71,9 +61,9 @@ public final class Values {
 	 * 
 	 * @return {Boolean} rememberMe
 	 */
-	Boolean getRememberMe() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Boolean rememberMe = sharedPrefs.getBoolean("remember_me", false);
+	public Boolean getRememberMe() {
+		Boolean rememberMe = mSharedPrefs.getBoolean(
+				ConstantValues.APP_PREFERENCES_REMEMBER_ME, false);
 		return rememberMe;
 	}
 
@@ -82,9 +72,9 @@ public final class Values {
 	 * 
 	 * @return userName
 	 */
-	String getUserName() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		String userName = sharedPrefs.getString("uname", null);
+	public String getUserName() {
+		String userName = mSharedPrefs.getString(
+				ConstantValues.APP_PREFERENCES_UNAME, null);
 		return userName;
 	}
 
@@ -93,10 +83,20 @@ public final class Values {
 	 * 
 	 * @param authToken
 	 */
-	void setAuthToken(String authToken) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
-		editor.putString("auth_token", authToken);
+	public void setUserName(String userName) {
+		Editor editor = mSharedPrefs.edit();
+		editor.putString(ConstantValues.APP_PREFERENCES_UNAME, userName);
+		editor.commit();
+	}
+
+	/**
+	 * Save authentication token to SharedPrefs
+	 * 
+	 * @param authToken
+	 */
+	public void setAuthToken(String authToken) {
+		Editor editor = mSharedPrefs.edit();
+		editor.putString(ConstantValues.APP_PREFERENCES_AUTH_TOKEN, authToken);
 		editor.commit();
 	}
 
@@ -105,10 +105,9 @@ public final class Values {
 	 * 
 	 * @param baseUrl
 	 */
-	void setBaseUrl(String baseUrl) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
-		editor.putString("base_url", baseUrl);
+	public void setBaseUrl(String baseUrl) {
+		Editor editor = mSharedPrefs.edit();
+		editor.putString(ConstantValues.APP_PREFERENCES_BASE_URL, baseUrl);
 		editor.commit();
 	}
 
@@ -117,10 +116,10 @@ public final class Values {
 	 * 
 	 * @param rememberMe
 	 */
-	void setRememberMe(Boolean rememberMe) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
-		editor.putBoolean("remember_me", rememberMe);
+	public void setRememberMe(Boolean rememberMe) {
+		Editor editor = mSharedPrefs.edit();
+		editor.putBoolean(ConstantValues.APP_PREFERENCES_REMEMBER_ME,
+				rememberMe);
 		editor.commit();
 	}
 
@@ -130,10 +129,9 @@ public final class Values {
 	 * 
 	 * @return {Boolean}
 	 */
-	Boolean isUserVerifiedAtLogin() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getBoolean("verified_at_login", false);
-
+	public Boolean isUserVerifiedAtLogin() {
+		return mSharedPrefs.getBoolean(
+				ConstantValues.APP_PREFERENCES_VERIFIED_AT_LOGIN, false);
 	}
 
 	/**
@@ -141,10 +139,10 @@ public final class Values {
 	 * 
 	 * @param {Boolean} bool
 	 */
-	void setUserVerifiedAtLogin(Boolean bool) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
-		editor.putBoolean("verified_at_login", bool);
+	public void setUserVerifiedAtLogin(Boolean bool) {
+		Editor editor = mSharedPrefs.edit();
+		editor.putBoolean(ConstantValues.APP_PREFERENCES_VERIFIED_AT_LOGIN,
+				bool);
 		editor.commit();
 	}
 
@@ -153,14 +151,15 @@ public final class Values {
 	 * 
 	 * @return HashMap<String, Integer>
 	 */
-	HashMap<String, Integer> getValuesForSwipe() {
-
+	public HashMap<String, Integer> getValuesForSwipe() {
 		HashMap<String, Integer> swipeValues = new HashMap<String, Integer>();
-		ViewConfiguration vc = ViewConfiguration.get(context);
-		swipeValues.put("swipeMinDistance", vc.getScaledPagingTouchSlop());
-		swipeValues.put("swipeThresholdVelocity",
+		ViewConfiguration vc = ViewConfiguration.get(mContext);
+		swipeValues.put(ConstantValues.SWIPE_MIN_DISTANCE,
+				vc.getScaledPagingTouchSlop());
+		swipeValues.put(ConstantValues.SWIPE_THRESHOLD_VELOCITY,
 				vc.getScaledMinimumFlingVelocity());
-		swipeValues.put("swipeMaxOffPath", vc.getScaledMinimumFlingVelocity());
+		swipeValues.put(ConstantValues.SWIPE_MAX_OFF_PATH,
+				vc.getScaledMinimumFlingVelocity());
 		return swipeValues;
 	}
 
@@ -173,8 +172,7 @@ public final class Values {
 	 * @author Ivan Metla
 	 */
 	public void setFacebookID(String id) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
+		Editor editor = mSharedPrefs.edit();
 		editor.putString(ConstantValues.PREFERENCE_FACEBOOK_USER_ID, id);
 		editor.commit();
 	}
@@ -186,8 +184,7 @@ public final class Values {
 	 * @author Ivan Metla
 	 */
 	public String getFacebookID() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getString(
+		return mSharedPrefs.getString(
 				ConstantValues.PREFERENCE_FACEBOOK_USER_ID, "");
 	}
 
@@ -198,8 +195,7 @@ public final class Values {
 	 * @param loggedIn
 	 */
 	public void setTwitterLoggedIn(boolean loggedIn) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
+		Editor editor = mSharedPrefs.edit();
 		editor.putBoolean(ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN,
 				loggedIn);
 		editor.commit();
@@ -211,8 +207,7 @@ public final class Values {
 	 * @return Twitter Logged in
 	 */
 	public boolean getTwitterLoggedIn() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getBoolean(
+		return mSharedPrefs.getBoolean(
 				ConstantValues.PREFERENCE_TWITTER_IS_LOGGED_IN, false);
 	}
 
@@ -222,8 +217,7 @@ public final class Values {
 	 * @param token
 	 */
 	public void setTwitterOauthToken(String token) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
+		Editor editor = mSharedPrefs.edit();
 		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, token);
 		editor.commit();
 	}
@@ -234,8 +228,7 @@ public final class Values {
 	 * @return
 	 */
 	public String getTwitterOauthToken() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getString(
+		return mSharedPrefs.getString(
 				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN, "");
 	}
 
@@ -245,8 +238,7 @@ public final class Values {
 	 * @param tokenSecret
 	 */
 	public void setTwitterOauthTokenSecret(String tokenSecret) {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		Editor editor = sharedPrefs.edit();
+		Editor editor = mSharedPrefs.edit();
 		editor.putString(ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET,
 				tokenSecret);
 		editor.commit();
@@ -258,8 +250,7 @@ public final class Values {
 	 * @return
 	 */
 	public String getTwitterOauthTokenSecret() {
-		sharedPrefs = context.getSharedPreferences(prefsName, 0);
-		return sharedPrefs.getString(
+		return mSharedPrefs.getString(
 				ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, "");
 	}
 }

@@ -7,6 +7,22 @@ package ly.priv.mobile;
  * 
  */
 public class ConstantValues {
+	// Constant for Privly
+	public static String NEW_PRIVLY_URL = "newPrivlyUrl";
+	public static final String IS_REDIRECTED = "isRedirected";
+	public static final String JS_APP_NAME = "JsAppName";
+	// Constant for Privly Preferences
+	public static String APP_PREFERENCES = "prefsFile";
+	public static String APP_PREFERENCES_BASE_URL = "base_url";
+	public static String APP_PREFERENCES_AUTH_TOKEN = "auth_token";
+	public static String APP_PREFERENCES_REMEMBER_ME = "remember_me";
+	public static String APP_PREFERENCES_UNAME = "uname";
+	public static String APP_PREFERENCES_VERIFIED_AT_LOGIN = "verified_at_login";
+	// Swipe options
+	public static String SWIPE_MIN_DISTANCE = "swipeMinDistance";
+	public static String SWIPE_THRESHOLD_VELOCITY = "swipeThresholdVelocity";
+	public static String SWIPE_MAX_OFF_PATH = "swipeMaxOffPath";
+
 	// Constant for FaceBook
 	public static String PREFERENCE_FACEBOOK_USER_ID = "FacebookID";
 	// Constant for Twitter

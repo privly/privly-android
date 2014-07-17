@@ -81,7 +81,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		threadListView = (ListView) view.findViewById(R.id.lView);
 		progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
-		prefsName = new Values(getActivity()).getPrefsName();
+		prefsName = ConstantValues.APP_PREFERENCES;
 		sharedPrefs = getActivity().getSharedPreferences(prefsName, 0);
 		threadListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -91,7 +91,6 @@ public class GmailLinkGrabberService extends SherlockFragment {
 				EmailThreadObject thread = mailThreads.get(arg2);
 				Fragment mailThread = new GmailSingleThreadFragment();
 				Bundle args = new Bundle();
-				((MainActivity) getActivity()).setCurrentThread(thread);
 				args.putParcelable("currentThread", thread);
 				mailThread.setArguments(args);
 				FragmentTransaction transaction = getActivity()
@@ -112,9 +111,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			accountName = sharedPrefs.getString("gmailId", null);
 			Log.d("accountName",accountName);
 			for (Account a : accounts) {
-				Log.d(a.name,a.type);
 				if (a.type.equals(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE) && a.name.equals(accountName)) {
-					Log.d("efwef","wefwf");
 					accountFound = true;
 					progressBar.setVisibility(View.VISIBLE);
 					new getAuthToken().execute();
@@ -124,7 +121,6 @@ public class GmailLinkGrabberService extends SherlockFragment {
 		}
 		
 		if (!accountFound) {
-			Log.d("get","Authnotfound");
 			Intent googlePicker = AccountPicker.newChooseAccountIntent(null,
 					null, new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE },
 					true, null, null, null, null);
