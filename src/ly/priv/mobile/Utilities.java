@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -221,12 +222,11 @@ public class Utilities {
 	
 	public static String getTimeForGmail(String time) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+		Log.d("time", time);
 		Date date = null;
 		try {
 			date = simpleDateFormat.parse(time);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		
 		Calendar fDate = Calendar.getInstance();
 		fDate.setTime(date);
 		Calendar curDate = Calendar.getInstance();
@@ -243,6 +243,11 @@ public class Utilities {
 			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
 		}
 		return simpleDateFormat.format(fDate.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return "1800 BC";
+		}
+		
 	}
 
 	/**
