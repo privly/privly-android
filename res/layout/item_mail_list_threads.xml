@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:padding="5.0dip" >
+    android:padding="8.0dip" >
 
     <TextView
         android:id="@+id/mailSender"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="@string/time"
-        android:textColor="@color/gray" />
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/mailCount"
@@ -40,9 +40,9 @@
         android:layout_above="@+id/mailSnippet"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/mailTime"
-        android:ellipsize="end"
         android:gravity="left"
         android:maxLines="1"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        android:textColor="@color/gray" />
 
 </RelativeLayout>
