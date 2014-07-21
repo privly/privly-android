@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.api.services.gmail.model.MessagePartHeader;
 
 /**
  * Contains simple functions that should be used wherever possible.
@@ -222,7 +225,6 @@ public class Utilities {
 	
 	public static String getTimeForGmail(String time) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-		Log.d("time", time);
 		Date date = null;
 		try {
 			date = simpleDateFormat.parse(time);
@@ -259,4 +261,5 @@ public class Utilities {
 	public static boolean isNullOrWhitespace(String string) {
 		return string == null || string.isEmpty() || string.trim().isEmpty();
 	}
+	
 }

@@ -16,10 +16,10 @@ import com.google.api.services.gmail.model.Thread;
 public class ListSingleMailThreadAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
-	private ArrayList<String> mListMails;
-	private String mailText;
+	private ArrayList<SingleEmailObject> mListMails;
+	private SingleEmailObject mailObject;
 
-	public ListSingleMailThreadAdapter(Activity activity, ArrayList<String> list) {
+	public ListSingleMailThreadAdapter(Activity activity, ArrayList<SingleEmailObject> list) {
 		this.mActivity = activity;
 		this.mListMails = list;
 	}
@@ -44,17 +44,25 @@ public class ListSingleMailThreadAdapter extends BaseAdapter {
 			viewHolder = new ViewHolder();
 			viewHolder.mailBody = (TextView) convertView
 					.findViewById(R.id.mailBody);
+			viewHolder.mailSender = (TextView) convertView
+					.findViewById(R.id.mailSender);
+			viewHolder.mailTime = (TextView) convertView
+					.findViewById(R.id.mailTime);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-
-		mailText = mListMails.get(position);
-		viewHolder.mailBody.setText(mailText);
+		
+		mailObject = mListMails.get(position);
+		viewHolder.mailTime.setText(mailObject.getMailTime());
+		viewHolder.mailBody.setText(mailObject.getMailSnippet());
+		viewHolder.mailSender.setText(mailObject.getMailSender());
 		return convertView;
 	}
 
 	static class ViewHolder {
 		protected TextView mailBody;
+		protected TextView mailSender;
+		protected TextView mailTime;
 	}
 }

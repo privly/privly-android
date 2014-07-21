@@ -1,6 +1,7 @@
 package ly.priv.mobile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.Bundle;
@@ -17,13 +18,15 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
+import com.google.api.services.gmail.model.MessagePartHeader;
 
 public class GmailSingleThreadFragment extends SherlockFragment{
 	ListView mailsListView;
 	String currentThreadId;
 	EmailThreadObject currentThread;
-	ArrayList<String> messages;
+	ArrayList<SingleEmailObject> messages;
 	StringBuilder builder;
+	List<MessagePartHeader> mailHeaders;
 	
 	public GmailSingleThreadFragment(){
 		
@@ -37,8 +40,18 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 		mailsListView = (ListView) view.findViewById(R.id.lView);
 		currentThread = getArguments().getParcelable("currentThread");
 		//currentThread = ((MainActivity) getActivity()).getCurrentThread();
-		messages = new ArrayList<String>();
+		messages = new ArrayList<SingleEmailObject>();
 		for (Message m: currentThread.getMessages()){
+			SingleEmailObject mailObject = new SingleEmailObject();
+			mailHeaders = m.getPayload().getHeaders();
+			for (MessagePartHeader mHeader: mailHeaders){
+				if (mHeader.getName().equals("From")){
+					mailObject.setMailSender(mHeader.getValue());
+				}
+				else if (mHeader.getName().equals("Date")){
+					mailObject.setMailTime(Utilities.getTimeForGmail(mHeader.getValue()));
+				}
+			}
 			if (m.getPayload().getMimeType().contains("multipart")){
 				builder = new StringBuilder();
 				for (MessagePart part: m.getPayload().getParts()){
@@ -54,12 +67,13 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 						builder.append(new String(Base64.decodeBase64(part.getBody().getData())));
 					}
 				}
-				messages.add(builder.toString());
+				mailObject.setMailSnippet(builder.toString());
 			}
 			//if mimetype is not multipart, there is just one part for each message
 			else {
-				messages.add(new String(Base64.decodeBase64(m.getPayload().getBody().getData())));
+				mailObject.setMailSnippet(new String(Base64.decodeBase64(m.getPayload().getBody().getData())));
 			}
+			messages.add(mailObject);
 		}
 
 		mailsListView.setAdapter(new ListSingleMailThreadAdapter(getActivity(), messages));
@@ -70,7 +84,7 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 					int position, long id) {
 
 				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(messages
-						.get(position));
+						.get(position).getMailSnippet());
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
