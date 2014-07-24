@@ -32,6 +32,8 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify.IconValue;
 
 /**
  * This activity holds all the fragments which are intended to have a navigation
@@ -88,6 +90,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
 		obj.setTitle(getString(R.string.index));
+		obj.setIcon(new IconDrawable(this, IconValue.fa_list_alt).colorRes(R.color.white));
 		drawerItems.add(obj);
 
 		obj = new DrawerObject();
@@ -99,6 +102,12 @@ public class MainActivity extends SherlockFragmentActivity {
 			obj = new DrawerObject();
 			obj.setType("NavItem");
 			obj.setTitle(s);
+			if(s.equals("PlainPost")){
+				obj.setIcon(new IconDrawable(this, IconValue.fa_eye).colorRes(R.color.white));
+			}
+			else if (s.equals("ZeroBin")){
+				obj.setIcon(new IconDrawable(this, IconValue.fa_eye_slash).colorRes(R.color.white));
+			}
 			drawerItems.add(obj);
 		}
 
@@ -111,6 +120,15 @@ public class MainActivity extends SherlockFragmentActivity {
 			obj = new DrawerObject();
 			obj.setType("NavItem");
 			obj.setTitle(s);
+			if (s.equals("Gmail")){
+				obj.setIcon(new IconDrawable(this, IconValue.fa_envelope_square).colorRes(R.color.white));
+			}
+			else if(s.equals("Facebook")){
+				obj.setIcon(new IconDrawable(this, IconValue.fa_facebook_square).colorRes(R.color.white));
+			}
+			else if (s.equals("Twitter")){
+				obj.setIcon(new IconDrawable(this, IconValue.fa_twitter_square).colorRes(R.color.white));
+			}
 			drawerItems.add(obj);
 		}
 

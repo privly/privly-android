@@ -23,6 +23,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify.IconValue;
 
 /**
  * Displays the Index application for a user after authentication.
@@ -100,6 +102,12 @@ public class IndexFragment extends SherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.layout.menu_layout_home, menu);
+		menu.findItem(R.id.logout).setIcon(
+				new IconDrawable(getActivity(), IconValue.fa_sign_out)
+						.actionBarSize());
+		menu.findItem(R.id.settings).setIcon(
+				new IconDrawable(getActivity(), IconValue.fa_cog)
+						.actionBarSize());
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
