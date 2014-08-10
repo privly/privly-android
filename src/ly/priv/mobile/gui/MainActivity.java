@@ -23,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,7 +53,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	private CharSequence mTitle;
 	ArrayList<String> createList, readList;
 	EmailThreadObject currentThread;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -536,4 +537,5 @@ public class MainActivity extends SherlockFragmentActivity {
 		mTitle = title;
 		getSupportActionBar().setTitle(mTitle);
 	}
+
 }

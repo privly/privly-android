@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
+import ly.priv.mobile.gui.MainActivity;
 import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -55,6 +56,18 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 	private String mNextUrlForLoadingMessages;
 	private Boolean mflNoMoreMessage = false;
 	private ISocialNetworks mISocialNetworks;
+	private MainActivity mActivity;
+
+
+	/* (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		mActivity=(MainActivity)getActivity();
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +97,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 						.fetchPrivlyUrls(mListUserMess.get(position)
 								.getMessage());
 				if (listOfUrls.size() > 0) {
-					FragmentTransaction transaction = getActivity()
+					FragmentTransaction transaction = mActivity
 							.getSupportFragmentManager().beginTransaction();
 					ShowContentFragment showContent = new ShowContentFragment();
 					Bundle bundle = new Bundle();
@@ -94,7 +107,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 					transaction.addToBackStack(null);
 					transaction.commit();
 				} else {
-					Toast.makeText(getActivity(),
+					Toast.makeText(mActivity,
 							R.string.message_not_containe_privly_link,
 							Toast.LENGTH_SHORT).show();
 				}
@@ -132,9 +145,9 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		 */
 		@Override
 		protected void onPostExecute(Void result) {
-			if (mListUserMess != null) {
+			if (mListUserMess != null && mActivity!=null) {
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
-						getActivity(), mListUserMess);
+						mActivity, mListUserMess);
 				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
 				mListViewUserMessages.setSelection(mListUserMessagesAdapter
 						.getCount() - 1);
@@ -181,11 +194,11 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 				result.addAll(mListUserMess);
 				mListUserMess = new ArrayList<SMessage>(result);
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
-						getActivity(), mListUserMess);
+						mActivity, mListUserMess);
 				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
 				mListViewUserMessages.setSelection(pos);
 			} else {
-				Toast.makeText(getActivity(), R.string.no_more_messages,
+				Toast.makeText(mActivity, R.string.no_more_messages,
 						Toast.LENGTH_SHORT).show();
 				mflNoMoreMessage = true;
 			}
@@ -208,7 +221,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
 			faceBookNextMessages.execute(mNextUrlForLoadingMessages);
 		} else {
-			Toast.makeText(getActivity(), R.string.no_more_messages,
+			Toast.makeText(mActivity, R.string.no_more_messages,
 					Toast.LENGTH_SHORT).show();
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
