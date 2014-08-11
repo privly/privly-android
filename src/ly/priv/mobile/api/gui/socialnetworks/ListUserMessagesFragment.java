@@ -10,12 +10,12 @@ import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -45,47 +45,42 @@ import com.actionbarsherlock.app.SherlockFragment;
  * 
  */
 public class ListUserMessagesFragment extends SherlockFragment implements
-		OnRefreshListener {
+		OnScrollListener {
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;
 	private ListUserMessagesAdapter mListUserMessagesAdapter;
 	private ListView mListViewUserMessages;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
 	private ProgressBar mProgressBar;
 	private String mDialogID;
 	private String mNextUrlForLoadingMessages;
 	private Boolean mflNoMoreMessage = false;
 	private ISocialNetworks mISocialNetworks;
 	private MainActivity mActivity;
+	private View mHeaderView;
+	private boolean mIsLoading;
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		mActivity=(MainActivity)getActivity();
+		mActivity = (MainActivity) getActivity();
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_list_pull_refrash,
-				container, false);
+		View view = inflater.inflate(R.layout.activity_list, container, false);
+		mHeaderView = (View) inflater.inflate(R.layout.loading_layout, null);
 		mISocialNetworks.setTitle();
-		mListViewUserMessages = ((ListView) view
-				.findViewById(R.id.lView_refresh));
-		mSwipeRefreshLayout = (SwipeRefreshLayout) view
-				.findViewById(R.id.swipe_container);
-		mSwipeRefreshLayout.setOnRefreshListener(this);
-		mSwipeRefreshLayout.setColorScheme(android.R.color.holo_blue_bright,
-				android.R.color.holo_green_light,
-				android.R.color.holo_orange_light,
-				android.R.color.holo_red_light);
-		mProgressBar = (ProgressBar) view
-				.findViewById(R.id.pbLoadingData_refresh);
+		mListViewUserMessages = ((ListView) view.findViewById(R.id.lView));
+		mListViewUserMessages.setOnScrollListener(this);
+		mListViewUserMessages.addHeaderView(mHeaderView);
+		mHeaderView.setVisibility(View.INVISIBLE);
+		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mProgressBar.setVisibility(View.VISIBLE);
 		mDialogID = getArguments().getString("DialogID");
 		mListViewUserMessages.setOnItemClickListener(new OnItemClickListener() {
@@ -94,7 +89,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				ArrayList<String> listOfUrls = Utilities
-						.fetchPrivlyUrls(mListUserMess.get(position)
+						.fetchPrivlyUrls(mListUserMess.get(position-1)
 								.getMessage());
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = mActivity
@@ -145,7 +140,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 		 */
 		@Override
 		protected void onPostExecute(Void result) {
-			if (mListUserMess != null && mActivity!=null) {
+			if (mListUserMess != null && mActivity != null) {
 				mListUserMessagesAdapter = new ListUserMessagesAdapter(
 						mActivity, mListUserMess);
 				mListViewUserMessages.setAdapter(mListUserMessagesAdapter);
@@ -169,7 +164,8 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 
 		@Override
 		protected void onPreExecute() {
-			mSwipeRefreshLayout.setRefreshing(true);
+			mIsLoading = true;
+			mHeaderView.setVisibility(View.VISIBLE);
 		}
 
 		@Override
@@ -202,28 +198,8 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 						Toast.LENGTH_SHORT).show();
 				mflNoMoreMessage = true;
 			}
-			mSwipeRefreshLayout.setRefreshing(false);
-		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener#onRefresh
-	 * ()
-	 */
-	@Override
-	public void onRefresh() {
-		Log.d(TAG, "onRefresh for SwipeRefreshLayout");
-		if (!mflNoMoreMessage) {
-			FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
-			faceBookNextMessages.execute(mNextUrlForLoadingMessages);
-		} else {
-			Toast.makeText(mActivity, R.string.no_more_messages,
-					Toast.LENGTH_SHORT).show();
-			mSwipeRefreshLayout.setRefreshing(false);
+			mIsLoading = false;
+			mHeaderView.setVisibility(View.INVISIBLE);
 		}
 
 	}
@@ -236,5 +212,35 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 	 */
 	public void setmISocialNetworks(ISocialNetworks mISocialNetworks) {
 		this.mISocialNetworks = mISocialNetworks;
+	}
+
+	@Override
+	public void onScroll(AbsListView view, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		if (mListUserMessagesAdapter == null)
+			return;
+
+		if (mListUserMessagesAdapter.getCount() == 0)
+			return;
+		Log.d(TAG, "totalItemCount="+totalItemCount);
+		Log.d(TAG, "visibleItemCount="+visibleItemCount);
+		Log.d(TAG, "firstVisibleItem="+firstVisibleItem);
+		if (totalItemCount == visibleItemCount)
+			return;
+		if (firstVisibleItem == 0 && !mIsLoading) {
+			// It is time to add new data. We call the listener
+			if (!mflNoMoreMessage) {
+				FetchFaceBookNextMessages faceBookNextMessages = new FetchFaceBookNextMessages();
+				faceBookNextMessages.execute(mNextUrlForLoadingMessages);
+			} else {
+				Toast.makeText(mActivity, R.string.no_more_messages,
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView arg0, int arg1) {
 	}
 }
