@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ly.priv.mobile.gui.IndexFragment;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -141,13 +143,17 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		progressBar.setVisibility(View.VISIBLE);
 		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+			progressBar.setVisibility(View.VISIBLE); 
 			accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 			Editor editor = sharedPrefs.edit();
 			editor.putString("gmailId", accountName);
 			editor.commit();
 			new getAuthToken().execute();
+		}
+		else {
+			getActivity().getSupportFragmentManager().beginTransaction()
+					.replace(R.id.container, new IndexFragment()).commit();
 		}
 	}
 
