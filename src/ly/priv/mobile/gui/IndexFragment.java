@@ -3,6 +3,7 @@ package ly.priv.mobile.gui;
 import ly.priv.mobile.ConstantValues;
 import ly.priv.mobile.JsObject;
 import ly.priv.mobile.R;
+import ly.priv.mobile.SettingsActivityNew;
 import ly.priv.mobile.Values;
 import ly.priv.mobile.VerifyAuthToken;
 import android.annotation.SuppressLint;
@@ -46,8 +47,8 @@ public class IndexFragment extends SherlockFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.new_post, container, false);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.index);
+		String indexTitle = getString(R.string.index);
+		getSherlockActivity().setTitle(indexTitle);
 		container.removeAllViews();
 		mWebViewIndex = (WebView) view.findViewById(R.id.webview_new_post);
 		mWebViewIndex.getSettings().setJavaScriptEnabled(true);

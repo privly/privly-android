@@ -50,7 +50,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	DrawerLayout mDrawerLayout;
 	ListView mDrawerList;
 	ActionBarDrawerToggle hamburger;
-	private CharSequence mTitle;
+	private static CharSequence mTitle;
 	ArrayList<String> createList, readList;
 	EmailThreadObject currentThread;
 	
@@ -70,14 +70,16 @@ public class MainActivity extends SherlockFragmentActivity {
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
-				getSupportActionBar().setTitle(mTitle);
+				setTitle(mTitle);
+				Log.d("Drawer",mTitle.toString());
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				super.onDrawerClosed(drawerView);
-				getSupportActionBar().setTitle(R.string.app_name);
+				super.onDrawerOpened(drawerView);
+				setTitle(R.string.app_name);
+				Log.d("Drawer","opened");
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
@@ -144,6 +146,8 @@ public class MainActivity extends SherlockFragmentActivity {
 					.add(R.id.container, new TwitterGrabberService()).commit();
 		} else {
 			if (savedInstanceState == null) {
+				setTitle(getString(R.string.index));
+				Log.d("index", "beforetransaction");
 				getSupportFragmentManager().beginTransaction()
 						.add(R.id.container, new IndexFragment()).commit();
 			}
@@ -156,6 +160,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				R.id.container);
 		if (fragment instanceof ListUsersFragment
 				|| fragment instanceof MicroblogListPostsFragment) {
+			setTitle(getString(R.string.index));
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new IndexFragment()).commit();
 		} else if (fragment instanceof IndexFragment) {
@@ -534,8 +539,14 @@ public class MainActivity extends SherlockFragmentActivity {
 	// Override setTitle to use Action Bar Sherlock
 	@Override
 	public void setTitle(CharSequence title) {
+		Log.d("setTitle", title.toString());
 		mTitle = title;
 		getSupportActionBar().setTitle(mTitle);
+	}
+	
+	@Override
+	public void setTitle(int resId) {
+		getSupportActionBar().setTitle(getString(resId));
 	}
 
 }

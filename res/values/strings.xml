@@ -11,7 +11,7 @@
     <string name="createListViewLabel"> Create New Privly Content </string>
     <string name="newUrlLabel">Here\'s your new Privly Url</string>
     <string name="shareButtonLabel">Share Url</string>
-    <string name="settingsMenuLabel">Change Content Server</string>
+    <string name="changeContentServer">Change Content Server</string>
     <string name="logoutMenuLabel">Logout From Application</string>
     <string name="baseUrlHeading">Content Server Location</string>
     <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
@@ -52,4 +52,7 @@
 	<string name="saved_please_login_now">Saved! Please login now</string>
 	<string name="share_privly_url">Share Privly Url</string>
 	<string name="show_content">Show content</string>
+	<string name="pref_header_general">SERVER</string>
+	<string name="pref_header_logout">LOGOUT OPTIONS</string>
+	<string name="settings">Settings</string>
 </resources>

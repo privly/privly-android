@@ -83,6 +83,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
+		getSherlockActivity().setTitle("Gmail");
 		threadListView = (ListView) view.findViewById(R.id.lView);
 		progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		prefsName = ConstantValues.APP_PREFERENCES;

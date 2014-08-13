@@ -6,6 +6,7 @@ import java.util.List;
 import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,8 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 		View view = inflater.inflate(R.layout.activity_list, container, false);
 		mailsListView = (ListView) view.findViewById(R.id.lView);
 		currentThread = getArguments().getParcelable("currentThread");
-		//currentThread = ((MainActivity) getActivity()).getCurrentThread();
 		messages = new ArrayList<SingleEmailObject>();
+		getSherlockActivity().setTitle(currentThread.getMailSnippet());
 		for (Message m: currentThread.getMessages()){
 			SingleEmailObject mailObject = new SingleEmailObject();
 			mailHeaders = m.getPayload().getHeaders();

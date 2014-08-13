@@ -37,8 +37,7 @@ public class SettingsActivity extends SherlockActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setTitle(R.string.set_content_server);
+		getSupportActionBar().hide();
 		TextView baseUrlHeading = (TextView) findViewById(R.id.enterBaseUrlHeading);
 		Typeface lobster = Typeface.createFromAsset(getAssets(),
 				"fonts/Lobster.ttf");
