@@ -1,17 +1,13 @@
 package ly.priv.mobile;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ly.priv.mobile.gui.IndexFragment;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -19,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -144,14 +139,13 @@ public class GmailLinkGrabberService extends SherlockFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-			progressBar.setVisibility(View.VISIBLE); 
+			progressBar.setVisibility(View.VISIBLE);
 			accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
 			Editor editor = sharedPrefs.edit();
 			editor.putString("gmailId", accountName);
 			editor.commit();
 			new getAuthToken().execute();
-		}
-		else {
+		} else {
 			getActivity().getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new IndexFragment()).commit();
 		}
@@ -238,11 +232,11 @@ public class GmailLinkGrabberService extends SherlockFragment {
 					throws IOException {
 				int mailCount = t.getMessages().size();
 				EmailThreadObject thread = new EmailThreadObject();
-				if (mailCount > 1){
+				if (mailCount > 1) {
 					thread.setMailCount(" (" + String.valueOf(mailCount) + ") ");
 				} else {
 					thread.setMailCount("");
-				}				
+				}
 				thread.setMessages(t.getMessages());
 				thread.setId(t.getId());
 				List<MessagePartHeader> headerFirst = t.getMessages().get(0)

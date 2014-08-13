@@ -31,13 +31,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -83,24 +81,25 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	private ListUsersFragment mSListUsersActivity;
 	private ProgressBar mProgressBar;
 	private MainActivity mActivity;
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		mActivity=(MainActivity)getActivity();
+		mActivity = (MainActivity) getActivity();
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "Creating " + TAG);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Login_Facebook);
+		setTitle();
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mProgressBar.setVisibility(View.VISIBLE);
 		mValues = new Values(mActivity);
@@ -112,7 +111,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				onSessionStateChange(session, state, exception);
 
 			}
-			
+
 		};
 		login();
 		return view;
@@ -122,9 +121,9 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 * Run social GUI
 	 */
 	private void runSocialGui() {
-		Log.d(TAG, "runSocialGui");	
-		FragmentTransaction transaction = mActivity
-				.getSupportFragmentManager().beginTransaction();
+		Log.d(TAG, "runSocialGui");
+		FragmentTransaction transaction = mActivity.getSupportFragmentManager()
+				.beginTransaction();
 		mSListUsersActivity = new ListUsersFragment();
 		mSListUsersActivity.setISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
@@ -149,13 +148,13 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				permissions.add("read_mailbox");
 				mSession.addCallback(mSessionStatusCallback);
 				Session.OpenRequest openRequest = new Session.OpenRequest(
-						FaceBookGrabberService.this);				
+						FaceBookGrabberService.this);
 				openRequest
 						.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
 				openRequest
 						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
 				openRequest.setPermissions(permissions);
-				mSession.openForRead(openRequest);	
+				mSession.openForRead(openRequest);
 			} else {
 				runSocialGui();
 			}
@@ -228,8 +227,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 						if (response.getError() != null) {
 							mProgressBar.setVisibility(View.INVISIBLE);
 							AlertDialog dialog = Utilities.showDialog(
-									mActivity,
-									response.getError().getErrorMessage());
+									mActivity, response.getError()
+											.getErrorMessage());
 							dialog.show();
 							return;
 						}
@@ -267,8 +266,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 			if (mActivity != null)
 				mActivity.runOnUiThread(new Runnable() {
 					public void run() {
-						AlertDialog dialog = Utilities.showDialog(
-								mActivity, response.getError().getErrorMessage());
+						AlertDialog dialog = Utilities.showDialog(mActivity,
+								response.getError().getErrorMessage());
 						dialog.show();
 					}
 				});
@@ -406,10 +405,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	}
 
 	@Override
-	public void setTitle() {		
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Facebook);
+	public void setTitle() {
+		getSherlockActivity().setTitle(R.string.privly_Facebook);
 	}
-	
 
 }

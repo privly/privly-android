@@ -1,7 +1,6 @@
 package ly.priv.mobile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -10,16 +9,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.api.services.gmail.model.MessagePartHeader;
-import com.google.api.services.gmail.model.Thread;
-
 public class ListSingleMailThreadAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
 	private ArrayList<SingleEmailObject> mListMails;
 	private SingleEmailObject mailObject;
 
-	public ListSingleMailThreadAdapter(Activity activity, ArrayList<SingleEmailObject> list) {
+	public ListSingleMailThreadAdapter(Activity activity,
+			ArrayList<SingleEmailObject> list) {
 		this.mActivity = activity;
 		this.mListMails = list;
 	}
@@ -52,7 +49,7 @@ public class ListSingleMailThreadAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		
+
 		mailObject = mListMails.get(position);
 		viewHolder.mailTime.setText(mailObject.getMailTime());
 		viewHolder.mailBody.setText(mailObject.getMailSnippet());

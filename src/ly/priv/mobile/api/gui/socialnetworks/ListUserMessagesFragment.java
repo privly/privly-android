@@ -89,7 +89,7 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				ArrayList<String> listOfUrls = Utilities
-						.fetchPrivlyUrls(mListUserMess.get(position-1)
+						.fetchPrivlyUrls(mListUserMess.get(position - 1)
 								.getMessage());
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = mActivity
@@ -222,9 +222,9 @@ public class ListUserMessagesFragment extends SherlockFragment implements
 
 		if (mListUserMessagesAdapter.getCount() == 0)
 			return;
-		Log.d(TAG, "totalItemCount="+totalItemCount);
-		Log.d(TAG, "visibleItemCount="+visibleItemCount);
-		Log.d(TAG, "firstVisibleItem="+firstVisibleItem);
+		Log.d(TAG, "totalItemCount=" + totalItemCount);
+		Log.d(TAG, "visibleItemCount=" + visibleItemCount);
+		Log.d(TAG, "firstVisibleItem=" + firstVisibleItem);
 		if (totalItemCount == visibleItemCount)
 			return;
 		if (firstVisibleItem == 0 && !mIsLoading) {

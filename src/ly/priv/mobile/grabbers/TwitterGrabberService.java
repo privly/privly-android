@@ -30,7 +30,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 
 /**
@@ -65,8 +64,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 		Log.d(TAG, "onCreateView ");
 		View view = inflater.inflate(R.layout.activity_login_twitter,
 				container, false);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Login_Twitter);
+		setTitle();
 		mValues = new Values(getActivity());
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		twitterLoginWebView = (WebView) view.findViewById(R.id.wvLoginTwitters);
@@ -101,7 +99,7 @@ public class TwitterGrabberService extends SherlockFragment implements
 	 * Run social GUI
 	 */
 	private void runSocialGui() {
-		Log.d(TAG, "runSocialGui");		
+		Log.d(TAG, "runSocialGui");
 		FragmentTransaction transaction = getActivity()
 				.getSupportFragmentManager().beginTransaction();
 		MicroblogListPostsFragment microblogListPostsFragment = new MicroblogListPostsFragment();
@@ -249,7 +247,6 @@ public class TwitterGrabberService extends SherlockFragment implements
 
 	@Override
 	public void setTitle() {
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Twitter);		
+		getSherlockActivity().setTitle(R.string.privly_Twitter);
 	}
 }

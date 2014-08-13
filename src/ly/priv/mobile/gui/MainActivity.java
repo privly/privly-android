@@ -23,7 +23,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,7 +52,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	private static CharSequence mTitle;
 	ArrayList<String> createList, readList;
 	EmailThreadObject currentThread;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,16 +69,12 @@ public class MainActivity extends SherlockFragmentActivity {
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
-				setTitle(mTitle);
-				Log.d("Drawer",mTitle.toString());
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
-				setTitle(R.string.app_name);
-				Log.d("Drawer","opened");
 				supportInvalidateOptionsMenu(); // creates call to
 												// onPrepareOptionsMenu()
 			}
@@ -93,7 +88,8 @@ public class MainActivity extends SherlockFragmentActivity {
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
 		obj.setTitle(getString(R.string.index));
-		obj.setIcon(new IconDrawable(this, IconValue.fa_list_alt).colorRes(R.color.white));
+		obj.setIcon(new IconDrawable(this, IconValue.fa_list_alt)
+				.colorRes(R.color.white));
 		drawerItems.add(obj);
 
 		obj = new DrawerObject();
@@ -105,11 +101,12 @@ public class MainActivity extends SherlockFragmentActivity {
 			obj = new DrawerObject();
 			obj.setType("NavItem");
 			obj.setTitle(s);
-			if(s.equals("PlainPost")){
-				obj.setIcon(new IconDrawable(this, IconValue.fa_eye).colorRes(R.color.white));
-			}
-			else if (s.equals("ZeroBin")){
-				obj.setIcon(new IconDrawable(this, IconValue.fa_eye_slash).colorRes(R.color.white));
+			if (s.equals("PlainPost")) {
+				obj.setIcon(new IconDrawable(this, IconValue.fa_eye)
+						.colorRes(R.color.white));
+			} else if (s.equals("ZeroBin")) {
+				obj.setIcon(new IconDrawable(this, IconValue.fa_eye_slash)
+						.colorRes(R.color.white));
 			}
 			drawerItems.add(obj);
 		}
@@ -123,14 +120,15 @@ public class MainActivity extends SherlockFragmentActivity {
 			obj = new DrawerObject();
 			obj.setType("NavItem");
 			obj.setTitle(s);
-			if (s.equals("Gmail")){
-				obj.setIcon(new IconDrawable(this, IconValue.fa_envelope_square).colorRes(R.color.white));
-			}
-			else if(s.equals("Facebook")){
-				obj.setIcon(new IconDrawable(this, IconValue.fa_facebook_square).colorRes(R.color.white));
-			}
-			else if (s.equals("Twitter")){
-				obj.setIcon(new IconDrawable(this, IconValue.fa_twitter_square).colorRes(R.color.white));
+			if (s.equals("Gmail")) {
+				obj.setIcon(new IconDrawable(this, IconValue.fa_envelope_square)
+						.colorRes(R.color.white));
+			} else if (s.equals("Facebook")) {
+				obj.setIcon(new IconDrawable(this, IconValue.fa_facebook_square)
+						.colorRes(R.color.white));
+			} else if (s.equals("Twitter")) {
+				obj.setIcon(new IconDrawable(this, IconValue.fa_twitter_square)
+						.colorRes(R.color.white));
 			}
 			drawerItems.add(obj);
 		}
@@ -160,9 +158,9 @@ public class MainActivity extends SherlockFragmentActivity {
 				R.id.container);
 		if (fragment instanceof ListUsersFragment
 				|| fragment instanceof MicroblogListPostsFragment) {
-			setTitle(getString(R.string.index));
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new IndexFragment()).commit();
+			setTitle(getString(R.string.index));
 		} else if (fragment instanceof IndexFragment) {
 			finish();
 		} else {
@@ -543,9 +541,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		mTitle = title;
 		getSupportActionBar().setTitle(mTitle);
 	}
-	
+
 	@Override
 	public void setTitle(int resId) {
+		Log.d("setTitle", getString(resId));
 		getSupportActionBar().setTitle(getString(resId));
 	}
 

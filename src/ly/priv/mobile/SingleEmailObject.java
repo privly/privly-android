@@ -7,13 +7,13 @@ import android.os.Parcelable;
 
 import com.google.api.services.gmail.model.Message;
 
-public class SingleEmailObject implements Parcelable{
+public class SingleEmailObject implements Parcelable {
 	String mailSnippet;
 	String mailTime;
 	String mailSender;
 	List<Message> messages;
-	String Id; 
-	
+	String Id;
+
 	public String getId() {
 		return Id;
 	}
@@ -21,12 +21,12 @@ public class SingleEmailObject implements Parcelable{
 	public void setId(String id) {
 		Id = id;
 	}
-	
-	public SingleEmailObject(){
-		
+
+	public SingleEmailObject() {
+
 	}
-	
-	public SingleEmailObject(Parcel in){
+
+	public SingleEmailObject(Parcel in) {
 		this.mailSender = in.readString();
 		this.mailSnippet = in.readString();
 		this.mailTime = in.readString();
@@ -34,14 +34,15 @@ public class SingleEmailObject implements Parcelable{
 		in.readList(messages, null);
 	}
 
-	public SingleEmailObject(String mailSnippet, String mailTime, String mailSender, String Id, List<Message> messages){
+	public SingleEmailObject(String mailSnippet, String mailTime,
+			String mailSender, String Id, List<Message> messages) {
 		this.mailSnippet = mailSnippet;
 		this.mailSender = mailSender;
-		this.mailTime =  mailTime;
-		this.Id =  Id;
-		this.messages =  messages;
+		this.mailTime = mailTime;
+		this.Id = Id;
+		this.messages = messages;
 	}
-	
+
 	public List<Message> getMessages() {
 		return messages;
 	}
@@ -89,7 +90,7 @@ public class SingleEmailObject implements Parcelable{
 		dest.writeString(Id);
 		dest.writeList(messages);
 	}
-	
+
 	public static final Parcelable.Creator<EmailThreadObject> Creator = new Parcelable.Creator<EmailThreadObject>() {
 
 		@Override
@@ -103,7 +104,7 @@ public class SingleEmailObject implements Parcelable{
 			// TODO Auto-generated method stub
 			return new EmailThreadObject[size];
 		}
-		
+
 	};
-	
+
 }
