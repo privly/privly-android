@@ -21,6 +21,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify.IconValue;
 
 /**
  * Allows the user to create new Privly Content. Integrates the Posting
@@ -78,8 +80,15 @@ public class NewPostFragment extends SherlockFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-		super.onCreateOptionsMenu(menu, menuInflater);
+		menu.clear();
 		menuInflater.inflate(R.layout.menu_layout_home, menu);
+		menu.findItem(R.id.logout).setIcon(
+				new IconDrawable(getActivity(), IconValue.fa_sign_out)
+						.actionBarSize());
+		menu.findItem(R.id.settings).setIcon(
+				new IconDrawable(getActivity(), IconValue.fa_cog)
+						.actionBarSize());
+		super.onCreateOptionsMenu(menu, menuInflater);
 	}
 
 	@Override
