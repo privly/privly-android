@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -202,8 +203,6 @@ public class Utilities {
 		Calendar tDate = Calendar.getInstance();
 		tDate.setTime(date);
 		Calendar curDate = Calendar.getInstance();
-		System.out.println("cur=" + curDate.getTime().toString());
-		System.out.println("tdata=" + tDate.getTime().toString());
 		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
 			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
 					.get(Calendar.DAY_OF_YEAR)) {
@@ -221,7 +220,7 @@ public class Utilities {
 
 	public static String getTimeForGmail(String time) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				"EEE, d MMM yyyy HH:mm:ss Z");
+				"EEE, d MMM yyyy HH:mm:ss Z",Locale.US);
 		Date date = null;
 		try {
 			date = simpleDateFormat.parse(time);
@@ -244,6 +243,7 @@ public class Utilities {
 			return simpleDateFormat.format(fDate.getTime());
 		} catch (ParseException e) {
 			e.printStackTrace();
+			
 			return "1800 BC";
 		}
 
