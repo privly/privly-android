@@ -143,7 +143,7 @@ public class SMessage implements Serializable {
 	 * @return
 	 */
 	public String getUrlToAvatar() {
-		return mFrom.mPicture.mData.mUrl;
+		return mFrom==null ? "" : mFrom.mPicture.mData.mUrl;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class SMessage implements Serializable {
 	 * @return the mId
 	 */
 	public String getId() {
-		return mFrom.mID;
+		return mFrom==null ? "" : mFrom.mID;
 	}
 
 	/*
