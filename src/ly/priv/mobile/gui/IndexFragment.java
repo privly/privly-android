@@ -125,7 +125,7 @@ public class IndexFragment extends SherlockFragment {
 		switch (item.getItemId()) {
 		case R.id.settings:
 			Intent gotoSettings = new Intent(getActivity(),
-					SettingsActivity.class);
+					SettingsActivityNew.class);
 			startActivity(gotoSettings);
 			return true;
 
