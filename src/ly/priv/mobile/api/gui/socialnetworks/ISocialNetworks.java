@@ -85,7 +85,7 @@ public interface ISocialNetworks {
 	 * Logout from social networks
 	 */
 	public void logout();
-	
+
 	/**
 	 * Set title
 	 */

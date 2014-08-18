@@ -6,7 +6,6 @@ import java.util.List;
 import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +20,18 @@ import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartHeader;
 
-public class GmailSingleThreadFragment extends SherlockFragment{
+public class GmailSingleThreadFragment extends SherlockFragment {
 	ListView mailsListView;
 	String currentThreadId;
 	EmailThreadObject currentThread;
 	ArrayList<SingleEmailObject> messages;
 	StringBuilder builder;
 	List<MessagePartHeader> mailHeaders;
-	
-	public GmailSingleThreadFragment(){
-		
+
+	public GmailSingleThreadFragment() {
+
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -42,50 +41,57 @@ public class GmailSingleThreadFragment extends SherlockFragment{
 		currentThread = getArguments().getParcelable("currentThread");
 		messages = new ArrayList<SingleEmailObject>();
 		getSherlockActivity().setTitle(currentThread.getMailSnippet());
-		for (Message m: currentThread.getMessages()){
+		for (Message m : currentThread.getMessages()) {
 			SingleEmailObject mailObject = new SingleEmailObject();
 			mailHeaders = m.getPayload().getHeaders();
-			for (MessagePartHeader mHeader: mailHeaders){
-				if (mHeader.getName().equals("From")){
+			for (MessagePartHeader mHeader : mailHeaders) {
+				if (mHeader.getName().equals("From")) {
 					mailObject.setMailSender(mHeader.getValue());
-				}
-				else if (mHeader.getName().equals("Date")){
-					mailObject.setMailTime(Utilities.getTimeForGmail(mHeader.getValue()));
+				} else if (mHeader.getName().equals("Date")) {
+					mailObject.setMailTime(Utilities.getTimeForGmail(mHeader
+							.getValue()));
 				}
 			}
-			if (m.getPayload().getMimeType().contains("multipart")){
+			if (m.getPayload().getMimeType().contains("multipart")) {
 				builder = new StringBuilder();
-				for (MessagePart part: m.getPayload().getParts()){
-					if (part.getMimeType().contains("multipart")){
-						for (MessagePart part2: part.getParts()){
-							if (part2.getMimeType().equals("text/plain")){
-								builder.append(new String(Base64.decodeBase64(part2.getBody().getData())));
+				for (MessagePart part : m.getPayload().getParts()) {
+					if (part.getMimeType().contains("multipart")) {
+						for (MessagePart part2 : part.getParts()) {
+							if (part2.getMimeType().equals("text/plain")) {
+								builder.append(new String(
+										Base64.decodeBase64(part2.getBody()
+												.getData())));
 							}
 						}
 					}
-					
-					else if (part.getMimeType().equals("text/plain")){
-						builder.append(new String(Base64.decodeBase64(part.getBody().getData())));
+
+					else if (part.getMimeType().equals("text/plain")) {
+						builder.append(new String(Base64.decodeBase64(part
+								.getBody().getData())));
 					}
 				}
 				mailObject.setMailSnippet(builder.toString());
 			}
-			//if mimetype is not multipart, there is just one part for each message
+			// if mimetype is not multipart, there is just one part for each
+			// message
 			else {
-				mailObject.setMailSnippet(new String(Base64.decodeBase64(m.getPayload().getBody().getData())));
+				mailObject.setMailSnippet(new String(Base64.decodeBase64(m
+						.getPayload().getBody().getData())));
 			}
 			messages.add(mailObject);
 		}
 
-		mailsListView.setAdapter(new ListSingleMailThreadAdapter(getActivity(), messages));
+		mailsListView.setAdapter(new ListSingleMailThreadAdapter(getActivity(),
+				messages));
 		mailsListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(messages
-						.get(position).getMailSnippet());
+				ArrayList<String> listOfUrls = Utilities
+						.fetchPrivlyUrls(messages.get(position)
+								.getMailSnippet());
 				if (listOfUrls.size() > 0) {
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();

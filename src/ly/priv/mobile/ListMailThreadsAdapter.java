@@ -1,7 +1,6 @@
 package ly.priv.mobile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -10,16 +9,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.api.services.gmail.model.MessagePartHeader;
-import com.google.api.services.gmail.model.Thread;
-
 public class ListMailThreadsAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
 	private ArrayList<EmailThreadObject> mListThreads;
 	private EmailThreadObject mailThread;
 
-	public ListMailThreadsAdapter(Activity activity, ArrayList<EmailThreadObject> list) {
+	public ListMailThreadsAdapter(Activity activity,
+			ArrayList<EmailThreadObject> list) {
 		this.mActivity = activity;
 		this.mListThreads = list;
 	}
@@ -40,14 +37,17 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 		final ViewHolder viewHolder;
 		if (convertView == null) {
 			inflater = this.mActivity.getLayoutInflater();
-			convertView = inflater.inflate(R.layout.item_mail_list_threads, null);
+			convertView = inflater.inflate(R.layout.item_mail_list_threads,
+					null);
 			viewHolder = new ViewHolder();
 			viewHolder.mailSender = (TextView) convertView
 					.findViewById(R.id.mailSender);
-			viewHolder.mailCount = (TextView) convertView.findViewById(R.id.mailCount);
+			viewHolder.mailCount = (TextView) convertView
+					.findViewById(R.id.mailCount);
 			viewHolder.mailSnippet = (TextView) convertView
 					.findViewById(R.id.mailSnippet);
-			viewHolder.mailTime = (TextView) convertView.findViewById(R.id.mailTime);
+			viewHolder.mailTime = (TextView) convertView
+					.findViewById(R.id.mailTime);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
@@ -60,7 +60,7 @@ public class ListMailThreadsAdapter extends BaseAdapter {
 		viewHolder.mailTime.setText(mailThread.getMailTime());
 		return convertView;
 	}
-	
+
 	static class ViewHolder {
 		protected TextView mailSnippet;
 		protected TextView mailSender;

@@ -2,14 +2,9 @@ package ly.priv.mobile.gui;
 
 import java.util.ArrayList;
 
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify.IconValue;
-
 import ly.priv.mobile.R;
-import ly.priv.mobile.GmailLinkGrabberService.getAuthToken;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +82,8 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 						.getSystemService(Context.LAYOUT_INFLATER_SERVICE))
 						.inflate(R.layout.nav_item_layout, null);
 				itemHolder = new NavItemHolder(
-						(TextView) viewGroup.findViewById(R.id.textview2), (ImageView) viewGroup.findViewById(R.id.navIcon));
+						(TextView) viewGroup.findViewById(R.id.textview2),
+						(ImageView) viewGroup.findViewById(R.id.navIcon));
 				viewGroup.setTag(itemHolder);
 				view = viewGroup;
 			} else {
@@ -155,12 +151,12 @@ class DrawerObject {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public void setIcon(Drawable icon){
+
+	public void setIcon(Drawable icon) {
 		this.icon = icon;
 	}
-	
-	public Drawable getIcon(){
+
+	public Drawable getIcon() {
 		return icon;
 	}
 }

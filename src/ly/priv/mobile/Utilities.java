@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +16,8 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.api.services.gmail.model.MessagePartHeader;
 
 /**
  * Contains simple functions that should be used wherever possible.
@@ -206,8 +203,6 @@ public class Utilities {
 		Calendar tDate = Calendar.getInstance();
 		tDate.setTime(date);
 		Calendar curDate = Calendar.getInstance();
-		System.out.println("cur=" + curDate.getTime().toString());
-		System.out.println("tdata=" + tDate.getTime().toString());
 		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
 			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
 					.get(Calendar.DAY_OF_YEAR)) {
@@ -222,34 +217,36 @@ public class Utilities {
 		}
 		return simpleDateFormat.format(tDate.getTime());
 	}
-	
+
 	public static String getTimeForGmail(String time) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"EEE, d MMM yyyy HH:mm:ss Z",Locale.US);
 		Date date = null;
 		try {
 			date = simpleDateFormat.parse(time);
-		
-		Calendar fDate = Calendar.getInstance();
-		fDate.setTime(date);
-		Calendar curDate = Calendar.getInstance();
-		if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
-			if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
-					.get(Calendar.DAY_OF_YEAR)) {
-				simpleDateFormat = new SimpleDateFormat("HH:mm");
-			} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
-					.get(Calendar.WEEK_OF_YEAR)) {
-				simpleDateFormat = new SimpleDateFormat("E, HH:mm");
-			} else
-				simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
-		} else {
-			simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
-		}
-		return simpleDateFormat.format(fDate.getTime());
+
+			Calendar fDate = Calendar.getInstance();
+			fDate.setTime(date);
+			Calendar curDate = Calendar.getInstance();
+			if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+				if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
+						.get(Calendar.DAY_OF_YEAR)) {
+					simpleDateFormat = new SimpleDateFormat("HH:mm");
+				} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
+						.get(Calendar.WEEK_OF_YEAR)) {
+					simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+				} else
+					simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+			} else {
+				simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+			}
+			return simpleDateFormat.format(fDate.getTime());
 		} catch (ParseException e) {
 			e.printStackTrace();
+			
 			return "1800 BC";
 		}
-		
+
 	}
 
 	/**
@@ -261,5 +258,5 @@ public class Utilities {
 	public static boolean isNullOrWhitespace(String string) {
 		return string == null || string.isEmpty() || string.trim().isEmpty();
 	}
-	
+
 }

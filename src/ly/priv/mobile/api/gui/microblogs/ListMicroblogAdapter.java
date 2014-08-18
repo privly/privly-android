@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
-/**s
- * Adapter for ListViewPosts. It is showing posts.
+/**
+ * s Adapter for ListViewPosts. It is showing posts.
  * 
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
