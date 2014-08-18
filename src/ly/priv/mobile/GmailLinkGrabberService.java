@@ -169,7 +169,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 				ListThreadsResponse threadsResponse;
 				List<Thread> threads = null;
 				try {
-					threadsResponse = mailService.users().threads().list("me")
+					threadsResponse = mailService.users().threads().list("me").setMaxResults(Long.parseLong("15"))
 							.execute();
 					threads = threadsResponse.getThreads();
 				} catch (IOException e) {
