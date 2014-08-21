@@ -1,30 +1,21 @@
 package ly.priv.mobile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ly.priv.mobile.PrivlyLinkStorageContract.LinksDb;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +25,6 @@ import android.widget.Toast;
  * @author Shivam Verma
  */
 public class Utilities {
-
-	private static final String MY_PREFERENCES = "privly";
-
 	/**
 	 * Check validity of an EMail address using RegEx
 	 * 
@@ -161,114 +149,6 @@ public class Utilities {
 		return listOfUrls;
 	}
 
-	/**
-	 * Checks if a link from a source already exists in the database.
-	 * 
-	 * @param {Context} context of calling Activity
-	 * @param {String} sourceOfLink Source of the link. Example : FACEBOOK,
-	 *        TWITTER
-	 * @return {Boolean} exists
-	 */
-	public static Boolean ifLinkExistsInDb(Context context, String url,
-			String sourceOfLink) {
-		Boolean exists = false;
-		LinksDbHelper mDbHelper = new LinksDbHelper(context);
-		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		Log.d("SQL", "SELECT * FROM " + LinksDb.TABLE_NAME + " WHERE "
-				+ LinksDb.COLUMN_NAME_LINK + " like '" + url + "' AND "
-				+ LinksDb.COLUMN_NAME_SOURCE + " like '" + sourceOfLink + "'");
-		Cursor cursor = db.rawQuery("SELECT * FROM " + LinksDb.TABLE_NAME
-				+ " WHERE " + LinksDb.COLUMN_NAME_LINK + " like '" + url
-				+ "' AND " + LinksDb.COLUMN_NAME_SOURCE + " like '"
-				+ sourceOfLink + "'", null);
-		if (cursor.getCount() > 0)
-			exists = true;
-
-		Log.d("cursor count", String.valueOf(cursor.getCount()));
-
-		Log.d("exists", exists.toString());
-		db.close();
-		cursor.close();
-		return exists;
-
-	}
-
-	/**
-	 * Copy database from application's private storage to external storage.
-	 * Useful for debugging.
-	 */
-
-	public static void copyDb() {
-		try {
-			File sd = Environment.getExternalStorageDirectory();
-			File data = Environment.getDataDirectory();
-
-			if (sd.canWrite()) {
-				String currentDBPath = "//data//ly.priv.mobile//databases//PrivlyLinks.db";
-				String backupDBPath = "PrivlyLinks.db";
-				File currentDB = new File(data, currentDBPath);
-				File backupDB = new File(sd, backupDBPath);
-				FileChannel src = null;
-				FileChannel dst = null;
-				if (currentDB.exists()) {
-					try {
-						src = new FileInputStream(currentDB).getChannel();
-						dst = new FileOutputStream(backupDB).getChannel();
-						dst.transferFrom(src, 0, src.size());
-						src.close();
-						dst.close();
-					} catch (Exception e) {
-
-					} finally {
-						try {
-							src.close();
-						} catch (Exception e) {
-						}
-						try {
-							dst.close();
-						} catch (Exception e) {
-						}
-					}
-
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Insert Links into the Database.
-	 * 
-	 * @param {Context} context Application Context
-	 * @param {String} source Source of Privly Link (FACEBOOK, TWITTER etc)
-	 * @param {String} url Privly Link
-	 * @param {String} id unique identifier on the Source Server of the message
-	 * @param {String} userName Name of the user who sent the message / email
-	 *        /tweet.
-	 * 
-	 */
-
-	public static void insertIntoDb(Context context, String source, String url,
-			String id, String userName) {
-		LinksDbHelper mDbHelper = new LinksDbHelper(context);
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		ContentValues contentValues = new ContentValues();
-
-		contentValues.put(LinksDb.COLUMN_NAME_SOURCE, source);
-		contentValues.put(LinksDb.COLUMN_NAME_LINK, url);
-
-		contentValues.put(LinksDb.COLUMN_NAME_SOURCE_ID, id);
-		contentValues.put(LinksDb.COLUMN_NAME_FROM, userName);
-		try {
-			db.insert(LinksDb.TABLE_NAME, null, contentValues);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		contentValues.clear();
-		db.close();
-	}
-
 	public static void setHederFont(Activity activity) {
 		TextView hederText = (TextView) activity.findViewById(R.id.twHederText);
 		Typeface lobster = Typeface.createFromAsset(activity.getAssets(),
@@ -323,8 +203,6 @@ public class Utilities {
 		Calendar tDate = Calendar.getInstance();
 		tDate.setTime(date);
 		Calendar curDate = Calendar.getInstance();
-		System.out.println("cur=" + curDate.getTime().toString());
-		System.out.println("tdata=" + tDate.getTime().toString());
 		if (tDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
 			if (curDate.get(Calendar.DAY_OF_YEAR) == tDate
 					.get(Calendar.DAY_OF_YEAR)) {
@@ -340,6 +218,37 @@ public class Utilities {
 		return simpleDateFormat.format(tDate.getTime());
 	}
 
+	public static String getTimeForGmail(String time) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"EEE, d MMM yyyy HH:mm:ss Z",Locale.US);
+		Date date = null;
+		try {
+			date = simpleDateFormat.parse(time);
+
+			Calendar fDate = Calendar.getInstance();
+			fDate.setTime(date);
+			Calendar curDate = Calendar.getInstance();
+			if (fDate.get(Calendar.YEAR) == curDate.get(Calendar.YEAR)) {
+				if (curDate.get(Calendar.DAY_OF_YEAR) == fDate
+						.get(Calendar.DAY_OF_YEAR)) {
+					simpleDateFormat = new SimpleDateFormat("HH:mm");
+				} else if (curDate.get(Calendar.WEEK_OF_YEAR) == fDate
+						.get(Calendar.WEEK_OF_YEAR)) {
+					simpleDateFormat = new SimpleDateFormat("E, HH:mm");
+				} else
+					simpleDateFormat = new SimpleDateFormat("MMM dd, HH:mm");
+			} else {
+				simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+			}
+			return simpleDateFormat.format(fDate.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			
+			return "1800 BC";
+		}
+
+	}
+
 	/**
 	 * Check for Null or Whitespace
 	 * 
@@ -349,4 +258,5 @@ public class Utilities {
 	public static boolean isNullOrWhitespace(String string) {
 		return string == null || string.isEmpty() || string.trim().isEmpty();
 	}
+
 }

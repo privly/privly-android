@@ -4,6 +4,6 @@
     <item
         android:id="@+id/logout"
         android:icon="@drawable/settings"
-        android:title="@string/logoutTwitter"/>
+        android:title="@string/logout_twitter"/>
 
 </menu>

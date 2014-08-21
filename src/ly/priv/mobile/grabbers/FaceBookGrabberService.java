@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
 import ly.priv.mobile.Values;
@@ -14,6 +13,8 @@ import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
+import ly.priv.mobile.gui.IndexFragment;
+import ly.priv.mobile.gui.MainActivity;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -35,7 +36,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -80,17 +80,29 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	private Session.StatusCallback mSessionStatusCallback;
 	private ListUsersFragment mSListUsersActivity;
 	private ProgressBar mProgressBar;
+	private MainActivity mActivity;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		mActivity = (MainActivity) getActivity();
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "Creating " + TAG);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Login_Facebook);
+		setTitle();
 		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mProgressBar.setVisibility(View.VISIBLE);
-		mValues = new Values(getActivity());
+		mValues = new Values(mActivity);
 		mSessionStatusCallback = new Session.StatusCallback() {
 
 			@Override
@@ -99,6 +111,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				onSessionStateChange(session, state, exception);
 
 			}
+
 		};
 		login();
 		return view;
@@ -109,8 +122,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 */
 	private void runSocialGui() {
 		Log.d(TAG, "runSocialGui");
-		FragmentTransaction transaction = getActivity()
-				.getSupportFragmentManager().beginTransaction();
+		FragmentTransaction transaction = mActivity.getSupportFragmentManager()
+				.beginTransaction();
 		mSListUsersActivity = new ListUsersFragment();
 		mSListUsersActivity.setISocialNetworks(this);
 		transaction.replace(R.id.container, mSListUsersActivity);
@@ -127,7 +140,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		mSession = Session.getActiveSession();
 		if (mSession == null) {
 			Log.d(TAG, "mSession == null");
-			mSession = new Session.Builder(getActivity()).build();
+			mSession = new Session.Builder(mActivity).build();
 			Session.setActiveSession(mSession);
 			if (!mSession.isOpened()) {
 				Log.d(TAG, "!mSession.isOpened()");
@@ -136,7 +149,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				mSession.addCallback(mSessionStatusCallback);
 				Session.OpenRequest openRequest = new Session.OpenRequest(
 						FaceBookGrabberService.this);
-				openRequest.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
+				openRequest
+						.setLoginBehavior(SessionLoginBehavior.SSO_WITH_FALLBACK);
 				openRequest
 						.setRequestCode(Session.DEFAULT_AUTHORIZE_ACTIVITY_CODE);
 				openRequest.setPermissions(permissions);
@@ -156,7 +170,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
+		Session.getActiveSession().onActivityResult(mActivity, requestCode,
 				resultCode, data);
 	}
 
@@ -170,11 +184,10 @@ public class FaceBookGrabberService extends SherlockFragment implements
 	 */
 	private void onSessionStateChange(Session session, SessionState state,
 			Exception exception) {
-
+		Log.d(TAG, "onSessionStateChange");
 		if (session != mSession) {
 			return;
 		}
-
 		if (state.isOpened()) {
 			// Log in just happened.
 			Log.d(TAG, "session opened");
@@ -186,6 +199,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		} else if (state.isClosed()) {
 			// Log out just happened. Update the UI.
 			Log.d(TAG, "session closed");
+			logout();
 		}
 	}
 
@@ -213,8 +227,8 @@ public class FaceBookGrabberService extends SherlockFragment implements
 						if (response.getError() != null) {
 							mProgressBar.setVisibility(View.INVISIBLE);
 							AlertDialog dialog = Utilities.showDialog(
-									getActivity(),
-									getString(R.string.error_inbox));
+									mActivity, response.getError()
+											.getErrorMessage());
 							dialog.show();
 							return;
 						}
@@ -246,14 +260,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		Request request = Request.newGraphPathRequest(mSession, "me/inbox",
 				null);
 		request.setParameters(params);
-		Response response = request.executeAndWait();
+		final Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
-			if (getActivity() != null)
-				getActivity().runOnUiThread(new Runnable() {
+			if (mActivity != null)
+				mActivity.runOnUiThread(new Runnable() {
 					public void run() {
-						AlertDialog dialog = Utilities.showDialog(
-								getActivity(), getString(R.string.error_inbox));
+						AlertDialog dialog = Utilities.showDialog(mActivity,
+								response.getError().getErrorMessage());
 						dialog.show();
 					}
 				});
@@ -306,14 +320,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		// params.putString("limit", "1");
 		Request request = Request.newGraphPathRequest(mSession, dialogID, null);
 		request.setParameters(params);
-		Response response = request.executeAndWait();
+		final Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
-			getActivity().runOnUiThread(new Runnable() {
+			mActivity.runOnUiThread(new Runnable() {
 				public void run() {
 					mProgressBar.setVisibility(View.INVISIBLE);
-					AlertDialog dialog = Utilities.showDialog(getActivity(),
-							getString(R.string.error_inbox));
+					AlertDialog dialog = Utilities.showDialog(mActivity,
+							response.getError().getErrorMessage());
 					dialog.show();
 				}
 			});
@@ -385,8 +399,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 		mSession = null;
 		Session.setActiveSession(mSession);
 		mValues.setFacebookID("");
-		getActivity().getSupportFragmentManager().beginTransaction()
-		.replace(R.id.container, new Index()).commit();
+		mActivity.getSupportFragmentManager().beginTransaction()
+				.replace(R.id.container, new IndexFragment()).commit();
+
+	}
+
+	@Override
+	public void setTitle() {
+		getSherlockActivity().setTitle(R.string.privly_Facebook);
 	}
 
 }
