@@ -17,6 +17,9 @@ To contribute to the development of Privly-Android.
  * $ git submodule update
 * Contribute
 
+[To test\develop Facebook](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Facebook) <br>
+[To test\develop Twitter](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Twitter)
+
 To drop in new posting-applications
 
 * Add the new posting-application folder to assets/PrivlyApplications
