@@ -65,7 +65,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivityNew"
+            android:name="ly.priv.mobile.SettingsActivityNew"
             android:label="@string/settings"
             android:parentActivityName="ly.priv.mobile.gui.MainActivity" >
             <meta-data

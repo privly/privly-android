@@ -1,10 +1,6 @@
 package ly.priv.mobile;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.facebook.Session;
-
-import ly.priv.mobile.grabbers.TwitterUtil;
-import ly.priv.mobile.gui.IndexFragment;
 import ly.priv.mobile.gui.LoginActivity;
 import ly.priv.mobile.gui.MainActivity;
 import android.annotation.SuppressLint;
