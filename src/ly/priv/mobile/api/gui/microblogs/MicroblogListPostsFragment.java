@@ -1,23 +1,10 @@
 package ly.priv.mobile.api.gui.microblogs;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.Index;
 import ly.priv.mobile.R;
-import ly.priv.mobile.ShowContent;
 import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
+import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -33,14 +20,25 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 /**
- * Clas for login and showing twets from Twitter
+ * 
+ * Clas for showing posts for microblogs
+ * <p>
+ * For using this api you must realize interface
+ * {@link ly.priv.mobile.api.gui.microblogs.IMicroblogs} and set it with method
+ * <code>setIMicroblogs</code>
+ * </p>
+ * <p>
+ * <ul>
+ * <li>If privly link contained in message then Redirect User to
+ * {@link ly.priv.mobile.gui.ShowContentFragment} ShowContent Activity</li> *
+ * </ul>
+ * </p>
  * 
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
@@ -48,32 +46,23 @@ import com.actionbarsherlock.view.MenuItem;
 public class MicroblogListPostsFragment extends SherlockFragment implements
 		OnScrollListener {
 	private static final String TAG = "MicroblogListPostsFragment";
-	private static final int COUNT_OF_TWEETS=100;
 	private ProgressBar mProgressBar;
 	private View mFooterView;
 	private ListView mListViewPosts;
 	private ListMicroblogAdapter mListMicroblogAdapter;
-	private Values mValues;
-	private int mPage = 1;
+	private int mPage;
 	private boolean mIsLoading;
-	private ArrayList<twitter4j.Status> mPosts;
+	private ArrayList<Post> mPosts;
+	private IMicroblogs mIMicroblogs;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView ");
-		View view = inflater.inflate(R.layout.activity_list,
-				container, false);
+		View view = inflater.inflate(R.layout.activity_list, container, false);
 		mFooterView = (View) inflater.inflate(R.layout.loading_layout, null);
 		initializeComponent(view);
-		mValues = new Values(getActivity());
-		if (!Utilities.isDataConnectionAvailable(getActivity())) {
-			Log.d(TAG, getString(R.string.no_internet_connection));
-			Utilities.showToast(getActivity(),
-					getString(R.string.no_internet_connection), true);
-		} else {
-			logIn();
-		}
+		new GetPostsTask().execute(mPage);
 		return view;
 	}
 
@@ -84,32 +73,23 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	 */
 	private void initializeComponent(View view) {
 		setHasOptionsMenu(true);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.privly_Twitter);
+		mIMicroblogs.setTitle();
 		mListViewPosts = ((ListView) view.findViewById(R.id.lView));
 		mListViewPosts.addFooterView(mFooterView);
-		mProgressBar = (ProgressBar) view
-				.findViewById(R.id.pbLoadingData);		
+		mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		mListViewPosts.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				String url = "";
-				URLEntity[] entities = mPosts.get(position)
-						.getURLEntities();
-				for (int i = 0; i < entities.length; i++) {
-					// Since urls are shortened by the twitter t.co
-					// service, get the expanded urls to search for
-					// Privly links
-					url += "  " + entities[i].getExpandedURL();
-				}
 
-				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(url);
+				ArrayList<String> listOfUrls = Utilities.fetchPrivlyUrls(mPosts
+						.get(position).getMessage());
 				if (listOfUrls.size() > 0) {
+					mPage = 1;
 					FragmentTransaction transaction = getActivity()
 							.getSupportFragmentManager().beginTransaction();
-					ShowContent showContent = new ShowContent();
+					ShowContentFragment showContent = new ShowContentFragment();
 					Bundle bundle = new Bundle();
 					bundle.putStringArrayList("listOfLinks", listOfUrls);
 					showContent.setArguments(bundle);
@@ -124,6 +104,10 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 			}
 		});
 		mListViewPosts.setOnScrollListener(this);
+		mPosts = new ArrayList<Post>();
+		mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(), mPosts);
+		mListViewPosts.setAdapter(mListMicroblogAdapter);
+		mPage = 1;
 	}
 
 	/**
@@ -138,7 +122,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	/**
 	 * Item click listener for options menu.
 	 * <p>
-	 * relogin
+	 * logout
 	 * </p>
 	 */
 	@Override
@@ -146,12 +130,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 
 		switch (item.getItemId()) {
 		case R.id.logout:
-			mValues.setTwitterLoggedIn(false);
-			mValues.setTwitterOauthToken("");
-			mValues.setTwitterOauthTokenSecret("");
-			TwitterUtil.getInstance().reset();
-			getActivity().getSupportFragmentManager().beginTransaction()
-			.replace(R.id.container, new Index()).commit();
+			mIMicroblogs.logout();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -159,177 +138,75 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	}
 
 	/**
-	 * Method for run login or show tweets
-	 */
-	private void logIn() {
-		Log.d(TAG, "logIn");
-		mProgressBar.setVisibility(View.VISIBLE);
-		if (!mValues.getTwitterLoggedIn()) {
-			new TwitterAuthenticateTask().execute();
-			mValues.setTwitterLoggedIn(true);
-		} else {
-			Uri uri = getActivity().getIntent().getData();
-			if (uri != null
-					&& uri.toString().startsWith(
-							ConstantValues.TWITTER_CALLBACK_URL)) {
-				String verifier = uri
-						.getQueryParameter(ConstantValues.URL_PARAMETER_TWITTER_OAUTH_VERIFIER);
-				new TwitterGetAccessTokenTask().execute(verifier);
-			} else {
-				new TwitterGetAccessTokenTask().execute("");
-			}
-		}
-	}
-
-	/**
-	 * AsyncTask for logIn to Twitter
+	 * AsyncTask for get posts
 	 * 
 	 * @author Ivan Metla e-mail: metlaivan@gmail.com
 	 * 
 	 */
-	class TwitterAuthenticateTask extends
-			AsyncTask<String, String, RequestToken> {
+	class GetPostsTask extends AsyncTask<Integer, Void, ArrayList<Post>> {
 
 		@Override
-		protected void onPostExecute(RequestToken requestToken) {
-			Log.d(TAG, "TwitterAuthenticateTask");
-			if (requestToken != null) {
-				Intent intent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse(requestToken.getAuthenticationURL()));
-				startActivity(intent);
-			}
-			mProgressBar.setVisibility(View.INVISIBLE);
+		protected void onPreExecute() {
+			Log.d(TAG, "GetPostsTask");
+			if (mPage == 1)
+				mProgressBar.setVisibility(View.VISIBLE);
 		}
 
 		@Override
-		protected RequestToken doInBackground(String... params) {
-			return TwitterUtil.getInstance().getRequestToken();
-		}
-	}
-
-	/**
-	 * AsyncTask for get Access Token and get tweets
-	 * 
-	 * @author Ivan Metla e-mail: metlaivan@gmail.com
-	 * 
-	 */
-	class TwitterGetAccessTokenTask extends
-			AsyncTask<String, String, List<twitter4j.Status>> {
-
-		@Override
-		protected List<twitter4j.Status> doInBackground(String... params) {
-
-			Twitter twitter = TwitterUtil.getInstance().getTwitter();
-			RequestToken requestToken = TwitterUtil.getInstance()
-					.getRequestToken();
-			AccessToken accessToken = null;
-			if (!Utilities.isNullOrWhitespace(params[0])) {
-				try {
-					accessToken = twitter.getOAuthAccessToken(requestToken,
-							params[0]);
-					mValues.setTwitterOauthToken(accessToken.getToken());
-					mValues.setTwitterOauthTokenSecret(accessToken
-							.getTokenSecret());
-				} catch (TwitterException e) {
-					e.printStackTrace();
-				}
-			} else {
-				String accessTokenString = mValues.getTwitterOauthToken();
-				String accessTokenSecret = mValues.getTwitterOauthTokenSecret();
-				accessToken = new AccessToken(accessTokenString,
-						accessTokenSecret);
-				TwitterUtil.getInstance().setTwitterFactory(accessToken);
-			}
-
-			try {
-				Paging paging = new Paging(mPage,COUNT_OF_TWEETS);
-				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
-						.getTwitter().getHomeTimeline(paging);
-				return statuses;
-			} catch (TwitterException e) {
-				e.printStackTrace();
-				return null;
-			}
+		protected ArrayList<Post> doInBackground(Integer... params) {
+			return mIMicroblogs.getPost(params[0]);
 		}
 
 		@Override
-		protected void onPostExecute(List<twitter4j.Status> statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");
-			if (statuses != null) {
-				Log.d(TAG, "Showing home timeline.");
-				for (twitter4j.Status status : statuses) {
-					Log.d(TAG, status.toString());
-				}
-				mPosts = new ArrayList<twitter4j.Status>(statuses);
-				mListMicroblogAdapter = new ListMicroblogAdapter(getActivity(),
-						mPosts);
-				mListViewPosts.setAdapter(mListMicroblogAdapter);				
-			}
-
-			mProgressBar.setVisibility(View.INVISIBLE);
-		}
-
-	}
-
-
-	/**
-	 * AsyncTask for get next tweets
-	 * 
-	 * @author Ivan Metla e-mail: metlaivan@gmail.com
-	 * 
-	 */
-	class TwitterGetTwets extends
-			AsyncTask<Integer, Void, List<twitter4j.Status>> {
-
-		@Override
-		protected List<twitter4j.Status> doInBackground(Integer... params) {
-			try {
-				Paging paging = new Paging(mPage,COUNT_OF_TWEETS);
-				List<twitter4j.Status> statuses = TwitterUtil.getInstance()
-						.getTwitter().getHomeTimeline(paging);
-				return statuses;
-			} catch (TwitterException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(List<twitter4j.Status> statuses) {
-			Log.d(TAG, "TwitterGetAccessTokenTask");
-			if (statuses != null) {
-				Log.d(TAG, "Showing" + mPage + " page home timeline.");			
-				mPosts.addAll(statuses);
+		protected void onPostExecute(ArrayList<Post> posts) {
+			if (posts != null) {
+				mPosts.addAll(posts);
 				mListMicroblogAdapter.notifyDataSetChanged();
-				mListViewPosts.setSelection(mPosts.size()-1);				
-				mListViewPosts.removeFooterView(mFooterView);
-				mIsLoading=false;
+				if (mPage > 1) {
+					mListViewPosts.setSelection(mPosts.size() - 1);
+					mListViewPosts.removeFooterView(mFooterView);
+					mIsLoading = false;
+				}
 			}
+			if (mPage == 1)
+				mProgressBar.setVisibility(View.INVISIBLE);
 		}
 
 	}
 
+	/**
+	 * Set Interface IMicroblogs
+	 * 
+	 * @param mIMicroblogs
+	 *            the mIMicroblogs to set
+	 */
+	public void setIMicroblogs(IMicroblogs iMicroblogs) {
+		this.mIMicroblogs = iMicroblogs;
+	}
+
+	// overridden methods for implementing endless loading
 	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {}
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+	}
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
 		if (mListMicroblogAdapter == null)
-			return ;
+			return;
 
 		if (mListMicroblogAdapter.getCount() == 0)
-			return ;
+			return;
 
 		int l = visibleItemCount + firstVisibleItem;
 		if (l >= totalItemCount && !mIsLoading) {
-			// It is time to add new data. We call the listener	
+			// It is time to add new data. We call the listener
 			mListViewPosts.addFooterView(mFooterView);
 			mIsLoading = true;
 			mPage++;
-			new TwitterGetTwets().execute(mPage);
+			new GetPostsTask().execute(mPage);
 		}
-		
+
 	}
 
 }

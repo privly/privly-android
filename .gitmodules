@@ -1,3 +1,6 @@
 [submodule "assets/PrivlyApplications"]
 	path = assets/PrivlyApplications
 	url = https://github.com/privly/privly-applications.git
+[submodule "dependencies/LazyList"]
+	path = dependencies/LazyList
+	url = https://github.com/metlaivan/LazyList.git

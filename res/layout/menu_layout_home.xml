@@ -8,13 +8,13 @@
 
     <item
         android:id="@+id/settings"
-        android:title="@string/settingsMenuLabel"
+        android:title="@string/changeContentServer"
         android:icon="@drawable/settings"
         android:showAsAction="ifRoom" />
     
     <item
         android:id="@+id/logout"
         android:title="@string/logoutMenuLabel"
-        android:icon="@drawable/settings"/>
+        android:showAsAction="ifRoom" />
 
 </menu>

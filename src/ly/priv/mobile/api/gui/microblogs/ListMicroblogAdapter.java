@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.Utilities;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +14,27 @@ import android.widget.TextView;
 
 import com.fedorvlasov.lazylist.ImageLoader;
 
+/**
+ * s Adapter for ListViewPosts. It is showing posts.
+ * 
+ * 
+ * @author Ivan Metla e-mail: metlaivan@gmail.com
+ * 
+ */
 public class ListMicroblogAdapter extends BaseAdapter {
 	private static LayoutInflater inflater = null;
 	private Activity mActivity;
 	private ImageLoader mImageLoader;
-	private ArrayList<twitter4j.Status> mListPosts;
-	private twitter4j.Status mPost;
+	private ArrayList<Post> mListPosts;
+	private Post mPost;
 
-	public ListMicroblogAdapter(Activity activity,
-			ArrayList<twitter4j.Status> list) {
+	/**
+	 * Constructor for ListMicroblogAdapter
+	 * 
+	 * @param activity
+	 * @param list
+	 */
+	public ListMicroblogAdapter(Activity activity, ArrayList<Post> list) {
 		this.mActivity = activity;
 		this.mListPosts = list;
 		this.mImageLoader = new ImageLoader(
@@ -62,13 +73,11 @@ public class ListMicroblogAdapter extends BaseAdapter {
 		mPost = mListPosts.get(position);
 		if (this.mPost != null) {
 			ViewHolder holder = (ViewHolder) vi.getTag();
-			holder.mName.setText(mPost.getUser().getName());
-			holder.mNic.setText("@" + mPost.getUser().getScreenName());
-			holder.mMessage.setText(mPost.getText());
-			holder.mTine.setText(Utilities.getTimeForTwitter(mPost
-					.getCreatedAt()));
-			mImageLoader.DisplayImage(mPost.getUser()
-					.getBiggerProfileImageURL(), holder.mAvatar);
+			holder.mName.setText(mPost.getName());
+			holder.mNic.setText("@" + mPost.getNic());
+			holder.mMessage.setText(mPost.getMessage());
+			holder.mTine.setText(Utilities.getTimeForTwitter(mPost.getTime()));
+			mImageLoader.DisplayImage(mPost.getUrlAvatar(), holder.mAvatar);
 		}
 		return vi;
 	}

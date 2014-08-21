@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp" >
+    
+    
+    <TextView
+        android:id="@+id/mailSender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/mailTime"
+        android:text="@string/name"
+        android:textSize="15.0sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/mailBody"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:paddingTop="8dp"
+        android:layout_below="@+id/mailTime"
+        android:text="LOREM IPSUM"
+        android:textSize="15.0sp" />
+
+    <TextView
+        android:id="@+id/mailTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/mailSender"
+        android:layout_alignBottom="@+id/mailSender"
+        android:layout_alignParentRight="true"
+        android:text="@string/time"
+        android:paddingLeft="8dp"
+        android:textColor="@color/black" />
+
+</RelativeLayout>
