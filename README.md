@@ -28,7 +28,7 @@ To contribute to the development of Privly-Android.
 To drop in new posting-applications
 
 * Add the new posting-application folder to assets/PrivlyApplications
-* Add posting-application's name to ArrayList<String> createList. This should be the folder name of the posting application. 
+* Add posting-application's name to ArrayList<String> createList in MainActivity.java. This should be the folder name of the posting application. 
 * The application folder must contain a new.html file. This new.html file will be loaded in the WebView when creating new Privly Posts. 
 
 
