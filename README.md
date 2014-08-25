@@ -18,15 +18,17 @@ To contribute to the development of Privly-Android.
 * Update submodules. 
  * $ git submodule init
  * $ git submodule update
+* Import libraries from 'dependencies' folder
 * Contribute
 
-[To test\develop Facebook](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Facebook) <br>
-[To test\develop Twitter](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Twitter)
+[Facebook Setup](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Facebook) <br>
+[Twitter Setup](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Twitter)
+[Gmail Setup] (https://developers.google.com/gmail/api/quickstart/quickstart-java)
 
 To drop in new posting-applications
 
 * Add the new posting-application folder to assets/PrivlyApplications
-* Add posting-application's name to String[] arrCreate. This should be the folder name of the posting application. 
+* Add posting-application's name to ArrayList<String> createList. This should be the folder name of the posting application. 
 * The application folder must contain a new.html file. This new.html file will be loaded in the WebView when creating new Privly Posts. 
 
 
