@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Verifies the validity of existing auth_token. If expired, redirect to
@@ -76,6 +77,7 @@ public class VerifyAuthToken extends AsyncTask<String, Void, String> {
 			HttpEntity entity = response.getEntity();
 			mLoginResponse = EntityUtils.toString(entity);
 		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 
 		}

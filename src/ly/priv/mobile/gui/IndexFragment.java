@@ -33,11 +33,17 @@ import com.joanzapata.android.iconify.Iconify.IconValue;
  */
 
 public class IndexFragment extends SherlockFragment {
-	private static final String TAG = "Index";
+	private static final String TAG = "IndexFragment";
 	private WebView mWebViewIndex;
 
 	public IndexFragment() {
 
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 	}
 
 	@Override
@@ -46,7 +52,7 @@ public class IndexFragment extends SherlockFragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.new_post, container, false);
-		Log.d(TAG, "oncrete at index");
+		Log.d(TAG, "onCreate");
 		String indexTitle = getString(R.string.index);
 		getSherlockActivity().setTitle(indexTitle);
 		container.removeAllViews();
@@ -56,9 +62,8 @@ public class IndexFragment extends SherlockFragment {
 		try {
 			isRedirected = getArguments().getBoolean(
 					ConstantValues.IS_REDIRECTED);
-			loadIndex();
 		} catch (NullPointerException e) {
-			Log.d(TAG, "" + isRedirected);
+			Log.d(TAG, "Is Redirected >>> " + isRedirected);
 			Values values = new Values(getActivity());
 			// Checks if the User has already been verified at the Login Screen.
 			// If yes, prevents re authentication. If not, creates and executes
@@ -69,8 +74,8 @@ public class IndexFragment extends SherlockFragment {
 						+ "/token_authentications.json");
 			} else
 				values.setUserVerifiedAtLogin(false);
-			loadIndex();
 		}
+		loadIndex();
 		return view;
 	}
 

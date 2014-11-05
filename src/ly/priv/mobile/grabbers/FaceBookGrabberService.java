@@ -273,14 +273,14 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				});
 			return mListUserMess;
 		}
-		JSONArray listUsersWIthLastMessage = null;
+		JSONArray listUsersWithLastMessage = null;
 		try {
-			listUsersWIthLastMessage = response.getGraphObject()
+			listUsersWithLastMessage = response.getGraphObject()
 					.getInnerJSONObject().getJSONArray("data");
 
-			for (int i = 0; i < listUsersWIthLastMessage.length(); i++) {
+			for (int i = 0; i < listUsersWithLastMessage.length(); i++) {
 				SUser sUser = new SUser();
-				JSONObject dialog = listUsersWIthLastMessage.getJSONObject(i);
+				JSONObject dialog = listUsersWithLastMessage.getJSONObject(i);
 				sUser.setDialogId(dialog.getString("id"));
 				sUser.setTime(Utilities.getTimeForFacebook(dialog
 						.getString("updated_time")));
@@ -299,7 +299,12 @@ public class FaceBookGrabberService extends SherlockFragment implements
 				}
 				JSONObject comment = dialog.getJSONObject("comments")
 						.getJSONArray("data").getJSONObject(0);
-				sUser.setLastUserMess(comment.getString("message"));
+				if (comment.has("message")) {
+					sUser.setLastUserMess(comment.getString("message"));
+				} else {
+					sUser.setLastUserMess("");
+
+				}
 				mListUserMess.add(sUser);
 			}
 		} catch (JSONException e) {
@@ -310,16 +315,17 @@ public class FaceBookGrabberService extends SherlockFragment implements
 
 	@Override
 	public Map<String, Object> getListOfMessages(String dialogID) {
-		Log.d(TAG, "getListOfMessagesFromFaceBook");
+		Log.d(TAG, "Access Token >>> " + mSession.getAccessToken());
+		Log.d(TAG, "getListOfMessagesFromFaceBook >>> " + dialogID);
 		String nextUrlForLoadingMessages = "";
 		ArrayList<SMessage> listOfUsersMessage = new ArrayList<SMessage>();
 		Map<String, Object> res = new HashMap<String, Object>();
 		Bundle params = new Bundle();
 		params.putString("fields",
 				"comments.fields(from.fields(id,picture),message,created_time)");
-		// params.putString("limit", "1");
 		Request request = Request.newGraphPathRequest(mSession, dialogID, null);
 		request.setParameters(params);
+
 		final Response response = request.executeAndWait();
 		if (response.getError() != null) {
 			Log.e(TAG, response.getError().getErrorMessage());
