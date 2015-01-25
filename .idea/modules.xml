@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/lazyList/lazyList.iml" filepath="$PROJECT_DIR$/lazyList/lazyList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/privly-android.iml" filepath="$PROJECT_DIR$/privly-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/privlyandroid/privlyandroid.iml" filepath="$PROJECT_DIR$/privlyandroid/privlyandroid.iml" />
+    </modules>
+  </component>
+</project>
+
