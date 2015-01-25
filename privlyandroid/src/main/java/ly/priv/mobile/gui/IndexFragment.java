@@ -1,11 +1,5 @@
 package ly.priv.mobile.gui;
 
-import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.JsObject;
-import ly.priv.mobile.R;
-import ly.priv.mobile.SettingsActivityNew;
-import ly.priv.mobile.Values;
-import ly.priv.mobile.VerifyAuthToken;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
@@ -25,6 +19,13 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
+
+import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.JsObject;
+import ly.priv.mobile.R;
+import ly.priv.mobile.SettingsActivityNew;
+import ly.priv.mobile.Values;
+import ly.priv.mobile.VerifyAuthToken;
 
 /**
  * Displays the Index application for a user after authentication.
@@ -58,6 +59,7 @@ public class IndexFragment extends SherlockFragment {
 		container.removeAllViews();
 		mWebViewIndex = (WebView) view.findViewById(R.id.webview_new_post);
 		mWebViewIndex.getSettings().setJavaScriptEnabled(true);
+        mWebViewIndex.getSettings().setDomStorageEnabled(true);
 		Boolean isRedirected = null;
 		try {
 			isRedirected = getArguments().getBoolean(

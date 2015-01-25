@@ -36,7 +36,6 @@ dependencies {
     compile('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {
         exclude module: 'support-v4'
     }
-//    compile 'com.android.support:support-v4:21.0.3'
     compile 'com.google.api-client:google-api-client:1.19.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.19.1'
     compile 'com.google.api-client:google-api-client-android:1.19.1'
@@ -50,21 +49,6 @@ dependencies {
     compile 'com.google.http-client:google-http-client-android:1.19.0'
     compile 'com.google.http-client:google-http-client:1.19.0'
     compile 'org.apache.httpcomponents:httpcore:4.4'
-    compile 'org.apache.httpcomponents:httpclient:4.4-beta1'
-    //    compile files('libs/android-iconify-1.0.6.jar')
-    //    compile files('libs/commons-lang3-3.3.2.jar')
-    //    compile files('libs/google-api-client-1.18.0-rc.jar')
-    //    compile files('libs/google-api-client-android-1.18.0-rc.jar')
-    //    compile files('libs/google-api-client-gson-1.18.0-rc.jar')
-    //    compile files('libs/google-api-client-jackson2-1.18.0-rc.jar')
-    //    compile files('libs/google-api-services-gmail-v1-rev2-1.18.0-rc.jar')
-    //    compile files('libs/google-http-client-1.18.0-rc.jar')
-    //    compile files('libs/google-http-client-android-1.18.0-rc.jar')
-    //    compile files('libs/google-http-client-jackson2-1.18.0-rc.jar')
-    //    compile files('libs/google-oauth-client-1.18.0-rc.jar')
-    //    compile files('libs/httpclient-4.0.1.jar')
-    //    compile files('libs/httpcore-4.0.1.jar')
-    //    compile files('libs/jackson-core-2.1.3.jar')
     compile project(':lazyList')
 }
 

@@ -1,9 +1,5 @@
 package ly.priv.mobile.gui;
 
-import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.JsObject;
-import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
@@ -23,6 +19,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
+
+import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.JsObject;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Values;
 
 /**
  * Allows the user to create new Privly Content. Integrates the Posting
@@ -53,6 +54,7 @@ public class NewPostFragment extends SherlockFragment {
 			getActivity().setTitle(JsAppName);
 			WebView w = (WebView) view.findViewById(R.id.webview_new_post);
 			w.getSettings().setJavaScriptEnabled(true);
+            w.getSettings().setDomStorageEnabled(true);
 			w.addJavascriptInterface(new JsObject(getActivity()),
 					"androidJsBridge");
 
