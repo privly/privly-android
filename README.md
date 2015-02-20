@@ -22,7 +22,7 @@ To contribute to the development of Privly-Android.
 * Contribute
 
 [Facebook Setup](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Facebook) <br>
-[Twitter Setup](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Twitter)
+[Twitter Setup](https://github.com/privly/privly-android/wiki/To-test%5Cdevelop-Twitter) <br>
 [Gmail Setup] (https://developers.google.com/gmail/api/quickstart/quickstart-java)
 
 To drop in new posting-applications
