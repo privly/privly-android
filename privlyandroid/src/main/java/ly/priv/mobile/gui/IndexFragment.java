@@ -54,7 +54,7 @@ public class IndexFragment extends SherlockFragment {
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.new_post, container, false);
 		Log.d(TAG, "onCreate");
-		String indexTitle = getString(R.string.index);
+		String indexTitle = getString(R.string.history);
 		getSherlockActivity().setTitle(indexTitle);
 		container.removeAllViews();
 		mWebViewIndex = (WebView) view.findViewById(R.id.webview_new_post);

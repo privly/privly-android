@@ -1,16 +1,5 @@
 package ly.priv.mobile.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import ly.priv.mobile.EmailThreadObject;
-import ly.priv.mobile.GmailLinkGrabberService;
-import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
-import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
-import ly.priv.mobile.grabbers.FaceBookGrabberService;
-import ly.priv.mobile.grabbers.TwitterGrabberService;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
@@ -34,6 +23,18 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import ly.priv.mobile.EmailThreadObject;
+import ly.priv.mobile.GmailLinkGrabberService;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
+import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
+import ly.priv.mobile.grabbers.FaceBookGrabberService;
+import ly.priv.mobile.grabbers.TwitterGrabberService;
 
 /**
  * This activity holds all the fragments which are intended to have a navigation
@@ -81,13 +82,13 @@ public class MainActivity extends SherlockFragmentActivity {
 		};
 		mDrawerLayout.setDrawerListener(hamburger);
 		createList = new ArrayList<String>(
-				Arrays.asList("PlainPost", "ZeroBin"));
+				Arrays.asList("PlainPost", "Message"));
 		readList = new ArrayList<String>(Arrays.asList("Gmail", "Facebook",
 				"Twitter"));
 		ArrayList<DrawerObject> drawerItems = new ArrayList<DrawerObject>();
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
-		obj.setTitle(getString(R.string.index));
+		obj.setTitle(getString(R.string.history));
 		obj.setIcon(new IconDrawable(this, IconValue.fa_list_alt)
 				.colorRes(R.color.white));
 		drawerItems.add(obj);
@@ -104,7 +105,7 @@ public class MainActivity extends SherlockFragmentActivity {
 			if (s.equals("PlainPost")) {
 				obj.setIcon(new IconDrawable(this, IconValue.fa_eye)
 						.colorRes(R.color.white));
-			} else if (s.equals("ZeroBin")) {
+			} else if (s.equals("Message")) {
 				obj.setIcon(new IconDrawable(this, IconValue.fa_eye_slash)
 						.colorRes(R.color.white));
 			}
@@ -144,7 +145,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					.add(R.id.container, new TwitterGrabberService()).commit();
 		} else {
 			if (savedInstanceState == null) {
-				setTitle(getString(R.string.index));
+				setTitle(getString(R.string.history));
 				Log.d("index", "beforetransaction");
 				getSupportFragmentManager().beginTransaction()
 						.add(R.id.container, new IndexFragment()).commit();
@@ -160,7 +161,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				|| fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new IndexFragment()).commit();
-			setTitle(getString(R.string.index));
+			setTitle(getString(R.string.history));
 		} else if (fragment instanceof IndexFragment) {
 			finish();
 		} else {

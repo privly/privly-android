@@ -1,14 +1,5 @@
 package ly.priv.mobile.gui;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import ly.priv.mobile.ConstantValues;
-import ly.priv.mobile.JsObject;
-import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
@@ -29,6 +20,16 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.JsObject;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Values;
 
 /**
  * Displays the Home Activity for a user after authentication.
@@ -196,9 +197,9 @@ public class ShowContentFragment extends SherlockFragment {
 		}
 
 		String urlForExtension = "";
-		if (url.indexOf("privlyInjectableApplication%3DZeroBin") > 0 || // deprecated
-				url.indexOf("privlyApp%3DZeroBin") > 0) {
-			urlForExtension = "PrivlyApplications/ZeroBin/show.html?privlyOriginalURL="
+		if (url.indexOf("privlyInjectableApplication%3DMessage") > 0 || // deprecated
+				url.indexOf("privlyApp%3DMessage") > 0) {
+			urlForExtension = "PrivlyApplications/Message/show.html?privlyOriginalURL="
 					+ url;
 		} else if (url.indexOf("privlyInjectableApplication%3DPlainPost") > 0 || // deprecated
 				url.indexOf("privlyApp%3DPlainPost") > 0) {
