@@ -3,6 +3,7 @@
 
     <style name="customPrivlyTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowBackground">@color/privlyBackgroundColor</item>
+        <item name="windowActionBar">false</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

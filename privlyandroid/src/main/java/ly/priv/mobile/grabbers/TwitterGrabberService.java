@@ -1,5 +1,19 @@
 package ly.priv.mobile.grabbers;
 
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,20 +31,6 @@ import twitter4j.TwitterException;
 import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
-
-import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * Fragment for login,logout get posts for Twitter
@@ -49,7 +49,7 @@ import com.actionbarsherlock.app.SherlockFragment;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class TwitterGrabberService extends SherlockFragment implements
+public class TwitterGrabberService extends Fragment implements
 		IMicroblogs {
 	private static final String TAG = TwitterGrabberService.class
 			.getSimpleName();
@@ -247,6 +247,6 @@ public class TwitterGrabberService extends SherlockFragment implements
 
 	@Override
 	public void setTitle() {
-		getSherlockActivity().setTitle(R.string.privly_Twitter);
+		getActivity().setTitle(R.string.privly_Twitter);
 	}
 }

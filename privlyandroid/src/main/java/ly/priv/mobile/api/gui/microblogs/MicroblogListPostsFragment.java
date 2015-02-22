@@ -1,15 +1,14 @@
 package ly.priv.mobile.api.gui.microblogs;
 
-import java.util.ArrayList;
-
-import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,10 +19,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import java.util.ArrayList;
+
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.gui.ShowContentFragment;
 
 /**
  * 
@@ -43,7 +43,7 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class MicroblogListPostsFragment extends SherlockFragment implements
+public class MicroblogListPostsFragment extends Fragment implements
 		OnScrollListener {
 	private static final String TAG = "MicroblogListPostsFragment";
 	private ProgressBar mProgressBar;
@@ -115,7 +115,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	 */
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.layout.menu_layout_microblog, menu);
+		inflater.inflate(R.menu.menu_layout_microblog, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -177,7 +177,7 @@ public class MicroblogListPostsFragment extends SherlockFragment implements
 	/**
 	 * Set Interface IMicroblogs
 	 * 
-	 * @param mIMicroblogs
+	 * @param iMicroblogs
 	 *            the mIMicroblogs to set
 	 */
 	public void setIMicroblogs(IMicroblogs iMicroblogs) {

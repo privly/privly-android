@@ -1,22 +1,23 @@
 package ly.priv.mobile.gui;
 
-import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
+
 
 /**
  * Shows the newly generated Privly URL and allows the user to share it to
@@ -24,7 +25,7 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class ShareFragment extends SherlockFragment {
+public class ShareFragment extends Fragment {
 	/** Called when the activity is first created. */
 	private String mNewPrivlyUrl;
 
@@ -82,7 +83,7 @@ public class ShareFragment extends SherlockFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
 		super.onCreateOptionsMenu(menu, menuInflater);
-		menuInflater.inflate(R.layout.menu_layout_settings, menu);
+		menuInflater.inflate(R.menu.menu_layout_settings, menu);
 	}
 
 	@Override

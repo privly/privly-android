@@ -5,22 +5,22 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
@@ -44,7 +44,7 @@ import ly.priv.mobile.grabbers.TwitterGrabberService;
  * @author Gitanshu
  * 
  */
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends ActionBarActivity {
 	private static final String TAG = "MainActivity";
 	Uri uri;
 	DrawerLayout mDrawerLayout;
@@ -59,14 +59,16 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate MainActivity");
 		setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 		mTitle = getTitle();
-		getSupportActionBar().setDisplayOptions(
-				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
-						| ActionBar.DISPLAY_HOME_AS_UP);
+//		getActionBar().setDisplayOptions(
+//				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
+//						| ActionBar.DISPLAY_HOME_AS_UP);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		hamburger = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_navigation_drawer, R.string.drawer_open,
+		hamburger = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+				R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
@@ -80,6 +82,7 @@ public class MainActivity extends SherlockFragmentActivity {
 												// onPrepareOptionsMenu()
 			}
 		};
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		mDrawerLayout.setDrawerListener(hamburger);
 		createList = new ArrayList<String>(
 				Arrays.asList("PlainPost", "Message"));
@@ -546,7 +549,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	@Override
 	public void setTitle(int resId) {
 		Log.d("setTitle", getString(resId));
-		getSupportActionBar().setTitle(getString(resId));
+        getSupportActionBar().setTitle(getString(resId));
 	}
 
 }
