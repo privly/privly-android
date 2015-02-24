@@ -10,5 +10,7 @@
     <color name="gray">#ff7c7c7c</color>
     <color name="blue">#ff3b5998</color>
     <color name="lightgray">#ffb0b0b0</color>
+    <color name="privlyDark">#101010</color>
+
 
 </resources>
