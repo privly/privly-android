@@ -17,10 +17,11 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.TwitterUtil;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 import ly.priv.mobile.api.gui.microblogs.IMicroblogs;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.microblogs.Post;

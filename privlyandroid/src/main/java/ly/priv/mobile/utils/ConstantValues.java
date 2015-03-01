@@ -1,4 +1,4 @@
-package ly.priv.mobile;
+package ly.priv.mobile.utils;
 
 /**
  * Constant values
@@ -7,7 +7,14 @@ package ly.priv.mobile;
  * 
  */
 public class ConstantValues {
-	// Constant for Privly
+
+    final public static String DEFAULT_CONTENT_SERVER = "https://privlyalpha.org";
+    final public static String TOKEN_AUTHENTICATION_ENDPOINT = "/token_authentications.json";
+    final public static String POST_PARAM_NAME_EMAIL = "email";
+    final public static String POST_PARAM_NAME_PWD = "password";
+    final public static String AUTH_ERROR_KEY = "error";
+
+    // Constant for Privly
 	public static String NEW_PRIVLY_URL = "newPrivlyUrl";
 	public static final String IS_REDIRECTED = "isRedirected";
 	public static final String JS_APP_NAME = "JsAppName";

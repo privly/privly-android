@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
+import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.gui.MainActivity;
 import ly.priv.mobile.gui.ShowContentFragment;
 

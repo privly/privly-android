@@ -30,7 +30,7 @@ import java.util.Arrays;
 import ly.priv.mobile.EmailThreadObject;
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
+import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;

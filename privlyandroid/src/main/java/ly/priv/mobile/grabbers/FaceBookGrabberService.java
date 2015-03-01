@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;

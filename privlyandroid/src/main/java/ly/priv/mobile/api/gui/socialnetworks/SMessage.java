@@ -2,7 +2,7 @@ package ly.priv.mobile.api.gui.socialnetworks;
 
 import java.io.Serializable;
 
-import ly.priv.mobile.Utilities;
+import ly.priv.mobile.utils.Utilities;
 
 import com.google.gson.annotations.SerializedName;
 

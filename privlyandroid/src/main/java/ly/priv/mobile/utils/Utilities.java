@@ -1,4 +1,4 @@
-package ly.priv.mobile;
+package ly.priv.mobile.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +18,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import ly.priv.mobile.R;
 
 /**
  * Contains simple functions that should be used wherever possible.

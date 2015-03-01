@@ -20,10 +20,10 @@ import android.webkit.WebView;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
-import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.JsObject;
 import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Values;
 
 /**
  * Allows the user to create new Privly Content. Integrates the Posting

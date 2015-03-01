@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ly.priv.mobile.gui.IndexFragment;
+import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.Utilities;
 
 /**
  * Authenticates user with Gmail and grabs Privly links from message inbox.
@@ -272,7 +274,7 @@ public class GmailLinkGrabberService extends Fragment {
 							thread.setMailSender(sender);
 						} else if (m.getName().equals("Date")) {
 							thread.setMailTime(Utilities.getTimeForGmail(m
-									.getValue()));
+                                    .getValue()));
 						}
 					}
 				} else {
