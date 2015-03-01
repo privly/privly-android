@@ -1,10 +1,5 @@
 package ly.priv.mobile;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import ly.priv.mobile.gui.IndexFragment;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -24,7 +19,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -43,6 +37,12 @@ import com.google.api.services.gmail.model.ListThreadsResponse;
 import com.google.api.services.gmail.model.MessagePartHeader;
 import com.google.api.services.gmail.model.Thread;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import ly.priv.mobile.gui.IndexFragment;
+
 /**
  * Authenticates user with Gmail and grabs Privly links from message inbox.
  * <p>
@@ -57,7 +57,7 @@ import com.google.api.services.gmail.model.Thread;
  * @author Gitanshu Sardana
  * 
  */
-public class GmailLinkGrabberService extends SherlockFragment {
+public class GmailLinkGrabberService extends Fragment {
 	private static final String GMAIL_SCOPE = "oauth2:https://www.googleapis.com/auth/gmail.readonly";
 	private static final String APP_NAME = "Privly Gmail";
 	String accountName;
@@ -80,7 +80,7 @@ public class GmailLinkGrabberService extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.activity_list, container, false);
-		getSherlockActivity().setTitle("Gmail");
+		getActivity().setTitle("Gmail");
 		threadListView = (ListView) view.findViewById(R.id.lView);
 		progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
 		prefsName = ConstantValues.APP_PREFERENCES;

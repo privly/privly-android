@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
@@ -33,7 +33,7 @@ import ly.priv.mobile.VerifyAuthToken;
  * @author Gitanshu Sardana
  */
 
-public class IndexFragment extends SherlockFragment {
+public class IndexFragment extends Fragment {
 	private static final String TAG = "IndexFragment";
 	private WebView mWebViewIndex;
 
@@ -54,8 +54,8 @@ public class IndexFragment extends SherlockFragment {
 		setHasOptionsMenu(true);
 		View view = inflater.inflate(R.layout.new_post, container, false);
 		Log.d(TAG, "onCreate");
-		String indexTitle = getString(R.string.index);
-		getSherlockActivity().setTitle(indexTitle);
+		String indexTitle = getString(R.string.history);
+		getActivity().setTitle(indexTitle);
 		container.removeAllViews();
 		mWebViewIndex = (WebView) view.findViewById(R.id.webview_new_post);
 		mWebViewIndex.getSettings().setJavaScriptEnabled(true);
@@ -109,7 +109,7 @@ public class IndexFragment extends SherlockFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
-		inflater.inflate(R.layout.menu_layout_home, menu);
+		inflater.inflate(R.menu.menu_layout_home, menu);
 		menu.findItem(R.id.logout).setIcon(
 				new IconDrawable(getActivity(), IconValue.fa_sign_out)
 						.actionBarSize());

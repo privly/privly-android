@@ -1,5 +1,24 @@
 package ly.priv.mobile.gui;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.Toast;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -9,26 +28,6 @@ import ly.priv.mobile.ConstantValues;
 import ly.priv.mobile.JsObject;
 import ly.priv.mobile.R;
 import ly.priv.mobile.Values;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Build.VERSION_CODES;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Toast;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 
 /**
  * Displays the Home Activity for a user after authentication.
@@ -47,7 +46,7 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class ShowContentFragment extends SherlockFragment {
+public class ShowContentFragment extends Fragment {
 	/** Called when the activity is first created. */
 	private static final String TAG = "ShowContent";
 	private GestureDetector mGestureDetector;
@@ -69,8 +68,7 @@ public class ShowContentFragment extends SherlockFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View view = inflater.inflate(R.layout.show_content, container, false);
-		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setTitle(R.string.show_content);
+		getActivity().getActionBar().setTitle(R.string.show_content);
 		mListOfLinks = getArguments().getStringArrayList("listOfLinks");
 		View webView = view.findViewById(R.id.urlContentWebview);
 		mUrlContentWebView = (WebView) webView;
@@ -196,9 +194,9 @@ public class ShowContentFragment extends SherlockFragment {
 		}
 
 		String urlForExtension = "";
-		if (url.indexOf("privlyInjectableApplication%3DZeroBin") > 0 || // deprecated
-				url.indexOf("privlyApp%3DZeroBin") > 0) {
-			urlForExtension = "PrivlyApplications/ZeroBin/show.html?privlyOriginalURL="
+		if (url.indexOf("privlyInjectableApplication%3DMessage") > 0 || // deprecated
+				url.indexOf("privlyApp%3DMessage") > 0) {
+			urlForExtension = "PrivlyApplications/Message/show.html?privlyOriginalURL="
 					+ url;
 		} else if (url.indexOf("privlyInjectableApplication%3DPlainPost") > 0 || // deprecated
 				url.indexOf("privlyApp%3DPlainPost") > 0) {
@@ -218,7 +216,7 @@ public class ShowContentFragment extends SherlockFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		// MenuInflater menuInflater = getMenuInflater();
-		inflater.inflate(R.layout.menu_layout_show_content, menu);
+		inflater.inflate(R.menu.menu_layout_show_content, menu);
 		// return true;
 	}
 

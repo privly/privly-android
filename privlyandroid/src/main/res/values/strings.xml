@@ -42,7 +42,7 @@
 	<string name="please_enter_a_valid_url">Please enter a valid URL.</string>
 	<string name="logging_in_dot_dot_dot">Logging in..</string>
 	<string name="invalid_email_address_or_password">Invalid Email Address or Password. Please Try Again!</string>
-	<string name="index">Index</string>
+	<string name="history">History</string>
 	<string name="loading_next_post">Loading Next Post.</string>
 	<string name="this_is_a_last_post">This is a last Post</string>
 	<string name="loading_previous_post">Loading Previous Post</string>

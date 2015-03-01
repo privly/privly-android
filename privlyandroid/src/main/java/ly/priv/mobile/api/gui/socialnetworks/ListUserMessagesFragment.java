@@ -1,14 +1,8 @@
 package ly.priv.mobile.api.gui.socialnetworks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.gui.MainActivity;
-import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +16,13 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.gui.MainActivity;
+import ly.priv.mobile.gui.ShowContentFragment;
 
 /**
  * Showing messages in chose dialog
@@ -44,7 +44,7 @@ import com.actionbarsherlock.app.SherlockFragment;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class ListUserMessagesFragment extends SherlockFragment implements
+public class ListUserMessagesFragment extends Fragment implements
 		OnScrollListener {
 	private static final String TAG = "SListUserMessagesActivity";
 	private ArrayList<SMessage> mListUserMess;

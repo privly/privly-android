@@ -1,21 +1,22 @@
 package ly.priv.mobile.gui;
 
-import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import ly.priv.mobile.R;
+import ly.priv.mobile.Utilities;
+import ly.priv.mobile.Values;
+
 
 /**
  * Shows the Settings Activity. Currently, supports setting of the domain name
@@ -23,7 +24,7 @@ import com.actionbarsherlock.view.MenuItem;
  * 
  * @author Shivam Verma
  */
-public class SettingsActivity extends SherlockActivity {
+public class SettingsActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
 	private static final String TAG = "SettingsActivity";
 	private String mBaseUrl;
@@ -79,8 +80,8 @@ public class SettingsActivity extends SherlockActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		MenuInflater menuInflater = getSupportMenuInflater();
-		menuInflater.inflate(R.layout.menu_layout_settings, menu);
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu_layout_settings, menu);
 		return true;
 	}
 

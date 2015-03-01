@@ -1,13 +1,14 @@
 package ly.priv.mobile.api.gui.socialnetworks;
 
-import java.util.ArrayList;
-
-import ly.priv.mobile.R;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,10 +16,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import java.util.ArrayList;
+
+import ly.priv.mobile.R;
 
 /**
  * Fragment for showing dialogs with last message in each dialog
@@ -41,7 +41,7 @@ import com.actionbarsherlock.view.MenuItem;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class ListUsersFragment extends SherlockFragment {
+public class ListUsersFragment extends Fragment {
 	private static final String TAG = "ListUsersFragment";
 	private ArrayList<SUser> mListUserMess;
 	private ListUsersAdapter mListUserMessagesAdapter;
@@ -88,7 +88,7 @@ public class ListUsersFragment extends SherlockFragment {
 	 */
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.layout.menu_layout_slistusers, menu);
+		inflater.inflate(R.menu.menu_layout_slistusers, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

@@ -1,12 +1,5 @@
 package ly.priv.mobile;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.facebook.Session;
-
-import ly.priv.mobile.grabbers.TwitterUtil;
-import ly.priv.mobile.gui.IndexFragment;
-import ly.priv.mobile.gui.LoginActivity;
-import ly.priv.mobile.gui.MainActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +14,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
+import ly.priv.mobile.gui.LoginActivity;
+import ly.priv.mobile.gui.MainActivity;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -32,7 +28,7 @@ import android.preference.PreferenceFragment;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivityNew extends SherlockPreferenceActivity {
+public class SettingsActivityNew extends PreferenceActivity {
 
 	private EditTextPreference changeContentServer;
 	private Preference logoutFb;
@@ -51,8 +47,8 @@ public class SettingsActivityNew extends SherlockPreferenceActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setHomeButtonEnabled(true);
+//		getActionBar().setDisplayHomeAsUpEnabled(true);
+//		getActionBar().setHomeButtonEnabled(true);
 		mValues = new Values(this);
 		setupSimplePreferencesScreen();
 	}

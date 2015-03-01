@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "ly.priv.mobile"
         minSdkVersion 10
-        targetSdkVersion 19
+        targetSdkVersion 21
         multiDexEnabled true
     }
 
@@ -33,9 +33,6 @@ dependencies {
     compile 'com.google.http-client:google-http-client-jackson2:1.19.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.google.android.gms:play-services:+'
-    compile('com.actionbarsherlock:actionbarsherlock:4.4.0@aar') {
-        exclude module: 'support-v4'
-    }
     compile 'com.google.api-client:google-api-client:1.19.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.19.1'
     compile 'com.google.api-client:google-api-client-android:1.19.1'
@@ -49,6 +46,7 @@ dependencies {
     compile 'com.google.http-client:google-http-client-android:1.19.0'
     compile 'com.google.http-client:google-http-client:1.19.0'
     compile 'org.apache.httpcomponents:httpcore:4.4'
+    compile "com.android.support:appcompat-v7:21.0.+"
     compile project(':lazyList')
 }
 

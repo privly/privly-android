@@ -6,7 +6,7 @@ For more information on what Privly is, [read about us](https://priv.ly/pages/ab
 
 ## About this repository ##
 
-This repository maintains the Android Application of Privly. The application currently integrates the two injectable [privly-applications](https://github.com/privly/privly-applications/) - PlainPost and ZeroBin for creating new Privly Posts. 
+This repository maintains the Android Application of Privly. The application currently integrates the two injectable [privly-applications](https://github.com/privly/privly-applications/) - PlainPost and Message for creating new Privly Posts.
 
 ## Developer Info ##
 To contribute to the development of Privly-Android. 

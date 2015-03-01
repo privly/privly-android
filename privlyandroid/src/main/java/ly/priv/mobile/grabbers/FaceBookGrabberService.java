@@ -1,5 +1,36 @@
 package ly.priv.mobile.grabbers;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphUser;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,37 +46,6 @@ import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
 import ly.priv.mobile.gui.IndexFragment;
 import ly.priv.mobile.gui.MainActivity;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionLoginBehavior;
-import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
-import com.facebook.model.GraphUser;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Fragment for login,logout get inbox and list of messages for chose dialog id
@@ -70,7 +70,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  * 
  */
-public class FaceBookGrabberService extends SherlockFragment implements
+public class FaceBookGrabberService extends Fragment implements
 		ISocialNetworks {
 	private static final String TAG = FaceBookGrabberService.class.getName();
 	private ArrayList<SUser> mListUserMess;
@@ -412,7 +412,7 @@ public class FaceBookGrabberService extends SherlockFragment implements
 
 	@Override
 	public void setTitle() {
-		getSherlockActivity().setTitle(R.string.privly_Facebook);
+		getActivity().setTitle(R.string.privly_Facebook);
 	}
 
 }

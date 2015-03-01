@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
@@ -31,7 +31,7 @@ import ly.priv.mobile.Values;
  * 
  * @author Shivam Verma
  */
-public class NewPostFragment extends SherlockFragment {
+public class NewPostFragment extends Fragment {
 	private static final String TAG = "NewPost";
 
 	public NewPostFragment() {
@@ -83,7 +83,7 @@ public class NewPostFragment extends SherlockFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
 		menu.clear();
-		menuInflater.inflate(R.layout.menu_layout_home, menu);
+		menuInflater.inflate(R.menu.menu_layout_home, menu);
 		menu.findItem(R.id.logout).setIcon(
 				new IconDrawable(getActivity(), IconValue.fa_sign_out)
 						.actionBarSize());

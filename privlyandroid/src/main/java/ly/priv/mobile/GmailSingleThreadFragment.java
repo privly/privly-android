@@ -1,10 +1,7 @@
 package ly.priv.mobile;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ly.priv.mobile.gui.ShowContentFragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +11,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePart;
 import com.google.api.services.gmail.model.MessagePartHeader;
 
-public class GmailSingleThreadFragment extends SherlockFragment {
+import java.util.ArrayList;
+import java.util.List;
+
+import ly.priv.mobile.gui.ShowContentFragment;
+
+public class GmailSingleThreadFragment extends Fragment {
 	ListView mailsListView;
 	String currentThreadId;
 	EmailThreadObject currentThread;
@@ -40,7 +41,7 @@ public class GmailSingleThreadFragment extends SherlockFragment {
 		mailsListView = (ListView) view.findViewById(R.id.lView);
 		currentThread = getArguments().getParcelable("currentThread");
 		messages = new ArrayList<SingleEmailObject>();
-		getSherlockActivity().setTitle(currentThread.getMailSnippet());
+		getActivity().setTitle(currentThread.getMailSnippet());
 		for (Message m : currentThread.getMessages()) {
 			SingleEmailObject mailObject = new SingleEmailObject();
 			mailHeaders = m.getPayload().getHeaders();

@@ -1,5 +1,29 @@
 package ly.priv.mobile.gui;
 
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ActionProvider;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify.IconValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,29 +35,6 @@ import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import ly.priv.mobile.grabbers.TwitterGrabberService;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
-import android.view.ActionProvider;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.SubMenu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify.IconValue;
 
 /**
  * This activity holds all the fragments which are intended to have a navigation
@@ -43,7 +44,7 @@ import com.joanzapata.android.iconify.Iconify.IconValue;
  * @author Gitanshu
  * 
  */
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends ActionBarActivity {
 	private static final String TAG = "MainActivity";
 	Uri uri;
 	DrawerLayout mDrawerLayout;
@@ -58,14 +59,16 @@ public class MainActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate MainActivity");
 		setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 		mTitle = getTitle();
-		getSupportActionBar().setDisplayOptions(
-				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
-						| ActionBar.DISPLAY_HOME_AS_UP);
+//		getActionBar().setDisplayOptions(
+//				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
+//						| ActionBar.DISPLAY_HOME_AS_UP);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		hamburger = new ActionBarDrawerToggle(this, mDrawerLayout,
-				R.drawable.ic_navigation_drawer, R.string.drawer_open,
+		hamburger = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+				R.string.drawer_open,
 				R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
@@ -79,15 +82,16 @@ public class MainActivity extends SherlockFragmentActivity {
 												// onPrepareOptionsMenu()
 			}
 		};
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		mDrawerLayout.setDrawerListener(hamburger);
 		createList = new ArrayList<String>(
-				Arrays.asList("PlainPost", "ZeroBin"));
+				Arrays.asList("PlainPost", "Message"));
 		readList = new ArrayList<String>(Arrays.asList("Gmail", "Facebook",
 				"Twitter"));
 		ArrayList<DrawerObject> drawerItems = new ArrayList<DrawerObject>();
 		DrawerObject obj = new DrawerObject();
 		obj.setType("NavItem");
-		obj.setTitle(getString(R.string.index));
+		obj.setTitle(getString(R.string.history));
 		obj.setIcon(new IconDrawable(this, IconValue.fa_list_alt)
 				.colorRes(R.color.white));
 		drawerItems.add(obj);
@@ -104,7 +108,7 @@ public class MainActivity extends SherlockFragmentActivity {
 			if (s.equals("PlainPost")) {
 				obj.setIcon(new IconDrawable(this, IconValue.fa_eye)
 						.colorRes(R.color.white));
-			} else if (s.equals("ZeroBin")) {
+			} else if (s.equals("Message")) {
 				obj.setIcon(new IconDrawable(this, IconValue.fa_eye_slash)
 						.colorRes(R.color.white));
 			}
@@ -144,7 +148,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					.add(R.id.container, new TwitterGrabberService()).commit();
 		} else {
 			if (savedInstanceState == null) {
-				setTitle(getString(R.string.index));
+				setTitle(getString(R.string.history));
 				Log.d("index", "beforetransaction");
 				getSupportFragmentManager().beginTransaction()
 						.add(R.id.container, new IndexFragment()).commit();
@@ -160,7 +164,7 @@ public class MainActivity extends SherlockFragmentActivity {
 				|| fragment instanceof MicroblogListPostsFragment) {
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.container, new IndexFragment()).commit();
-			setTitle(getString(R.string.index));
+			setTitle(getString(R.string.history));
 		} else if (fragment instanceof IndexFragment) {
 			finish();
 		} else {
@@ -545,7 +549,7 @@ public class MainActivity extends SherlockFragmentActivity {
 	@Override
 	public void setTitle(int resId) {
 		Log.d("setTitle", getString(resId));
-		getSupportActionBar().setTitle(getString(resId));
+        getSupportActionBar().setTitle(getString(resId));
 	}
 
 }
