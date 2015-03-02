@@ -3,7 +3,7 @@ package ly.priv.mobile.api.gui.socialnetworks;
 import java.util.ArrayList;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Values;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;

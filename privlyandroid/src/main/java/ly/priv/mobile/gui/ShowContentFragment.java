@@ -24,10 +24,10 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.JsObject;
 import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Values;
 
 /**
  * Displays the Home Activity for a user after authentication.

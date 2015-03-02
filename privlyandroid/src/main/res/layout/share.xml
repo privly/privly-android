@@ -15,11 +15,11 @@
             android:id="@+id/twHederText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginHederText"
-            android:layout_marginTop="@dimen/marginHederText"
+            android:layout_marginBottom="@dimen/margin_header_text"
+            android:layout_marginTop="@dimen/margin_header_text"
             android:text="@string/hederText"
             android:textColor="@color/hederText"
-            android:textSize="@dimen/sizeHederFont" />
+            android:textSize="@dimen/font_size_header" />
 
     </LinearLayout>
 

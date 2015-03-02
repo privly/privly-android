@@ -16,6 +16,8 @@ import android.preference.PreferenceFragment;
 
 import ly.priv.mobile.gui.LoginActivity;
 import ly.priv.mobile.gui.MainActivity;
+import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.Values;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -100,7 +102,7 @@ public class SettingsActivityNew extends PreferenceActivity {
 						if (!baseUrl.equalsIgnoreCase("")) {
 							changeContentServer.setSummary((String) newValue);
 							mValues = new Values(getApplicationContext());
-							mValues.setBaseUrl((String) newValue);
+							mValues.setContentServer((String) newValue);
 							mValues.setAuthToken(null);
 							Intent goToLogin = new Intent(
 									getApplicationContext(),

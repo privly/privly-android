@@ -1,7 +1,7 @@
 package ly.priv.mobile.gui;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Values;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ public class PrivlyActivity extends Activity {
 		// page else
 		// to the login page.
 		Values values = new Values(getApplicationContext());
-		String base_url = values.getContentServerDomain();
+		String base_url = values.getContentServer();
 
 		if (base_url == null) {
 			mGotoSettings = new Intent(getApplicationContext(),

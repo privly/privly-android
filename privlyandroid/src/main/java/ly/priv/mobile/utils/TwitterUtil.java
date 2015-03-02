@@ -1,6 +1,5 @@
-package ly.priv.mobile.grabbers;
+package ly.priv.mobile.utils;
 
-import ly.priv.mobile.ConstantValues;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;

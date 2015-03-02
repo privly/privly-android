@@ -4,6 +4,8 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.gui.LoginActivity;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,7 +23,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * Verifies the validity of existing auth_token. If expired, redirect to

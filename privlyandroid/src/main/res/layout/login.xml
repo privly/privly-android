@@ -1,88 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
-  <LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e0d8c9">
+
+    <RelativeLayout
+        android:id="@+id/login_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/hederprivlyBackgroundColor"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_centerInParent="true">
 
-        <TextView
-            android:id="@+id/twHederText"
+        <ly.priv.mobile.utils.LobsterTextView
+            android:id="@+id/message_welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginHederText"
-            android:layout_marginTop="@dimen/marginHederText"
-            android:text="@string/hederText"
-            android:textColor="@color/hederText"
-            android:textSize="@dimen/sizeHederFont" />
-
-    </LinearLayout>
-  
-
-    <TextView
-        android:id="@+id/loginHeader"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10sp"
-        android:layout_marginLeft="5sp"
-        android:text="@string/hello"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+            android:layout_centerHorizontal="true"
+            android:text="@string/message_welcome"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/header_text_size" />
 
         <EditText
-            android:id="@+id/uname"
-            android:layout_width="0dp"
+            android:id="@+id/email_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="@string/unameHint"
-            android:inputType="textWebEmailAddress" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+            android:layout_below="@id/message_welcome"
+            android:layout_marginLeft="@dimen/margin_general"
+            android:layout_marginRight="@dimen/margin_general"
+            android:layout_marginTop="@dimen/margin_general"
+            android:hint="@string/hint_username"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/content_text_size" />
 
         <EditText
-            android:id="@+id/pwd"
-            android:layout_width="0dp"
+            android:id="@+id/pwd_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:hint="@string/pwdHint"
-            android:inputType="textPassword" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal" >
-
-        <CheckBox
-            android:id="@+id/remember_me"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/rememberMeLabel" >
-        </CheckBox>
+            android:layout_below="@id/email_edit_text"
+            android:layout_marginLeft="@dimen/margin_general"
+            android:layout_marginRight="@dimen/margin_general"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/content_text_size" />
 
         <Button
-            android:id="@+id/login"
-            android:layout_width="0dp"
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/loginButtonLabel" >
-        </Button>
-    </LinearLayout>
+            android:layout_below="@id/pwd_edit_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_general"
+            android:text="@string/message_btn_login" />
 
-</LinearLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pwd_edit_text"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_general"
+            android:visibility="invisible" />
+
+        <ViewSwitcher
+            android:id="@+id/content_server_switcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_login"
+            android:layout_marginTop="@dimen/margin_general"
+            android:gravity="center"
+            android:inAnimation="@android:anim/slide_in_left"
+            android:outAnimation="@android:anim/slide_out_right">
+
+            <TextView
+                android:id="@+id/content_server_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_general"
+                android:layout_marginRight="@dimen/margin_general"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="editContentServer"
+                android:text="Logging in to https://privlyalpha.org.\nTap here to change."
+                android:textColor="@color/privlyDark" />
+
+            <LinearLayout
+                android:id="@+id/content_server_edit_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/content_server_edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:inputType="textUri"
+                    android:text="https://privlyalpha.org"
+                    android:textColor="@color/privlyDark"></EditText>
+
+                <ImageButton
+                    android:id="@+id/save_content_server"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="saveContentServer"
+                    android:src="@drawable/check_black_24dp" />
+            </LinearLayout>
+        </ViewSwitcher>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/login_view">
+
+        <ImageView
+            android:layout_width="@dimen/logo_width"
+            android:layout_height="@dimen/logo_height"
+            android:layout_centerInParent="true"
+            android:src="@drawable/lock" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_footer"
+        android:layout_alignParentBottom="true">
+
+        <ly.priv.mobile.utils.LobsterTextView
+            android:id="@+id/new_user_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/message_new_user"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/signup_message_text_size" />
+
+        <ly.priv.mobile.utils.LobsterTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_user_text"
+            android:layout_centerHorizontal="true"
+            android:text="@string/message_sign_up"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/signup_message_text_size" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

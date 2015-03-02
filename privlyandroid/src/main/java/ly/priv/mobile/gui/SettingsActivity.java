@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 
 
 /**
@@ -48,7 +48,7 @@ public class SettingsActivity extends ActionBarActivity {
 		mUrlEditText = (EditText) findViewById(R.id.baseUrlEditText);
 
 		mValues = new Values(getApplicationContext());
-		mBaseUrl = mValues.getContentServerDomain();
+		mBaseUrl = mValues.getContentServer();
 
 		if (mBaseUrl != null)
 			mUrlEditText.setText(mBaseUrl);
@@ -60,7 +60,7 @@ public class SettingsActivity extends ActionBarActivity {
 			public void onClick(View arg0) {
 				mBaseUrl = mUrlEditText.getText().toString();
 				if (!mBaseUrl.equalsIgnoreCase("")) {
-					mValues.setBaseUrl(mBaseUrl);
+					mValues.setContentServer(mBaseUrl);
 					Utilities.showToast(getApplicationContext(),
 							getString(R.string.saved_please_login_now), true);
 

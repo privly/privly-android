@@ -20,11 +20,11 @@ import android.webkit.WebView;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
-import ly.priv.mobile.ConstantValues;
+import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.JsObject;
 import ly.priv.mobile.R;
 import ly.priv.mobile.SettingsActivityNew;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Values;
 import ly.priv.mobile.VerifyAuthToken;
 
 /**
@@ -72,7 +72,7 @@ public class IndexFragment extends Fragment {
 			// a VerifyAuthToken task.
 			if (!values.isUserVerifiedAtLogin()) {
 				VerifyAuthToken task = new VerifyAuthToken(getActivity());
-				task.execute(values.getContentServerDomain()
+				task.execute(values.getContentServer()
 						+ "/token_authentications.json");
 			} else
 				values.setUserVerifiedAtLogin(false);

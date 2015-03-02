@@ -2,6 +2,10 @@ package ly.priv.mobile;
 
 import ly.priv.mobile.gui.LoginActivity;
 import ly.priv.mobile.gui.ShareFragment;
+import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -95,7 +99,7 @@ public class JsObject {
 	@JavascriptInterface
 	public String fetchDomainName() {
 		Values values = new Values(mContext);
-		String domainName = values.getContentServerDomain();
+		String domainName = values.getContentServer();
 		return domainName;
 	}
 

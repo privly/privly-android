@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ly.priv.mobile.gui.ShowContentFragment;
+import ly.priv.mobile.utils.Utilities;
 
 public class GmailSingleThreadFragment extends Fragment {
 	ListView mailsListView;
@@ -50,7 +51,7 @@ public class GmailSingleThreadFragment extends Fragment {
 					mailObject.setMailSender(mHeader.getValue());
 				} else if (mHeader.getName().equals("Date")) {
 					mailObject.setMailTime(Utilities.getTimeForGmail(mHeader
-							.getValue()));
+                            .getValue()));
 				}
 			}
 			if (m.getPayload().getMimeType().contains("multipart")) {

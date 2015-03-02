@@ -3,10 +3,20 @@
 
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
-    <string name="unameHint">EMail ID</string>
-    <string name="pwdHint">Password</string>
+    <!--
+    <string name="unameHint">email address</string>
+    <string name="pwdHint">password</string>
     <string name="loginButtonLabel">Login !</string>
     <string name="rememberMeLabel">Remember Me</string>
+    -->
+    <string name="hint_username">email address</string>
+    <string name="hint_password">password</string>
+    <string name="message_btn_login">LOG IN</string>
+    <string name="message_btn_save_content_server">Save</string>
+    <string name="message_welcome">Welcome to Privly!</string>
+    <string name="message_new_user">New User ?</string>
+    <string name="message_sign_up">Sign Up for Privly</string>
+
     <string name="readListViewLabel">Read Privly Content</string>
     <string name="createListViewLabel"> Create New Privly Content </string>
     <string name="newUrlLabel">Here\'s your new Privly Url</string>
@@ -37,11 +47,10 @@
 	<string name="no_internet_connection">No internet connection.</string>
 	<string name="time">Time</string>
 	<string name="name">Name</string>
-	<string name="please_enter_a_valid_email_id">Please Enter a valid EMail ID.</string>
+	<string name="please_enter_a_valid_email_id">Please Enter a valid EMail Address.</string>
 	<string name="please_enter_a_valid_password">Please Enter a valid Password.</string>
 	<string name="please_enter_a_valid_url">Please enter a valid URL.</string>
 	<string name="logging_in_dot_dot_dot">Logging in..</string>
-	<string name="invalid_email_address_or_password">Invalid Email Address or Password. Please Try Again!</string>
 	<string name="history">History</string>
 	<string name="loading_next_post">Loading Next Post.</string>
 	<string name="this_is_a_last_post">This is a last Post</string>

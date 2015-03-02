@@ -13,7 +13,7 @@ import com.fedorvlasov.lazylist.ImageLoader;
 import java.util.ArrayList;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
+import ly.priv.mobile.utils.Utilities;
 
 
 /**

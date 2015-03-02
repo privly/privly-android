@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.Utilities;
-import ly.priv.mobile.Values;
+import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 
 
 /**
