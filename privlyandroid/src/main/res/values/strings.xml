@@ -14,6 +14,7 @@
     <string name="message_btn_login">LOG IN</string>
     <string name="message_btn_save_content_server">Save</string>
     <string name="message_welcome">Welcome to Privly!</string>
+    <string name="message_new_user">New User ?</string>
     <string name="message_sign_up">Sign Up for Privly</string>
 
     <string name="readListViewLabel">Read Privly Content</string>

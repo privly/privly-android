@@ -129,11 +129,24 @@
         android:layout_alignParentBottom="true">
 
         <ly.priv.mobile.utils.LobsterTextView
+            android:id="@+id/new_user_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/message_new_user"
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/signup_message_text_size" />
+
+        <ly.priv.mobile.utils.LobsterTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/new_user_text"
+            android:layout_centerHorizontal="true"
             android:text="@string/message_sign_up"
-            android:textColor="@color/privlyDark"></ly.priv.mobile.utils.LobsterTextView>
+            android:textColor="@color/privlyDark"
+            android:textSize="@dimen/signup_message_text_size" />
+
+
     </RelativeLayout>
 
 </RelativeLayout>
