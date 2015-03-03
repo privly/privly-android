@@ -8,6 +8,7 @@
     <string name="message_btn_login">LOG IN</string>
     <string name="message_btn_save_content_server">Save</string>
     <string name="message_welcome">Welcome to Privly!</string>
+    <string name="message_new_user">New User ?</string>
     <string name="message_sign_up">Sign Up for Privly</string>
     <string name="message_btn_share">Share</string>
     <string name="message_share_fragment_header">Here\'s your new Privly URL</string>
