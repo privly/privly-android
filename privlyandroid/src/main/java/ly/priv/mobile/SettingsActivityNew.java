@@ -15,7 +15,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
 import ly.priv.mobile.gui.LoginActivity;
-import ly.priv.mobile.gui.MainActivity;
+import ly.priv.mobile.gui.activities.MainActivity;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Values;
 

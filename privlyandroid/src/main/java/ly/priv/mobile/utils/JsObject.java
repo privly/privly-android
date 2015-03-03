@@ -1,5 +1,6 @@
-package ly.priv.mobile;
+package ly.priv.mobile.utils;
 
+import ly.priv.mobile.R;
 import ly.priv.mobile.gui.LoginActivity;
 import ly.priv.mobile.gui.ShareFragment;
 import ly.priv.mobile.utils.ConstantValues;

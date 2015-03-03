@@ -29,11 +29,10 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#111"
+        android:background="@color/privlyBackgroundColor"
         android:choiceMode="singleChoice"
         android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
+        android:dividerHeight="1dp"
         android:paddingTop="8dp" />
 
 </android.support.v4.widget.DrawerLayout>

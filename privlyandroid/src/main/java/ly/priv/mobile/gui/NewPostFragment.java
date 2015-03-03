@@ -21,7 +21,7 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
 import ly.priv.mobile.utils.ConstantValues;
-import ly.priv.mobile.JsObject;
+import ly.priv.mobile.utils.JsObject;
 import ly.priv.mobile.R;
 import ly.priv.mobile.utils.Values;
 
