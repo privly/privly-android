@@ -21,7 +21,7 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
 
 import ly.priv.mobile.utils.ConstantValues;
-import ly.priv.mobile.JsObject;
+import ly.priv.mobile.utils.JsObject;
 import ly.priv.mobile.R;
 import ly.priv.mobile.utils.Values;
 
@@ -97,9 +97,7 @@ public class NewPostFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
-			Intent gotoSettings = new Intent(getActivity(),
-					SettingsActivity.class);
-			startActivity(gotoSettings);
+
 			return true;
 		case R.id.logout:
 			// Logout user from the Privly Android Application

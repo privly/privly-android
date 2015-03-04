@@ -45,7 +45,7 @@ import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
 import ly.priv.mobile.gui.IndexFragment;
-import ly.priv.mobile.gui.MainActivity;
+import ly.priv.mobile.gui.activities.MainActivity;
 
 /**
  * Fragment for login,logout get inbox and list of messages for chose dialog id

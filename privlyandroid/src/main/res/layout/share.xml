@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
-  <LinearLayout
+    android:orientation="vertical">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/hederprivlyBackgroundColor"
         android:gravity="center"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/twHederText"
@@ -19,7 +20,7 @@
             android:layout_marginTop="@dimen/margin_header_text"
             android:text="@string/hederText"
             android:textColor="@color/hederText"
-            android:textSize="@dimen/font_size_header" />
+            android:textSize="@dimen/header_text_size" />
 
     </LinearLayout>
 

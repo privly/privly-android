@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/privlyBackgroundColor">
+
+    <ly.priv.mobile.utils.LobsterTextView
+        android:id="@+id/share_fragment_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_general"
+        android:text="@string/message_share_fragment_header"
+        android:textSize="@dimen/header_text_size" />
+
+    <TextView
+        android:id="@+id/url_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/share_fragment_header"
+        android:layout_margin="@dimen/margin_general"
+        android:text="@string/sample_privly_url"
+        android:textAppearance="?android:attr/textAppearance" />
+
+    <Button
+        android:id="@+id/share_url_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/url_text_view"
+        android:layout_centerHorizontal="true"
+        android:drawablePadding="8dp"
+        android:drawableRight="@drawable/share_black_24dp"
+        android:text="@string/message_btn_share" />
+</RelativeLayout>

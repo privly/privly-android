@@ -19,7 +19,7 @@
             android:layout_marginTop="@dimen/margin_header_text"
             android:text="@string/hederText"
             android:textColor="@color/hederText"
-            android:textSize="@dimen/font_size_header" />
+            android:textSize="@dimen/header_text_size" />
     </LinearLayout>
 
 </LinearLayout>
