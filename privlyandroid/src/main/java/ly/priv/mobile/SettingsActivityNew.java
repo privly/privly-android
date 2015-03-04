@@ -97,7 +97,6 @@ public class SettingsActivityNew extends PreferenceActivity {
 					@Override
 					public boolean onPreferenceChange(Preference preference,
 							Object newValue) {
-						// TODO Auto-generated method stub
 						String baseUrl = (String) newValue;
 						if (!baseUrl.equalsIgnoreCase("")) {
 							changeContentServer.setSummary((String) newValue);

@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +21,13 @@ import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
-import ly.priv.mobile.EmailThreadObject;
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
+import ly.priv.mobile.SettingsActivityNew;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import ly.priv.mobile.grabbers.TwitterGrabberService;
-import ly.priv.mobile.gui.IndexFragment;
 import ly.priv.mobile.gui.drawer.Header;
 import ly.priv.mobile.gui.drawer.NavDrawerAdapter;
 import ly.priv.mobile.gui.drawer.NavDrawerItem;
@@ -40,31 +38,22 @@ import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 
-/**
- * This activity holds all the fragments which are intended to have a navigation
- * drawer. Also provides an interface to pass on twitter login data to
- * appropriate fragment.
- *
- * @author Gitanshu
- */
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
     Uri uri;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
-    ActionBarDrawerToggle hamburger;
-    EmailThreadObject currentThread;
+    ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate MainActivity");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        hamburger = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close) {
             public void onDrawerClosed(View view) {
@@ -76,7 +65,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mDrawerLayout.setDrawerListener(hamburger);
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         initNavigationDrawer();
         uri = getIntent().getData();
         if (uri != null) {
@@ -121,7 +110,7 @@ public class MainActivity extends ActionBarActivity {
         ReadingApplication gmailReadingApplication = new ReadingApplication(ReadingApplication.GMAIL, new IconDrawable(this, Iconify.IconValue.fa_envelope_square).colorRes(R.color.gray));
         NavDrawerItem gmailNavItem = new NavDrawerItem(NavDrawerItemType.READING_APPLICATION, gmailReadingApplication);
 
-        final ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        final ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<>();
         navDrawerItems.add(headerNavItem);
         navDrawerItems.add(messageNavItem);
         navDrawerItems.add(plainPostNavItem);
@@ -162,13 +151,12 @@ public class MainActivity extends ActionBarActivity {
                             case ReadingApplication.TWITTER:
                                 TwitterGrabberService tweetGrabber = new TwitterGrabberService();
                                 transaction.replace(R.id.container, tweetGrabber, "Twitter");
-                                transaction.addToBackStack(null);
                                 transaction.commit();
                                 break;
                             case ReadingApplication.GMAIL:
                                 GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
                                 transaction.replace(R.id.container, gmailGrabber);
-                                transaction.addToBackStack(null);
+                                transaction.commit();
                                 break;
                         }
                 }
@@ -183,10 +171,15 @@ public class MainActivity extends ActionBarActivity {
                 R.id.container);
         if (fragment instanceof ListUsersFragment
                 || fragment instanceof MicroblogListPostsFragment) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new IndexFragment()).commit();
-            setTitle(getString(R.string.history));
-        } else if (fragment instanceof IndexFragment) {
+            PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
+            messageFragment.setArguments(bundle);
+            FragmentTransaction transaction = getSupportFragmentManager()
+                    .beginTransaction();
+            transaction.replace(R.id.container, messageFragment);
+            transaction.commit();
+        } else if (fragment instanceof PrivlyApplicationFragment) {
             finish();
         } else {
             super.onBackPressed();
@@ -196,16 +189,21 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        hamburger.syncState();
+        actionBarDrawerToggle.syncState();
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        hamburger.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_layout_home, menu);
+        menu.findItem(R.id.settings).setIcon(
+                new IconDrawable(this, Iconify.IconValue.fa_gear)
+                        .colorRes(R.color.gray)
+                        .actionBarSize());
         return true;
     }
 
@@ -213,8 +211,15 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (hamburger.onOptionsItemSelected(item)) {
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
+        } else {
+            switch (item.getItemId()) {
+                case R.id.settings:
+                    Intent intent = new Intent(MainActivity.this, SettingsActivityNew.class);
+                    startActivity(intent);
+                    break;
+            }
         }
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
@@ -237,72 +242,4 @@ public class MainActivity extends ActionBarActivity {
     public interface NewIntentListener {
         public void onNewIntentRead(Intent intent);
     }
-
-    /*
-    private class DrawerItemClickListener implements
-            ListView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position,
-                                long id) {
-            if (position == 0) {
-                mDrawerLayout.closeDrawers();
-                Fragment index = new IndexFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isRedirected", true);
-                index.setArguments(bundle);
-                FragmentTransaction transaction = getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.container, index);
-                transaction.commit();
-            }
-
-            if (position >= 2 && position < 2 + createList.size()) {
-                if (Utilities
-                        .isDataConnectionAvailable(getApplicationContext())) {
-                    mDrawerLayout.closeDrawers();
-                    Fragment gotoCreateNewPost = new NewPostFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("JsAppName", createList.get(position - 2));
-                    gotoCreateNewPost.setArguments(bundle);
-                    FragmentTransaction transaction = getSupportFragmentManager()
-                            .beginTransaction();
-                    transaction.replace(R.id.container, gotoCreateNewPost);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                } else
-                    Utilities.showToast(getApplicationContext(),
-                            getString(R.string.no_internet_connection), true);
-            }
-
-            if (position == 2 + createList.size() + 1) {
-                mDrawerLayout.closeDrawers();
-                GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
-                FragmentTransaction transaction = getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.container, gmailGrabber);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-            if (position == 2 + createList.size() + 2) {
-                mDrawerLayout.closeDrawers();
-                FaceBookGrabberService fbGrabber = new FaceBookGrabberService();
-                FragmentTransaction transaction = getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.container, fbGrabber);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-            if (position == 2 + createList.size() + 3) {
-                mDrawerLayout.closeDrawers();
-                TwitterGrabberService twitGrabber = new TwitterGrabberService();
-                FragmentTransaction transaction = getSupportFragmentManager()
-                        .beginTransaction();
-                transaction.replace(R.id.container, twitGrabber, "Twitter");
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        }
-    }
-    */
 }
