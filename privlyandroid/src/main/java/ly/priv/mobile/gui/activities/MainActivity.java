@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +23,6 @@ import java.util.ArrayList;
 
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
-import ly.priv.mobile.SettingsActivityNew;
-import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
-import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import ly.priv.mobile.grabbers.TwitterGrabberService;
 import ly.priv.mobile.gui.drawer.Header;
@@ -39,7 +36,7 @@ import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 
 public class MainActivity extends ActionBarActivity {
-    private static final String TAG = "MainActivity";
+    private final String TAG = getClass().getSimpleName();
     Uri uri;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
@@ -78,7 +75,7 @@ public class MainActivity extends ActionBarActivity {
                 bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
                 messageFragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, messageFragment)
+                        .add(R.id.container, messageFragment).addToBackStack(null)
                         .commit();
             }
         }
@@ -145,17 +142,17 @@ public class MainActivity extends ActionBarActivity {
                         switch (((ReadingApplication) navDrawerItem.getObject()).getName()) {
                             case ReadingApplication.FACEBOOK:
                                 FaceBookGrabberService fbGrabber = new FaceBookGrabberService();
-                                transaction.replace(R.id.container, fbGrabber);
+                                transaction.add(R.id.container, fbGrabber);
                                 transaction.commit();
                                 break;
                             case ReadingApplication.TWITTER:
                                 TwitterGrabberService tweetGrabber = new TwitterGrabberService();
-                                transaction.replace(R.id.container, tweetGrabber, "Twitter");
+                                transaction.add(R.id.container, tweetGrabber, "Twitter");
                                 transaction.commit();
                                 break;
                             case ReadingApplication.GMAIL:
                                 GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
-                                transaction.replace(R.id.container, gmailGrabber);
+                                transaction.add(R.id.container, gmailGrabber);
                                 transaction.commit();
                                 break;
                         }
@@ -167,20 +164,10 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(
-                R.id.container);
-        if (fragment instanceof ListUsersFragment
-                || fragment instanceof MicroblogListPostsFragment) {
-            PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-            messageFragment.setArguments(bundle);
-            FragmentTransaction transaction = getSupportFragmentManager()
-                    .beginTransaction();
-            transaction.replace(R.id.container, messageFragment);
-            transaction.commit();
-        } else if (fragment instanceof PrivlyApplicationFragment) {
-            finish();
+        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        Log.d(TAG, "BackStack Entry Count : " + fragmentManager.getBackStackEntryCount());
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -204,6 +191,10 @@ public class MainActivity extends ActionBarActivity {
                 new IconDrawable(this, Iconify.IconValue.fa_gear)
                         .colorRes(R.color.gray)
                         .actionBarSize());
+        menu.findItem(R.id.logout).setIcon(
+                new IconDrawable(this, Iconify.IconValue.fa_sign_out)
+                        .colorRes(R.color.gray)
+                        .actionBarSize());
         return true;
     }
 
@@ -216,7 +207,7 @@ public class MainActivity extends ActionBarActivity {
         } else {
             switch (item.getItemId()) {
                 case R.id.settings:
-                    Intent intent = new Intent(MainActivity.this, SettingsActivityNew.class);
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
                     break;
             }

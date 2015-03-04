@@ -3,7 +3,7 @@ package ly.priv.mobile;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
-import ly.priv.mobile.gui.LoginActivity;
+import ly.priv.mobile.gui.activities.LoginActivity;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
@@ -26,7 +26,7 @@ import android.os.AsyncTask;
 
 /**
  * Verifies the validity of existing auth_token. If expired, redirect to
- * {@link ly.priv.mobile.gui.LoginActivity}
+ * {@link ly.priv.mobile.gui.activities.LoginActivity}
  * 
  * @author Shivam Verma
  * 

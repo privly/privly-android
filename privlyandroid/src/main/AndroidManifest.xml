@@ -18,7 +18,7 @@
         tools:replace="android:icon">
 
         <activity
-            android:name=".gui.LoginActivity"
+            android:name=".gui.activities.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivityNew"
+            android:name=".gui.activities.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".gui.activities.MainActivity">
             <meta-data

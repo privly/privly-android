@@ -20,7 +20,7 @@
     <string name="newUrlLabel">Here\'s your new Privly Url</string>
     <string name="shareButtonLabel">Share Url</string>
     <string name="changeContentServer">Change Content Server</string>
-    <string name="logoutMenuLabel">Logout From Application</string>
+    <string name="logoutMenuLabel">Logout</string>
     <string name="baseUrlHeading">Content Server Location</string>
     <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
     <string name="defaultContentServer">https://privlyalpha.org</string>

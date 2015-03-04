@@ -1,4 +1,4 @@
-package ly.priv.mobile;
+package ly.priv.mobile.gui.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,7 +14,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
-import ly.priv.mobile.gui.LoginActivity;
+import ly.priv.mobile.R;
+import ly.priv.mobile.gui.activities.LoginActivity;
 import ly.priv.mobile.gui.activities.MainActivity;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Values;
@@ -30,7 +31,7 @@ import ly.priv.mobile.utils.Values;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivityNew extends PreferenceActivity {
+public class SettingsActivity extends PreferenceActivity {
 
 	private EditTextPreference changeContentServer;
 	private Preference logoutFb;

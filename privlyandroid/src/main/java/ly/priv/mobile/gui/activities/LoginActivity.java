@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui;
+package ly.priv.mobile.gui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,7 +35,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.gui.activities.MainActivity;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
