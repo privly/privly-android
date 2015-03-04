@@ -1,36 +1,26 @@
 package ly.priv.mobile.gui.drawer;
 
 
+import com.joanzapata.android.iconify.IconDrawable;
+
 public class ReadingApplication {
 
     private String name;
-    private Reading_Application_Type type;
-    int iconResId;
+    final public static String GMAIL = "GMail";
+    final public static String FACEBOOK = "Facebook";
+    final public static String TWITTER = "Twitter";
+    private IconDrawable drawable;
 
-    public ReadingApplication(String name, Reading_Application_Type type) {
+    public ReadingApplication(String name, IconDrawable drawable) {
         this.name = name;
-        this.type = type;
+        this.drawable = drawable;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public IconDrawable getDrawable() {
+        return drawable;
     }
-
-    public Reading_Application_Type getType() {
-        return type;
-    }
-
-    public void setType(Reading_Application_Type type) {
-        this.type = type;
-    }
-}
-
-enum Reading_Application_Type {
-    GMAIL,
-    TWITTER,
-    FACEBOOK
 }

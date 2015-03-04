@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,14 +14,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
 
 import ly.priv.mobile.EmailThreadObject;
+import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
 import ly.priv.mobile.api.gui.microblogs.MicroblogListPostsFragment;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
+import ly.priv.mobile.grabbers.FaceBookGrabberService;
 import ly.priv.mobile.grabbers.TwitterGrabberService;
 import ly.priv.mobile.gui.IndexFragment;
 import ly.priv.mobile.gui.drawer.Header;
@@ -28,6 +35,7 @@ import ly.priv.mobile.gui.drawer.NavDrawerAdapter;
 import ly.priv.mobile.gui.drawer.NavDrawerItem;
 import ly.priv.mobile.gui.drawer.NavDrawerItemType;
 import ly.priv.mobile.gui.drawer.PrivlyApplication;
+import ly.priv.mobile.gui.drawer.ReadingApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
@@ -88,28 +96,86 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void initNavigationDrawer() {
-        ArrayList<NavDrawerItem> drawerItems = new ArrayList<NavDrawerItem>();
 
-        Header createNewContentHeader = new Header("Privly Applications");
-        NavDrawerItem headerNavItem = new NavDrawerItem(NavDrawerItemType.HEADER, createNewContentHeader);
+        Header privlyApplicationsHeader = new Header("Privly Applications");
+        NavDrawerItem headerNavItem = new NavDrawerItem(NavDrawerItemType.HEADER, privlyApplicationsHeader);
 
-        PrivlyApplication messageApplication = new PrivlyApplication(PrivlyApplication.MESSAGE_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.MESSAGE_APP), R.drawable.email_grey600_24dp);
+        PrivlyApplication messageApplication = new PrivlyApplication(PrivlyApplication.MESSAGE_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.MESSAGE_APP), new IconDrawable(this, Iconify.IconValue.fa_envelope_square).colorRes(R.color.gray));
         NavDrawerItem messageNavItem = new NavDrawerItem(NavDrawerItemType.PRIVLY_APPLICATION, messageApplication);
 
-        PrivlyApplication plainPostApplication = new PrivlyApplication(PrivlyApplication.PLAINPOST_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.MESSAGE_APP), R.drawable.email_grey600_24dp);
+        PrivlyApplication plainPostApplication = new PrivlyApplication(PrivlyApplication.PLAINPOST_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.MESSAGE_APP), new IconDrawable(this, Iconify.IconValue.fa_envelope_square).colorRes(R.color.gray));
         NavDrawerItem plainPostNavItem = new NavDrawerItem(NavDrawerItemType.PRIVLY_APPLICATION, plainPostApplication);
 
-        PrivlyApplication historyApplication = new PrivlyApplication(PrivlyApplication.HISTORY_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.HISTORY_APP), R.drawable.email_grey600_24dp);
+        PrivlyApplication historyApplication = new PrivlyApplication(PrivlyApplication.HISTORY_APP, Utilities.getFilePathURLFromAppName(PrivlyApplication.HISTORY_APP), new IconDrawable(this, Iconify.IconValue.fa_list_alt).colorRes(R.color.gray));
         NavDrawerItem historyNavItem = new NavDrawerItem(NavDrawerItemType.PRIVLY_APPLICATION, historyApplication);
 
-        ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
+        Header webConnectionsHeader = new Header("Connect Privly with");
+        NavDrawerItem webConnectionHeaderItem = new NavDrawerItem(NavDrawerItemType.HEADER, webConnectionsHeader);
+
+        ReadingApplication facebookReadingApplication = new ReadingApplication(ReadingApplication.FACEBOOK, new IconDrawable(this, Iconify.IconValue.fa_facebook_square).colorRes(R.color.gray));
+        NavDrawerItem facebookNavItem = new NavDrawerItem(NavDrawerItemType.READING_APPLICATION, facebookReadingApplication);
+
+        ReadingApplication twitterReadingApplication = new ReadingApplication(ReadingApplication.TWITTER, new IconDrawable(this, Iconify.IconValue.fa_twitter_square).colorRes(R.color.gray));
+        NavDrawerItem twitterNavItem = new NavDrawerItem(NavDrawerItemType.READING_APPLICATION, twitterReadingApplication);
+
+        ReadingApplication gmailReadingApplication = new ReadingApplication(ReadingApplication.GMAIL, new IconDrawable(this, Iconify.IconValue.fa_envelope_square).colorRes(R.color.gray));
+        NavDrawerItem gmailNavItem = new NavDrawerItem(NavDrawerItemType.READING_APPLICATION, gmailReadingApplication);
+
+        final ArrayList<NavDrawerItem> navDrawerItems = new ArrayList<NavDrawerItem>();
         navDrawerItems.add(headerNavItem);
         navDrawerItems.add(messageNavItem);
         navDrawerItems.add(plainPostNavItem);
         navDrawerItems.add(historyNavItem);
+        navDrawerItems.add(webConnectionHeaderItem);
+        navDrawerItems.add(facebookNavItem);
+        navDrawerItems.add(twitterNavItem);
+        navDrawerItems.add(gmailNavItem);
         NavDrawerAdapter navDrawerAdapter = new NavDrawerAdapter(this, navDrawerItems);
         mDrawerList.setAdapter(navDrawerAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                NavDrawerItem navDrawerItem = navDrawerItems.get(position);
+                switch (navDrawerItem.getType()) {
+                    case NavDrawerItemType.PRIVLY_APPLICATION:
+                        mDrawerLayout.closeDrawers();
+                        PrivlyApplicationFragment privlyApplicationFragment = new PrivlyApplicationFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, ((PrivlyApplication) navDrawerItem.getObject()).getName());
+                        privlyApplicationFragment.setArguments(bundle);
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.container, privlyApplicationFragment)
+                                .commit();
+                        break;
+                    case NavDrawerItemType.READING_APPLICATION:
+                        mDrawerLayout.closeDrawers();
+                        FragmentTransaction transaction = getSupportFragmentManager()
+                                .beginTransaction();
+                        switch (((ReadingApplication) navDrawerItem.getObject()).getName()) {
+                            case ReadingApplication.FACEBOOK:
+                                FaceBookGrabberService fbGrabber = new FaceBookGrabberService();
+                                transaction.replace(R.id.container, fbGrabber);
+                                transaction.commit();
+                                break;
+                            case ReadingApplication.TWITTER:
+                                TwitterGrabberService tweetGrabber = new TwitterGrabberService();
+                                transaction.replace(R.id.container, tweetGrabber, "Twitter");
+                                transaction.addToBackStack(null);
+                                transaction.commit();
+                                break;
+                            case ReadingApplication.GMAIL:
+                                GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
+                                transaction.replace(R.id.container, gmailGrabber);
+                                transaction.addToBackStack(null);
+                                break;
+                        }
+                }
+            }
+        });
     }
+
 
     @Override
     public void onBackPressed() {
@@ -140,7 +206,6 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         return true;
     }
 

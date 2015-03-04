@@ -8,6 +8,8 @@
     <dimen name="margin_general">16dp</dimen>
     <dimen name="height_footer">64dp</dimen>
     <dimen name="list_item_height">48dp</dimen>
+    <dimen name="icon_height">24dp</dimen>
+    <dimen name="icon_width">24dp</dimen>
 
     <dimen name="nav_drawer_header_text_size">18sp</dimen>
     <dimen name="margin_header_text">15dp</dimen>

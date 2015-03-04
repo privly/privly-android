@@ -11,11 +11,11 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/privlyDark"
-            android:minHeight="?attr/actionBarSize" />
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <FrameLayout
             android:id="@+id/container"
@@ -32,7 +32,6 @@
         android:background="@color/privlyBackgroundColor"
         android:choiceMode="singleChoice"
         android:clipToPadding="false"
-        android:dividerHeight="1dp"
-        android:paddingTop="8dp" />
+        android:dividerHeight="1dp" />
 
 </android.support.v4.widget.DrawerLayout>

@@ -8,8 +8,7 @@
         android:layout_width="@dimen/icon_width"
         android:layout_height="@dimen/icon_width"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/margin_general"
-        android:src="@drawable/email_grey600_24dp" />
+        android:layout_marginLeft="@dimen/margin_general" />
 
     <TextView
         android:id="@+id/app_name"
@@ -18,7 +17,6 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_general"
         android:layout_toRightOf="@id/app_icon"
-        android:text="Message"
         android:textColor="@color/privlyDark" />
 
 </RelativeLayout>

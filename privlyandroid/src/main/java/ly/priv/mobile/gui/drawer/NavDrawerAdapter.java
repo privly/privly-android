@@ -86,13 +86,33 @@ public class NavDrawerAdapter extends BaseAdapter {
                     viewHolder = (ViewHolderPrivlyApp) convertView.getTag();
                 }
                 viewHolder.appName.setText(application.getName());
-                viewHolder.appIcon.setImageResource(application.getIconResId());
+                viewHolder.appIcon.setImageDrawable(application.getDrawable());
+                break;
+            case NavDrawerItemType.READING_APPLICATION:
+                ReadingApplication readingApplication = (ReadingApplication) object;
+                ViewHolderReadingApp viewHolderReadingApp = null;
+                if (convertView == null) {
+                    viewHolderReadingApp = new ViewHolderReadingApp();
+                    convertView = inflater.inflate(R.layout.list_item_drawer_reading_application, parent, false);
+                    viewHolderReadingApp.appName = (TextView) convertView.findViewById(R.id.app_name);
+                    viewHolderReadingApp.appIcon = (ImageView) convertView.findViewById(R.id.app_icon);
+                    convertView.setTag(viewHolderReadingApp);
+                } else {
+                    viewHolderReadingApp = (ViewHolderReadingApp) convertView.getTag();
+                }
+                viewHolderReadingApp.appName.setText(readingApplication.getName());
+                viewHolderReadingApp.appIcon.setImageDrawable(readingApplication.getDrawable());
                 break;
         }
         return convertView;
     }
 
     private static class ViewHolderPrivlyApp {
+        TextView appName;
+        ImageView appIcon;
+    }
+
+    private static class ViewHolderReadingApp {
         TextView appName;
         ImageView appIcon;
     }

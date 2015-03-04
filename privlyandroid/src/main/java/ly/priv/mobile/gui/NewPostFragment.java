@@ -97,9 +97,7 @@ public class NewPostFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
-			Intent gotoSettings = new Intent(getActivity(),
-					SettingsActivity.class);
-			startActivity(gotoSettings);
+
 			return true;
 		case R.id.logout:
 			// Logout user from the Privly Android Application

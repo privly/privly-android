@@ -1,17 +1,19 @@
 package ly.priv.mobile.gui.drawer;
 
+import com.joanzapata.android.iconify.IconDrawable;
+
 public class PrivlyApplication {
 
     public static String MESSAGE_APP = "Message";
     public static String PLAINPOST_APP = "PlainPost";
     public static String HISTORY_APP = "History";
     String name, path;
-    int iconResId;
+    IconDrawable drawable;
 
-    public PrivlyApplication(String name, String path, int iconResId) {
+    public PrivlyApplication(String name, String path, IconDrawable drawable) {
         this.name = name;
         this.path = path;
-        this.iconResId = iconResId;
+        this.drawable = drawable;
     }
 
     public String getName() {
@@ -22,7 +24,7 @@ public class PrivlyApplication {
         return path;
     }
 
-    public int getIconResId() {
-        return iconResId;
+    public IconDrawable getDrawable() {
+        return drawable;
     }
 }
