@@ -42,7 +42,6 @@ import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
 import ly.priv.mobile.api.gui.socialnetworks.SMessage;
 import ly.priv.mobile.api.gui.socialnetworks.SUser;
-import ly.priv.mobile.gui.activities.MainActivity;
 import ly.priv.mobile.gui.drawer.PrivlyApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
@@ -81,13 +80,10 @@ public class FaceBookGrabberService extends Fragment implements
     private Session.StatusCallback mSessionStatusCallback;
     private ListUsersFragment mSListUsersActivity;
     private ProgressBar mProgressBar;
-    private MainActivity mActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -98,7 +94,7 @@ public class FaceBookGrabberService extends Fragment implements
         setTitle();
         mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
         mProgressBar.setVisibility(View.VISIBLE);
-        mValues = new Values(mActivity);
+        mValues = new Values(getActivity());
         mSessionStatusCallback = new Session.StatusCallback() {
 
             @Override
@@ -118,7 +114,8 @@ public class FaceBookGrabberService extends Fragment implements
      */
     private void runSocialGui() {
         Log.d(TAG, "runSocialGui");
-        FragmentTransaction transaction = mActivity.getSupportFragmentManager()
+        getActivity().getSupportFragmentManager().popBackStack();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         mSListUsersActivity = new ListUsersFragment();
         mSListUsersActivity.setISocialNetworks(this);
@@ -135,7 +132,7 @@ public class FaceBookGrabberService extends Fragment implements
         mSession = Session.getActiveSession();
         if (mSession == null) {
             Log.d(TAG, "mSession == null");
-            mSession = new Session.Builder(mActivity).build();
+            mSession = new Session.Builder(getActivity()).build();
             Session.setActiveSession(mSession);
             if (!mSession.isOpened()) {
                 Log.d(TAG, "!mSession.isOpened()");
@@ -165,7 +162,7 @@ public class FaceBookGrabberService extends Fragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(mActivity, requestCode,
+        Session.getActiveSession().onActivityResult(getActivity(), requestCode,
                 resultCode, data);
     }
 
@@ -186,7 +183,7 @@ public class FaceBookGrabberService extends Fragment implements
         if (state.isOpened()) {
             // Log in just happened.
             Log.d(TAG, "session opened");
-            if (mValues.getFacebookID().equals("")) {
+            if (mValues.getFacebookID() == null) {
                 makeMeRequest();
             } else {
                 runSocialGui();
@@ -222,7 +219,7 @@ public class FaceBookGrabberService extends Fragment implements
                         if (response.getError() != null) {
                             mProgressBar.setVisibility(View.INVISIBLE);
                             AlertDialog dialog = Utilities.showDialog(
-                                    mActivity, response.getError()
+                                    getActivity(), response.getError()
                                             .getErrorMessage());
                             dialog.show();
                             return;
@@ -258,10 +255,10 @@ public class FaceBookGrabberService extends Fragment implements
         final Response response = request.executeAndWait();
         if (response.getError() != null) {
             Log.e(TAG, response.getError().getErrorMessage());
-            if (mActivity != null)
-                mActivity.runOnUiThread(new Runnable() {
+            if (getActivity() != null)
+                getActivity().runOnUiThread(new Runnable() {
                     public void run() {
-                        AlertDialog dialog = Utilities.showDialog(mActivity,
+                        AlertDialog dialog = Utilities.showDialog(getActivity(),
                                 response.getError().getErrorMessage());
                         dialog.show();
                     }
@@ -324,10 +321,10 @@ public class FaceBookGrabberService extends Fragment implements
         final Response response = request.executeAndWait();
         if (response.getError() != null) {
             Log.e(TAG, response.getError().getErrorMessage());
-            mActivity.runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
                 public void run() {
                     mProgressBar.setVisibility(View.INVISIBLE);
-                    AlertDialog dialog = Utilities.showDialog(mActivity,
+                    AlertDialog dialog = Utilities.showDialog(getActivity(),
                             response.getError().getErrorMessage());
                     dialog.show();
                 }
@@ -397,7 +394,7 @@ public class FaceBookGrabberService extends Fragment implements
         mSession.closeAndClearTokenInformation();
         mSession = null;
         Session.setActiveSession(mSession);
-        mValues.setFacebookID("");
+        mValues.setFacebookID(null);
         PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
@@ -406,12 +403,12 @@ public class FaceBookGrabberService extends Fragment implements
                 .beginTransaction();
         transaction.replace(R.id.container, messageFragment);
         transaction.commit();
-
     }
 
     @Override
     public void setTitle() {
-        getActivity().setTitle(R.string.privly_Facebook);
+        if (isAdded())
+            getActivity().setTitle(R.string.privly_Facebook);
     }
 
 }

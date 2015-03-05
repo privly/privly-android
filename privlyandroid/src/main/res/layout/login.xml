@@ -120,7 +120,7 @@
             android:layout_width="@dimen/logo_width"
             android:layout_height="@dimen/logo_height"
             android:layout_centerInParent="true"
-            android:src="@drawable/lock" />
+            android:src="@drawable/logo" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -91,22 +91,19 @@ public class TwitterGrabberService extends Fragment implements
         } else {
             logIn();
         }
-
         return view;
-
     }
 
     /**
      * Run social GUI
      */
     private void runSocialGui() {
-        Log.d(TAG, "runSocialGui");
+        getActivity().getSupportFragmentManager().popBackStack();
         FragmentTransaction transaction = getActivity()
                 .getSupportFragmentManager().beginTransaction();
         MicroblogListPostsFragment microblogListPostsFragment = new MicroblogListPostsFragment();
         microblogListPostsFragment.setIMicroblogs(this);
         transaction.replace(R.id.container, microblogListPostsFragment);
-        // transaction.disallowAddToBackStack();
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -252,6 +249,7 @@ public class TwitterGrabberService extends Fragment implements
 
     @Override
     public void setTitle() {
-        getActivity().setTitle(R.string.privly_Twitter);
+        if (isAdded())
+            getActivity().setTitle(R.string.privly_Twitter);
     }
 }

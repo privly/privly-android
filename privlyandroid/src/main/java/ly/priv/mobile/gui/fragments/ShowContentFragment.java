@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui;
+package ly.priv.mobile.gui.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

@@ -9,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -142,20 +141,21 @@ public class MainActivity extends ActionBarActivity {
                         switch (((ReadingApplication) navDrawerItem.getObject()).getName()) {
                             case ReadingApplication.FACEBOOK:
                                 FaceBookGrabberService fbGrabber = new FaceBookGrabberService();
-                                transaction.add(R.id.container, fbGrabber);
+                                transaction.add(R.id.container, fbGrabber).addToBackStack(null);
                                 transaction.commit();
                                 break;
                             case ReadingApplication.TWITTER:
                                 TwitterGrabberService tweetGrabber = new TwitterGrabberService();
-                                transaction.add(R.id.container, tweetGrabber, "Twitter");
+                                transaction.add(R.id.container, tweetGrabber, "Twitter").addToBackStack(null);
                                 transaction.commit();
                                 break;
                             case ReadingApplication.GMAIL:
                                 GmailLinkGrabberService gmailGrabber = new GmailLinkGrabberService();
-                                transaction.add(R.id.container, gmailGrabber);
+                                transaction.add(R.id.container, gmailGrabber).addToBackStack(null);
                                 transaction.commit();
                                 break;
                         }
+                        break;
                 }
             }
         });
@@ -164,10 +164,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
-        Log.d(TAG, "BackStack Entry Count : " + fragmentManager.getBackStackEntryCount());
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
+        if (getSupportFragmentManager().findFragmentById(R.id.container) instanceof PrivlyApplicationFragment) {
+            finish();
         } else {
             super.onBackPressed();
         }

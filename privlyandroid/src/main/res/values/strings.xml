@@ -60,4 +60,8 @@
     <string name="pref_header_general">SERVER</string>
     <string name="pref_header_logout">LOGOUT OPTIONS</string>
     <string name="settings">Settings</string>
+    <string name="title_activity_facebook_content">Privly Facebook</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
