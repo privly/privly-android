@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="customPrivlyTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowBackground">@color/privlyBackgroundColor</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+</resources>
