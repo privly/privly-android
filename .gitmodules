@@ -1,6 +1,3 @@
-[submodule "lazyList"]
-	path = lazyList
-	url = https://github.com/metlaivan/LazyList.git
-[submodule "privlyandroid/src/main/assets/PrivlyApplications"]
-	path = privlyandroid/src/main/assets/PrivlyApplications
+[submodule "src/main/assets/PrivlyApplications"]
+	path = src/main/assets/PrivlyApplications
 	url = https://github.com/privly/privly-applications.git
