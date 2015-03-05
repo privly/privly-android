@@ -236,7 +236,6 @@ public class ShowContentFragment extends Fragment {
                 // Logs out User from Privly Application
                 Values values = new Values(getActivity());
                 values.setAuthToken(null);
-                values.setRememberMe(false);
                 Intent gotoLogin = new Intent(getActivity(), LoginActivity.class);
                 gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);

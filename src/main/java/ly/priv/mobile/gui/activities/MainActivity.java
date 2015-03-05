@@ -33,6 +33,7 @@ import ly.priv.mobile.gui.drawer.ReadingApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 
 public class MainActivity extends ActionBarActivity {
     private final String TAG = getClass().getSimpleName();
@@ -207,10 +208,17 @@ public class MainActivity extends ActionBarActivity {
                 case R.id.settings:
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
-                    break;
+                    return true;
+                case R.id.logout:
+                    Values values = new Values(MainActivity.this);
+                    values.setAuthToken(null);
+                    Intent gotoLogin = new Intent(MainActivity.this, LoginActivity.class);
+                    gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(gotoLogin);
+                    return true;
             }
         }
-        // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
 

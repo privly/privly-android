@@ -61,16 +61,6 @@ public final class Values {
         return authToken;
     }
 
-    /**
-     * Returns value of remember_me Flag
-     *
-     * @return {Boolean} rememberMe
-     */
-    public Boolean getRememberMe() {
-        Boolean rememberMe = mSharedPrefs.getBoolean(
-                ConstantValues.APP_PREFERENCES_REMEMBER_ME, false);
-        return rememberMe;
-    }
 
     /**
      * Returns username of the currently logged in user.
@@ -108,18 +98,6 @@ public final class Values {
     public void setContentServer(String url) {
         Editor editor = mSharedPrefs.edit();
         editor.putString(ConstantValues.APP_PREFERENCES_BASE_URL, url);
-        editor.commit();
-    }
-
-    /**
-     * Set Remember me flag
-     *
-     * @param rememberMe
-     */
-    public void setRememberMe(Boolean rememberMe) {
-        Editor editor = mSharedPrefs.edit();
-        editor.putBoolean(ConstantValues.APP_PREFERENCES_REMEMBER_ME,
-                rememberMe);
         editor.commit();
     }
 

@@ -25,7 +25,6 @@ public class ConstantValues {
     public static String APP_PREFERENCES = "prefsFile";
     public static String APP_PREFERENCES_BASE_URL = "base_url";
     public static String APP_PREFERENCES_AUTH_TOKEN = "auth_token";
-    public static String APP_PREFERENCES_REMEMBER_ME = "remember_me";
     public static String APP_PREFERENCES_UNAME = "uname";
     public static String APP_PREFERENCES_VERIFIED_AT_LOGIN = "verified_at_login";
     // Swipe options

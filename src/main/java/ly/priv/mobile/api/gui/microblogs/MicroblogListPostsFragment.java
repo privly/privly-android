@@ -125,7 +125,7 @@ public class MicroblogListPostsFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.logout:
+            case R.id.logoutTwitter:
                 mIMicroblogs.logout(getActivity());
                 return true;
             default:

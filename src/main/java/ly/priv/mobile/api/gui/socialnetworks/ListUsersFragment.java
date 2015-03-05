@@ -100,7 +100,7 @@ public class ListUsersFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.logout:
+            case R.id.logoutFacebook:
                 mISocialNetworks.logout(getActivity());
                 return true;
             default:
