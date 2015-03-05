@@ -3,12 +3,6 @@
 
     <string name="hello">Hello Privly User!</string>
     <string name="app_name">Privly</string>
-    <!--
-    <string name="unameHint">email address</string>
-    <string name="pwdHint">password</string>
-    <string name="loginButtonLabel">Login !</string>
-    <string name="rememberMeLabel">Remember Me</string>
-    -->
     <string name="hint_username">email address</string>
     <string name="hint_password">password</string>
     <string name="message_btn_login">LOG IN</string>
@@ -16,13 +10,17 @@
     <string name="message_welcome">Welcome to Privly!</string>
     <string name="message_new_user">New User ?</string>
     <string name="message_sign_up">Sign Up for Privly</string>
+    <string name="message_btn_share">Share</string>
+    <string name="message_share_fragment_header">Here\'s your new Privly URL</string>
+    <string name="sample_privly_url">https://privlyalpha.org/apps/Message/show?privlyApp=Message&amp;privlyInject1=true&amp;random_token=ccb77876bd&amp;privlyDataURL=https%3A%2F%2Fprivlyalpha.org%2Fposts%2F1921.json%3Frandom_token%3Dccb77876bd#privlyLinkKey=9B+aMkWgbhyT4Agt782WvpEtOLiRAvaz+LXskzhIPlw=</string>
+
 
     <string name="readListViewLabel">Read Privly Content</string>
     <string name="createListViewLabel"> Create New Privly Content </string>
     <string name="newUrlLabel">Here\'s your new Privly Url</string>
     <string name="shareButtonLabel">Share Url</string>
     <string name="changeContentServer">Change Content Server</string>
-    <string name="logoutMenuLabel">Logout From Application</string>
+    <string name="logoutMenuLabel">Logout</string>
     <string name="baseUrlHeading">Content Server Location</string>
     <string name="baseUrlHint">E.g. https://privlyalpha.org</string>
     <string name="defaultContentServer">https://privlyalpha.org</string>
@@ -42,24 +40,28 @@
     <string name="message_not_containe_privly_link">Message does not contain a privly link.</string>
     <string name="no_more_messages">No more messages.</string>
     <string name="verifying_session">Verifying session..</string>
-	<string name="good_to_go_select_an_option.">Good to go! Select an option.</string>
-	<string name="your_session_has_expired">Your session has expired. Please login again.</string>
-	<string name="no_internet_connection">No internet connection.</string>
-	<string name="time">Time</string>
-	<string name="name">Name</string>
-	<string name="please_enter_a_valid_email_id">Please Enter a valid EMail Address.</string>
-	<string name="please_enter_a_valid_password">Please Enter a valid Password.</string>
-	<string name="please_enter_a_valid_url">Please enter a valid URL.</string>
-	<string name="logging_in_dot_dot_dot">Logging in..</string>
-	<string name="history">History</string>
-	<string name="loading_next_post">Loading Next Post.</string>
-	<string name="this_is_a_last_post">This is a last Post</string>
-	<string name="loading_previous_post">Loading Previous Post</string>
-	<string name="this_is_a_first_post">This is a first Post</string>
-	<string name="saved_please_login_now">Saved! Please login now</string>
-	<string name="share_privly_url">Share Privly Url</string>
-	<string name="show_content">Show content</string>
-	<string name="pref_header_general">SERVER</string>
-	<string name="pref_header_logout">LOGOUT OPTIONS</string>
-	<string name="settings">Settings</string>
+    <string name="good_to_go_select_an_option.">Good to go! Select an option.</string>
+    <string name="your_session_has_expired">Your session has expired. Please login again.</string>
+    <string name="no_internet_connection">No internet connection.</string>
+    <string name="time">Time</string>
+    <string name="name">Name</string>
+    <string name="please_enter_a_valid_email_id">Please Enter a valid EMail Address.</string>
+    <string name="please_enter_a_valid_password">Please Enter a valid Password.</string>
+    <string name="please_enter_a_valid_url">Please enter a valid URL.</string>
+    <string name="logging_in_dot_dot_dot">Logging in..</string>
+    <string name="history">History</string>
+    <string name="loading_next_post">Loading Next Post.</string>
+    <string name="this_is_a_last_post">This is a last Post</string>
+    <string name="loading_previous_post">Loading Previous Post</string>
+    <string name="this_is_a_first_post">This is a first Post</string>
+    <string name="saved_please_login_now">Saved! Please login now</string>
+    <string name="share_privly_url">Share Privly Url</string>
+    <string name="show_content">Show content</string>
+    <string name="pref_header_general">SERVER</string>
+    <string name="pref_header_logout">LOGOUT OPTIONS</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_facebook_content">Privly Facebook</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

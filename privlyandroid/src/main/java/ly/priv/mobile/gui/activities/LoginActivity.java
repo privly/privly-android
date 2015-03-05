@@ -1,4 +1,4 @@
-package ly.priv.mobile.gui;
+package ly.priv.mobile.gui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -39,12 +39,6 @@ import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
-/**
- * Displays the login screen. Allows the user to authenticate to a Privly Web
- * Server by fetching the auth_token.
- *
- * @author Shivam Verma
- */
 public class LoginActivity extends Activity {
     ViewSwitcher switcher;
     TextView contentServerTextView;

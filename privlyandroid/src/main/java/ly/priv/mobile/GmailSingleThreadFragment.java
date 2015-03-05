@@ -19,7 +19,7 @@ import com.google.api.services.gmail.model.MessagePartHeader;
 import java.util.ArrayList;
 import java.util.List;
 
-import ly.priv.mobile.gui.ShowContentFragment;
+import ly.priv.mobile.gui.fragments.ShowContentFragment;
 import ly.priv.mobile.utils.Utilities;
 
 public class GmailSingleThreadFragment extends Fragment {
