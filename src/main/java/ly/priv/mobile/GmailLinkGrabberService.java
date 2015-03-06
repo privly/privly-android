@@ -99,7 +99,7 @@ public class GmailLinkGrabberService extends Fragment {
                 mailThread.setArguments(args);
                 FragmentTransaction transaction = getActivity()
                         .getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, mailThread);
+                transaction.add(R.id.container, mailThread);
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
