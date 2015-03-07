@@ -65,13 +65,12 @@ public class ShowContentFragment extends Fragment {
 
     }
 
-    @SuppressLint("NewApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.show_content, container, false);
-        getActivity().getActionBar().setTitle(R.string.show_content);
+        getActivity().setTitle(R.string.show_content);
         mListOfLinks = getArguments().getStringArrayList("listOfLinks");
         View webView = view.findViewById(R.id.urlContentWebview);
         mUrlContentWebView = (WebView) webView;
