@@ -36,6 +36,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.LobsterTextView;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
@@ -54,6 +55,7 @@ public class LoginActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        LobsterTextView ltv= (LobsterTextView) findViewById(R.id.message_welcome);
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
