@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import ly.priv.mobile.R;
@@ -32,6 +33,7 @@ public class PrivlyApplicationFragment extends Fragment {
         WebView webview = (WebView) rootView.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setDomStorageEnabled(true);
+        webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         webview.addJavascriptInterface(new JsObject(getActivity()),
                 ConstantValues.JAVASCRIPT_BRIDGE_NAME);
 
