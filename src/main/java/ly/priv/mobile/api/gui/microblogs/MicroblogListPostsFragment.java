@@ -71,7 +71,6 @@ public class MicroblogListPostsFragment extends Fragment implements
     private void initializeComponent(View view) {
         setHasOptionsMenu(true);
         mListViewPosts = ((ListView) view.findViewById(R.id.lView));
-        mListViewPosts.addFooterView(mFooterView);
         mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
         mListViewPosts.setOnItemClickListener(new OnItemClickListener() {
 
