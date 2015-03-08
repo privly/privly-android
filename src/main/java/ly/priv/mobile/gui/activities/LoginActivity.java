@@ -53,23 +53,23 @@ public class LoginActivity extends Activity {
     TextView contentServerTextView;
     EditText contentServerEditText, pwdEditText;
     AutoCompleteTextView emailAddressEditText;
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}$", Pattern.CASE_INSENSITIVE);
     ImageButton saveContentServerButton;
     ProgressBar progressBar;
     Button loginButton;
-    private Values mValues;
+    private Values mValues, emailval;
     String mContentServerDomain, authToken;
-    SharedPreferences prefs;
-    String prefName = "MyPref";
-    String usernameextract;
     String mEmailAddress;
+    String usernameextract = "";
     private String LOGTAG = getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        prefs = getSharedPreferences(prefName, MODE_PRIVATE);
+        emailval = new Values(LoginActivity.this);
+        mValues = new Values(LoginActivity.this);
+        usernameextract = mValues.getUserName();
+        emailval.setSharedPrefs(ConstantValues.APP_PREFERENCE_NEWPREF);
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
@@ -77,22 +77,11 @@ public class LoginActivity extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loginButton = (Button) findViewById(R.id.btn_login);
         emailAddressEditText = (AutoCompleteTextView) findViewById(R.id.email_edit_text);
-        Account[] accounts = AccountManager.get(this).getAccounts();
-        Set<String> emailSet = new HashSet<String>();
-        if(readPrefValues())
-        {
-            if (EMAIL_PATTERN.matcher(usernameextract).matches()) {
-                emailSet.add(usernameextract);
-            }
-        }
-        for (Account account : accounts) {
-            if (EMAIL_PATTERN.matcher(account.name).matches()) {
-                emailSet.add(account.name);
-            }
-        }
-        emailAddressEditText.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
+        Boolean b = emailval.readPrefsVal(emailval.getSharedPrefs(), usernameextract);
+        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this, b, usernameextract);
+        emailAddressEditText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
         pwdEditText = (EditText) findViewById(R.id.pwd_edit_text);
-        mValues = new Values(LoginActivity.this);
+
         mContentServerDomain = mValues.getContentServer();
         authToken = mValues.getAuthToken();
         if (authToken != null) {
@@ -112,7 +101,7 @@ public class LoginActivity extends Activity {
                 public void onClick(View v) {
                     if (Utilities
                             .isDataConnectionAvailable(getApplicationContext())) {
-                       mEmailAddress = emailAddressEditText.getText().toString().trim();
+                        mEmailAddress = emailAddressEditText.getText().toString().trim();
                         String mPassword = pwdEditText.getText().toString();
                         // Check if Email is Valid using RegEx and Password
                         // and is not null
@@ -140,14 +129,6 @@ public class LoginActivity extends Activity {
                 }
             });
         }
-    }
-    public Boolean readPrefValues() {
-        prefs = getSharedPreferences(prefName, MODE_PRIVATE);
-        usernameextract = prefs.getString("username", "");
-        if(usernameextract.equals(""))
-            return false;
-        else
-            return true;
     }
 
     public void editContentServer(View v) {
@@ -242,8 +223,8 @@ public class LoginActivity extends Activity {
                         String authToken = jObject.getString("auth_key");
                         mValues.setAuthToken(authToken);
                         mValues.setUserVerifiedAtLogin(true);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("username",mEmailAddress );
+                        SharedPreferences.Editor editor = emailval.getSharedPrefs().edit();
+                        editor.putString("username", mEmailAddress);
                         //---saves the values---
                         editor.commit();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

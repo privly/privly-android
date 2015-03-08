@@ -1,5 +1,7 @@
 package ly.priv.mobile.utils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,7 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +44,30 @@ public class Utilities {
             return true;
         else
             return false;
+    }
+
+    /**
+     * Suggest email addresses of the user using RegEx at Login screen
+     *
+     * @param {Context} context Context of the calling class.
+     * @param {Boolean} flag that determines whether the last login should be added
+     * @param {String}  username that comes from last login
+     * @return {Boolean}
+     */
+    public static Set<String> emailIdSuggestor(Context context, Boolean b, String username) {
+        Account[] accounts = AccountManager.get(context).getAccounts();
+        Set<String> emailSet = new HashSet<String>();
+        if (b) {
+            if (Utilities.isValidEmail(username)) {
+                emailSet.add(username);
+            }
+        }
+        for (Account account : accounts) {
+            if (Utilities.isValidEmail(account.name)) {
+                emailSet.add(account.name);
+            }
+        }
+        return emailSet;
     }
 
     /**
@@ -195,8 +223,8 @@ public class Utilities {
     /**
      * Conversion Twitter time into local time
      *
-     * @param time
      * @return
+     * @paramtime
      * @author Ivan Metla
      */
     public static String getTimeForTwitter(Date date) {
