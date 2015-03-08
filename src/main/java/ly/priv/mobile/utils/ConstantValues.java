@@ -27,6 +27,8 @@ public class ConstantValues {
     public static String APP_PREFERENCES_AUTH_TOKEN = "auth_token";
     public static String APP_PREFERENCES_UNAME = "uname";
     public static String APP_PREFERENCES_VERIFIED_AT_LOGIN = "verified_at_login";
+    public static String APP_PREFERENCE_NEWPREF = "NewPref";
+
     // Swipe options
     public static String SWIPE_MIN_DISTANCE = "swipeMinDistance";
     public static String SWIPE_THRESHOLD_VELOCITY = "swipeThresholdVelocity";
