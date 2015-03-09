@@ -61,7 +61,6 @@ public final class Values {
         return authToken;
     }
 
-
     /**
      * Returns username of the currently logged in user.
      *
@@ -77,6 +76,25 @@ public final class Values {
         Editor editor = mSharedPrefs.edit();
         editor.putString(ConstantValues.APP_PREFERENCES_UNAME, userName);
         editor.commit();
+    }
+
+    /**
+     * Returns username of the last logged in user.
+     *
+     * @return userName
+     */
+    public String getLastLoginEmailAddress() {
+        String userName = mSharedPrefs.getString(
+                ConstantValues.APP_PREFERENCE_LAST_LOGIN, null);
+        return userName;
+
+    }
+
+    public void setLastLoginEmailAddress(String lastloginusername) {
+        Editor editor = mSharedPrefs.edit();
+        editor.putString(ConstantValues.APP_PREFERENCE_LAST_LOGIN, lastloginusername);
+        editor.commit();
+
     }
 
     /**
