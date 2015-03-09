@@ -1,11 +1,16 @@
 package ly.priv.mobile.gui.activities;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,39 +35,50 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.LobsterTextView;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
 public class LoginActivity extends Activity {
     ViewSwitcher switcher;
     TextView contentServerTextView;
-    EditText contentServerEditText, emailAddressEditText, pwdEditText;
+    EditText contentServerEditText, pwdEditText;
+    AutoCompleteTextView emailAddressEditText;
     ImageButton saveContentServerButton;
     ProgressBar progressBar;
     Button loginButton;
     private Values mValues;
     String mContentServerDomain, authToken;
+    String mEmailAddress;
+    String usernameextract = "";
     private String LOGTAG = getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        mValues = new Values(LoginActivity.this);
+        usernameextract = mValues.getLastLoginEmailAddress();
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
         contentServerEditText = (EditText) findViewById(R.id.content_server_edit_text);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loginButton = (Button) findViewById(R.id.btn_login);
-        emailAddressEditText = (EditText) findViewById(R.id.email_edit_text);
+        emailAddressEditText = (AutoCompleteTextView) findViewById(R.id.email_edit_text);
+        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this, usernameextract);
+        emailAddressEditText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
         pwdEditText = (EditText) findViewById(R.id.pwd_edit_text);
-        mValues = new Values(LoginActivity.this);
+
         mContentServerDomain = mValues.getContentServer();
         authToken = mValues.getAuthToken();
         if (authToken != null) {
@@ -82,7 +98,7 @@ public class LoginActivity extends Activity {
                 public void onClick(View v) {
                     if (Utilities
                             .isDataConnectionAvailable(getApplicationContext())) {
-                        String mEmailAddress = emailAddressEditText.getText().toString().trim();
+                        mEmailAddress = emailAddressEditText.getText().toString().trim();
                         String mPassword = pwdEditText.getText().toString();
                         // Check if Email is Valid using RegEx and Password
                         // and is not null
@@ -204,6 +220,7 @@ public class LoginActivity extends Activity {
                         String authToken = jObject.getString("auth_key");
                         mValues.setAuthToken(authToken);
                         mValues.setUserVerifiedAtLogin(true);
+                        mValues.setLastLoginEmailAddress(mEmailAddress);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
