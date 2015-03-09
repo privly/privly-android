@@ -56,7 +56,7 @@ public class LoginActivity extends Activity {
     ImageButton saveContentServerButton;
     ProgressBar progressBar;
     Button loginButton;
-    private Values mValues, emailval;
+    private Values mValues;
     String mContentServerDomain, authToken;
     String mEmailAddress;
     String usernameextract = "";
@@ -66,10 +66,8 @@ public class LoginActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        emailval = new Values(LoginActivity.this);
         mValues = new Values(LoginActivity.this);
-        usernameextract = mValues.getUserName();
-        emailval.setSharedPrefs(ConstantValues.APP_PREFERENCE_NEWPREF);
+        usernameextract = mValues.getLastLoginEmailAddress();
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
@@ -77,8 +75,7 @@ public class LoginActivity extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loginButton = (Button) findViewById(R.id.btn_login);
         emailAddressEditText = (AutoCompleteTextView) findViewById(R.id.email_edit_text);
-        Boolean b = emailval.readPrefsVal(emailval.getSharedPrefs(), usernameextract);
-        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this, b, usernameextract);
+        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this, usernameextract);
         emailAddressEditText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
         pwdEditText = (EditText) findViewById(R.id.pwd_edit_text);
 
@@ -223,10 +220,7 @@ public class LoginActivity extends Activity {
                         String authToken = jObject.getString("auth_key");
                         mValues.setAuthToken(authToken);
                         mValues.setUserVerifiedAtLogin(true);
-                        SharedPreferences.Editor editor = emailval.getSharedPrefs().edit();
-                        editor.putString("username", mEmailAddress);
-                        //---saves the values---
-                        editor.commit();
+                        mValues.setLastLoginEmailAddress(mEmailAddress);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
