@@ -59,7 +59,6 @@ public class LoginActivity extends Activity {
     private Values mValues;
     String mContentServerDomain, authToken;
     String mEmailAddress;
-    String usernameextract = "";
     private String LOGTAG = getClass().getSimpleName();
 
     @Override
@@ -67,7 +66,6 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         mValues = new Values(LoginActivity.this);
-        usernameextract = mValues.getLastLoginEmailAddress();
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
@@ -75,7 +73,7 @@ public class LoginActivity extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loginButton = (Button) findViewById(R.id.btn_login);
         emailAddressEditText = (AutoCompleteTextView) findViewById(R.id.email_edit_text);
-        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this, usernameextract);
+        Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this);
         emailAddressEditText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
         pwdEditText = (EditText) findViewById(R.id.pwd_edit_text);
 

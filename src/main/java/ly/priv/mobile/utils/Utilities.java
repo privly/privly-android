@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ly.priv.mobile.R;
+import ly.priv.mobile.gui.activities.LoginActivity;
 
 /**
  * Contains simple functions that should be used wherever possible.
@@ -50,13 +51,13 @@ public class Utilities {
      * Suggest email addresses of the user using RegEx at Login screen
      *
      * @param {Context} context Context of the calling class.
-     * @param {String}  username that comes from last login
      * @return {Boolean}
      */
-    public static Set<String> emailIdSuggestor(Context context, String username) {
+    public static Set<String> emailIdSuggestor(Context context) {
         Account[] accounts = AccountManager.get(context).getAccounts();
         Set<String> emailSet = new HashSet<String>();
         Boolean b = false;
+        String username = new Values(context).getLastLoginEmailAddress();
         if (username != null)
             b = true;
         if (b) {
