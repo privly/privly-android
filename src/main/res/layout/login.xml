@@ -19,11 +19,26 @@
             android:textColor="@color/privlyDark"
             android:textSize="@dimen/header_text_size" />
 
+
+        <ViewSwitcher
+            android:id="@+id/signup_switcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/message_welcome"
+            android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:id="@+id/login_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
         <AutoCompleteTextView
             android:id="@+id/email_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/message_welcome"
+
             android:layout_marginLeft="@dimen/margin_general"
             android:layout_marginRight="@dimen/margin_general"
             android:layout_marginTop="@dimen/margin_general"
@@ -44,11 +59,39 @@
             android:textColor="@color/privlyDark"
             android:textSize="@dimen/content_text_size" />
 
+        </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/register_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <EditText
+                    android:id="@+id/signup_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_general"
+                    android:layout_marginRight="@dimen/margin_general"
+                    android:layout_marginTop="@dimen/margin_general"
+                    android:hint="@string/hint_username"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/privlyDark"
+                    android:textSize="@dimen/content_text_size" />
+
+
+
+
+
+            </RelativeLayout>
+        </ViewSwitcher>
+
         <Button
             android:id="@+id/btn_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pwd_edit_text"
+            android:layout_below="@id/signup_switcher"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_general"
             android:text="@string/message_btn_login" />
@@ -57,7 +100,7 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pwd_edit_text"
+            android:layout_below="@id/signup_switcher"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_general"
             android:visibility="invisible" />
@@ -124,6 +167,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/signup_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_footer"
         android:layout_alignParentBottom="true">
@@ -138,6 +182,7 @@
             android:textSize="@dimen/signup_message_text_size" />
 
         <ly.priv.mobile.utils.LobsterTextView
+            android:id="@+id/signup_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/new_user_text"
