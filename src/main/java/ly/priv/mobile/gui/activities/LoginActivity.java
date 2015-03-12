@@ -1,20 +1,19 @@
 package ly.priv.mobile.gui.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -35,9 +34,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -49,7 +46,7 @@ import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
 public class LoginActivity extends Activity {
-    ViewSwitcher switcher;
+    ViewSwitcher switcher,registerSwitcher;
     TextView contentServerTextView;
     EditText contentServerEditText, pwdEditText;
     AutoCompleteTextView emailAddressEditText;
@@ -57,9 +54,12 @@ public class LoginActivity extends Activity {
     ProgressBar progressBar;
     Button loginButton;
     private Values mValues;
+    RelativeLayout signUpLayout;
     String mContentServerDomain, authToken;
     String mEmailAddress;
     private String LOGTAG = getClass().getSimpleName();
+    LobsterTextView signup,sigupText,welcomeMessageView;
+    private boolean registering = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +67,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.login);
         mValues = new Values(LoginActivity.this);
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
+        registerSwitcher = (ViewSwitcher) findViewById(R.id.signup_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
         contentServerEditText = (EditText) findViewById(R.id.content_server_edit_text);
@@ -76,6 +77,33 @@ public class LoginActivity extends Activity {
         Set<String> emailSet = Utilities.emailIdSuggestor(LoginActivity.this);
         emailAddressEditText.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>(emailSet)));
         pwdEditText = (EditText) findViewById(R.id.pwd_edit_text);
+
+        signup = (LobsterTextView) findViewById(R.id.new_user_text);
+        sigupText = (LobsterTextView) findViewById(R.id.signup_text);
+        signUpLayout = (RelativeLayout) findViewById(R.id.signup_layout);
+        welcomeMessageView = (LobsterTextView) findViewById(R.id.message_welcome);
+
+        signUpLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AnimationUtils();
+                registerSwitcher.setAnimation(AnimationUtils.makeInAnimation
+                        (getBaseContext(), true));
+                registerSwitcher.showNext();
+                if(registering)
+                {
+                    updateRegisterViewStates(true);
+                    registering=false;
+                }
+                else
+                {
+                    updateRegisterViewStates(false);
+                    registering=true;
+                }
+
+            }
+        });
+
 
         mContentServerDomain = mValues.getContentServer();
         authToken = mValues.getAuthToken();
@@ -94,33 +122,43 @@ public class LoginActivity extends Activity {
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Utilities
-                            .isDataConnectionAvailable(getApplicationContext())) {
-                        mEmailAddress = emailAddressEditText.getText().toString().trim();
-                        String mPassword = pwdEditText.getText().toString();
-                        // Check if Email is Valid using RegEx and Password
-                        // and is not null
-                        if (!Utilities.isValidEmail(mEmailAddress))
-                            Utilities
-                                    .showToast(
-                                            getApplicationContext(),
-                                            getString(R.string.please_enter_a_valid_email_id),
-                                            false);
-                        else if (mPassword.equalsIgnoreCase(""))
-                            Utilities
-                                    .showToast(
-                                            getApplicationContext(),
-                                            getString(R.string.please_enter_a_valid_password),
-                                            false);
-                        else {
-                            mValues.setUserName(mEmailAddress);
-                            VerifyLoginCredentialsTask task = new VerifyLoginCredentialsTask(mEmailAddress, mPassword);
-                            task.execute(mValues.getContentServer() + ConstantValues.TOKEN_AUTHENTICATION_ENDPOINT);
-                        }
-                    } else
-                        Utilities.showToast(getApplicationContext(),
-                                getString(R.string.no_internet_connection),
-                                true);
+                    if (registering) {
+                        if (Utilities
+                                .isDataConnectionAvailable(getApplicationContext())) {
+                            mEmailAddress = emailAddressEditText.getText().toString().trim();
+                            String mPassword = pwdEditText.getText().toString();
+                            // Check if Email is Valid using RegEx and Password
+                            // and is not null
+                            if (!Utilities.isValidEmail(mEmailAddress))
+                                Utilities
+                                        .showToast(
+                                                getApplicationContext(),
+                                                getString(R.string.please_enter_a_valid_email_id),
+                                                false);
+                            else if (mPassword.equalsIgnoreCase(""))
+                                Utilities
+                                        .showToast(
+                                                getApplicationContext(),
+                                                getString(R.string.please_enter_a_valid_password),
+                                                false);
+                            else {
+                                mValues.setUserName(mEmailAddress);
+                                VerifyLoginCredentialsTask task = new VerifyLoginCredentialsTask(mEmailAddress, mPassword);
+                                task.execute(mValues.getContentServer() + ConstantValues.TOKEN_AUTHENTICATION_ENDPOINT);
+                            }
+                        } else
+                            Utilities.showToast(getApplicationContext(),
+                                    getString(R.string.no_internet_connection),
+                                    true);
+                    } else {
+                        new AnimationUtils();
+                        registerSwitcher.setAnimation(AnimationUtils.makeInAnimation
+                                (getBaseContext(), true));
+                        registerSwitcher.showNext();
+                        registering = true;
+                        updateRegisterViewStates(false);
+
+                    }
                 }
             });
         }
@@ -133,6 +171,24 @@ public class LoginActivity extends Activity {
     private void updateContentServerViews() {
         contentServerTextView.setText("Logging in to " + mValues.getContentServer() + ".\nTap here to change");
         contentServerEditText.setText(mValues.getContentServer());
+    }
+
+    private void updateRegisterViewStates(Boolean isRegistering)
+    {
+        if(isRegistering)
+        {
+            welcomeMessageView.setText("Signup For Privly");
+            switcher.setVisibility(View.INVISIBLE);
+            signUpLayout.setVisibility(View.INVISIBLE);
+            loginButton.setText("Register");
+        }
+        else
+        {
+            welcomeMessageView.setText("Welcome to Privly");
+            switcher.setVisibility(View.VISIBLE);
+            signUpLayout.setVisibility(View.VISIBLE);
+            loginButton.setText("LOG IN");
+        }
     }
 
     public void saveContentServer(View v) {
