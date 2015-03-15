@@ -20,7 +20,6 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
@@ -69,25 +68,7 @@ public class MainActivity extends ActionBarActivity {
         initNavigationDrawer();
         uri = getIntent().getData();
         if (uri != null) {
-            if(!uri.getScheme().equalsIgnoreCase("https")) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, new TwitterGrabberService()).commit();
-            }
-            else {
-                ArrayList<String> links = new ArrayList<String>(Arrays.asList(uri.toString()));
-                Bundle linkBundle = new Bundle();
-                linkBundle.putStringArrayList("listOfLinks", links );
-                ShowContentFragment showContentFragment = new ShowContentFragment();
-                showContentFragment.setArguments(linkBundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, showContentFragment).commit();
-            }
-        } else {
-            if (savedInstanceState == null) {
-                PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-                messageFragment.setArguments(bundle);
+            if (!uri.getScheme().equalsIgnoreCase("https")) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container, new TwitterGrabberService()).commit();
                 return;
