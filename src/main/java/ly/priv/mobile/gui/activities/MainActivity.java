@@ -14,12 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
@@ -68,30 +68,39 @@ public class MainActivity extends ActionBarActivity {
         initNavigationDrawer();
         uri = getIntent().getData();
         if (uri != null) {
-            if(!uri.getScheme().equalsIgnoreCase("https")) {
+            if (!uri.getScheme().equalsIgnoreCase("https")) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container, new TwitterGrabberService()).commit();
-            }
-            else {
-                ArrayList<String> links = new ArrayList<String>(Arrays.asList(uri.toString()));
-                Bundle linkBundle = new Bundle();
-                linkBundle.putStringArrayList("listOfLinks", links );
-                ShowContentFragment showContentFragment = new ShowContentFragment();
-                showContentFragment.setArguments(linkBundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, showContentFragment).commit();
-            }
-        } else {
-            if (savedInstanceState == null) {
-                PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-                messageFragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, messageFragment).addToBackStack(null)
-                        .commit();
+                return;
+            } else {
+                //checking if its a Privly App link
+                ArrayList<String> links = Utilities.fetchPrivlyUrls(uri.toString());
+                if (!links.isEmpty()) {
+                    Bundle linkBundle = new Bundle();
+                    linkBundle.putStringArrayList("listOfLinks", links);
+                    ShowContentFragment showContentFragment = new ShowContentFragment();
+                    showContentFragment.setArguments(linkBundle);
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.container, showContentFragment).commit();
+                    return;
+                } else {
+                    //Can't handle the link, sending user back to inception with a Toast
+                    Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
+                    super.onBackPressed();
+                }
             }
         }
+
+        if (savedInstanceState == null) {
+            PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
+            messageFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, messageFragment).addToBackStack(null)
+                    .commit();
+        }
+
     }
 
     private void initNavigationDrawer() {
