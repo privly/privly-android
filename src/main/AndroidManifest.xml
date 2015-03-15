@@ -59,8 +59,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https"
-                    android:host="privlyalpha.org/apps/"
-                    android:pathPrefix="/"/>
+                    android:host="privlyalpha.org"
+                    android:pathPrefix="/apps/" />
             </intent-filter>
 
             <!-- for dev.privly.org link clicks -->
@@ -71,7 +71,7 @@
 
 
                 <data android:scheme="https"
-                    android:host="privlyalpha.org"
+                    android:host="dev.privly.org"
                     android:pathPrefix="/apps/"/>
             </intent-filter>
 
