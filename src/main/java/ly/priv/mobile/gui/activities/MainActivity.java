@@ -20,7 +20,6 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ly.priv.mobile.GmailLinkGrabberService;
 import ly.priv.mobile.R;
@@ -69,7 +68,7 @@ public class MainActivity extends ActionBarActivity {
         initNavigationDrawer();
         uri = getIntent().getData();
         if (uri != null) {
-            if(!uri.getScheme().equalsIgnoreCase("https")) {
+            if (uri.getHost().equalsIgnoreCase("privlyT4JCallback")) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container, new TwitterGrabberService()).commit();
                 return;
@@ -90,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
                     super.onBackPressed();
                 }
-               }
+            }
         }
 
         if (savedInstanceState == null) {
