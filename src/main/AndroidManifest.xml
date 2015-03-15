@@ -51,7 +51,6 @@
                     android:scheme="oauth" />
             </intent-filter>
 
-
             <!-- for privlyalpha.org link clicks -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -60,7 +59,7 @@
 
                 <data android:scheme="https"
                     android:host="privlyalpha.org"
-                    android:pathPrefix="/apps/" />
+                    android:pathPrefix="/apps/"/>
             </intent-filter>
 
             <!-- for dev.privly.org link clicks -->

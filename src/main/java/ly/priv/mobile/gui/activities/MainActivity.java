@@ -72,26 +72,9 @@ public class MainActivity extends ActionBarActivity {
             if(!uri.getScheme().equalsIgnoreCase("https")) {
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container, new TwitterGrabberService()).commit();
+                return;
             }
             else {
-                ArrayList<String> links = new ArrayList<String>(Arrays.asList(uri.toString()));
-                Bundle linkBundle = new Bundle();
-                linkBundle.putStringArrayList("listOfLinks", links );
-                ShowContentFragment showContentFragment = new ShowContentFragment();
-                showContentFragment.setArguments(linkBundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, showContentFragment).commit();
-            }
-        } else {
-            if (savedInstanceState == null) {
-                PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-                messageFragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, new TwitterGrabberService()).commit();
-                return;
-            } else {
                 //checking if its a Privly App link
                 ArrayList<String> links = Utilities.fetchPrivlyUrls(uri.toString());
                 if (!links.isEmpty()) {
@@ -107,7 +90,7 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
                     super.onBackPressed();
                 }
-            }
+               }
         }
 
         if (savedInstanceState == null) {
