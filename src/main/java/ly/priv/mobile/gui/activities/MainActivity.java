@@ -69,15 +69,14 @@ public class MainActivity extends ActionBarActivity {
         if (uri != null) {
             //checking if its a valid Privly App link
             ArrayList<String> links = Utilities.fetchPrivlyUrls(uri.toString());
-            if(!links.isEmpty()){
+            if (!links.isEmpty()) {
                 Bundle linkBundle = new Bundle();
                 linkBundle.putStringArrayList("listOfLinks", links);
                 ShowContentFragment showContentFragment = new ShowContentFragment();
                 showContentFragment.setArguments(linkBundle);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.container, showContentFragment).commit();
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
                 this.finish();
             }
