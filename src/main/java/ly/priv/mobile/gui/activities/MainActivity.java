@@ -2,7 +2,6 @@ package ly.priv.mobile.gui.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -37,7 +36,6 @@ import ly.priv.mobile.utils.Values;
 
 public class MainActivity extends ActionBarActivity {
     private final String TAG = getClass().getSimpleName();
-    Uri uri;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     ActionBarDrawerToggle actionBarDrawerToggle;
@@ -64,20 +62,14 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         initNavigationDrawer();
-        uri = getIntent().getData();
-        if (uri != null) {
+        if (savedInstanceState == null) {
+            PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
+            messageFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new TwitterGrabberService()).commit();
-        } else {
-            if (savedInstanceState == null) {
-                PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-                messageFragment.setArguments(bundle);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, messageFragment).addToBackStack(null)
-                        .commit();
-            }
+                    .add(R.id.container, messageFragment).addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -220,23 +212,5 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * The twitter api returns the login data in form of an intent which can be
-     * captured by the activity using onNewIntent method. When the intent is
-     * received, the MainActivity sends the intent to TwitterLinkGrabberService
-     * through the NewIntentListener interface.
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        NewIntentListener newIntentListener = (NewIntentListener) this
-                .getSupportFragmentManager().findFragmentByTag("Twitter");
-        newIntentListener.onNewIntentRead(intent);
-    }
-
-    public interface NewIntentListener {
-        public void onNewIntentRead(Intent intent);
     }
 }
