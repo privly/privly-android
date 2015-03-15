@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -31,13 +32,13 @@ import ly.priv.mobile.gui.drawer.NavDrawerItemType;
 import ly.priv.mobile.gui.drawer.PrivlyApplication;
 import ly.priv.mobile.gui.drawer.ReadingApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
+import ly.priv.mobile.gui.fragments.ShowContentFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
 public class MainActivity extends ActionBarActivity {
     private final String TAG = getClass().getSimpleName();
-    Uri uri;
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
     ActionBarDrawerToggle actionBarDrawerToggle;
@@ -64,20 +65,30 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         initNavigationDrawer();
-        uri = getIntent().getData();
+        Uri uri = getIntent().getData();
         if (uri != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new TwitterGrabberService()).commit();
-        } else {
-            if (savedInstanceState == null) {
-                PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
-                messageFragment.setArguments(bundle);
+            //checking if its a valid Privly App link
+            ArrayList<String> links = Utilities.fetchPrivlyUrls(uri.toString());
+            if(!links.isEmpty()){
+                Bundle linkBundle = new Bundle();
+                linkBundle.putStringArrayList("listOfLinks", links);
+                ShowContentFragment showContentFragment = new ShowContentFragment();
+                showContentFragment.setArguments(linkBundle);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.container, messageFragment).addToBackStack(null)
-                        .commit();
+                        .add(R.id.container, showContentFragment).commit();
             }
+            else {
+                Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
+                this.finish();
+            }
+        } else if (savedInstanceState == null) {
+            PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
+            messageFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, messageFragment).addToBackStack(null)
+                    .commit();
         }
     }
 
@@ -220,23 +231,5 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * The twitter api returns the login data in form of an intent which can be
-     * captured by the activity using onNewIntent method. When the intent is
-     * received, the MainActivity sends the intent to TwitterLinkGrabberService
-     * through the NewIntentListener interface.
-     */
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        NewIntentListener newIntentListener = (NewIntentListener) this
-                .getSupportFragmentManager().findFragmentByTag("Twitter");
-        newIntentListener.onNewIntentRead(intent);
-    }
-
-    public interface NewIntentListener {
-        public void onNewIntentRead(Intent intent);
     }
 }
