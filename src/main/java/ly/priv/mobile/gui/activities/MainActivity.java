@@ -2,6 +2,7 @@ package ly.priv.mobile.gui.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -30,6 +32,7 @@ import ly.priv.mobile.gui.drawer.NavDrawerItemType;
 import ly.priv.mobile.gui.drawer.PrivlyApplication;
 import ly.priv.mobile.gui.drawer.ReadingApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
+import ly.priv.mobile.gui.fragments.ShowContentFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
@@ -62,7 +65,23 @@ public class MainActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         initNavigationDrawer();
-        if (savedInstanceState == null) {
+
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            //checking if its a valid Privly App link
+            ArrayList<String> links = Utilities.fetchPrivlyUrls(uri.toString());
+            if (!links.isEmpty()) {
+                Bundle linkBundle = new Bundle();
+                linkBundle.putStringArrayList("listOfLinks", links);
+                ShowContentFragment showContentFragment = new ShowContentFragment();
+                showContentFragment.setArguments(linkBundle);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container, showContentFragment).commit();
+            } else {
+                Toast.makeText(this, "Can't handle the link in Privly! Open it in browser.", Toast.LENGTH_LONG).show();
+                this.finish();
+            }
+        } else if (savedInstanceState == null) {
             PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
             Bundle bundle = new Bundle();
             bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
@@ -71,6 +90,7 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, messageFragment).addToBackStack(null)
                     .commit();
         }
+
     }
 
     private void initNavigationDrawer() {
