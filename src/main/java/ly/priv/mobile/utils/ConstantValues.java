@@ -19,7 +19,6 @@ public class ConstantValues {
 
     // Constant for Privly
     public static String NEW_PRIVLY_URL = "newPrivlyUrl";
-    public static final String IS_REDIRECTED = "isRedirected";
     public static final String JS_APP_NAME = "JsAppName";
     // Constant for Privly Preferences
     public static String APP_PREFERENCES = "prefsFile";

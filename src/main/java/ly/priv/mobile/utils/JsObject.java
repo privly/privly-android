@@ -1,5 +1,6 @@
 package ly.priv.mobile.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -112,22 +113,13 @@ public class JsObject {
 
     @JavascriptInterface
     public void showLoginActivity() {
-        Intent gotoLogin = new Intent(mContext, LoginActivity.class);
-        /**
-         * Set authToken null so that the Login Activity does not redirect the
-         * user to Home Activity.
-         */
-
+        // Set authToken null.
         Values values = new Values(mContext);
         values.setAuthToken(null);
-        gotoLogin.putExtra(ConstantValues.IS_REDIRECTED, true);
-
-        // Clear the history stack. Once the user is redirected to the Login
-        // Activity. The user should not be able to access previous activities.
-
-        gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent gotoLogin = new Intent(mContext, LoginActivity.class);
         mContext.startActivity(gotoLogin);
+        Activity activity = (Activity) mContext;
+        activity.finish();
     }
 
     /**
