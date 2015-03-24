@@ -1,5 +1,4 @@
 package ly.priv.mobile.grabbers;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
@@ -21,7 +19,6 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -31,13 +28,11 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import ly.priv.mobile.R;
 import ly.priv.mobile.api.gui.socialnetworks.ISocialNetworks;
 import ly.priv.mobile.api.gui.socialnetworks.ListUsersFragment;
@@ -48,7 +43,6 @@ import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
-
 /**
  * Fragment for login,logout get inbox and list of messages for chose dialog id
  * For FaceBook
@@ -81,12 +75,10 @@ public class FaceBookGrabberService extends Fragment implements
     private Session.StatusCallback mSessionStatusCallback;
     private ListUsersFragment mSListUsersActivity;
     private ProgressBar mProgressBar;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,19 +89,15 @@ public class FaceBookGrabberService extends Fragment implements
         mProgressBar.setVisibility(View.VISIBLE);
         mValues = new Values(getActivity());
         mSessionStatusCallback = new Session.StatusCallback() {
-
             @Override
             public void call(Session session, SessionState state,
                              Exception exception) {
                 onSessionStateChange(session, state, exception);
-
             }
-
         };
         login();
         return view;
     }
-
     /**
      * Run social GUI
      */
@@ -124,7 +112,6 @@ public class FaceBookGrabberService extends Fragment implements
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
     /**
      * Login in FaceBook
      */
@@ -156,7 +143,6 @@ public class FaceBookGrabberService extends Fragment implements
         }
         mProgressBar.setVisibility(View.INVISIBLE);
     }
-
     /**
      * this method is used by the facebook API
      */
@@ -166,7 +152,6 @@ public class FaceBookGrabberService extends Fragment implements
         Session.getActiveSession().onActivityResult(getActivity(), requestCode,
                 resultCode, data);
     }
-
     /**
      * Manages the session state change. This method is called after the
      * <code>login</code> method.
@@ -182,7 +167,7 @@ public class FaceBookGrabberService extends Fragment implements
             return;
         }
         if (state.isOpened()) {
-            // Log in just happened.
+// Log in just happened.
             Log.d(TAG, "session opened");
             if (mValues.getFacebookID() == null) {
                 makeMeRequest();
@@ -190,26 +175,24 @@ public class FaceBookGrabberService extends Fragment implements
                 runSocialGui();
             }
         } else if (state.isClosed()) {
-            // Log out just happened. Update the UI.
+// Log out just happened. Update the UI.
             Log.d(TAG, "session closed");
         }
     }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Session session = Session.getActiveSession();
         Session.saveSession(session, outState);
     }
-
     /**
      * Method for get information about me
      */
     private void makeMeRequest() {
         Log.d(TAG, "makeMeRequest");
         mProgressBar.setVisibility(View.VISIBLE);
-        // Make an API call to get user data and define a
-        // new callback to handle the response.
+// Make an API call to get user data and define a
+// new callback to handle the response.
         Bundle params = new Bundle();
         params.putString("fields", "id");
         Request request = Request.newMeRequest(mSession,
@@ -225,7 +208,6 @@ public class FaceBookGrabberService extends Fragment implements
                             return;
                         }
                         if (user != null) {
-
                             mValues.setFacebookID(user.getId());
                         }
                         mProgressBar.setVisibility(View.INVISIBLE);
@@ -234,21 +216,42 @@ public class FaceBookGrabberService extends Fragment implements
                 });
         request.setParameters(params);
         request.executeAsync();
+    }
 
+    private void getFacebookUserId(){
+        //if(mFaceBookUserId==null || mFaceBookUserId=="") {
+            Bundle params = new Bundle();
+            params.putString("fields", "id");
+            Request request = Request.newGraphPathRequest(mSession, "me",
+                    null);
+            request.setParameters(params);
+            final Response response = request.executeAndWait();
+            String userId = null;
+            try {
+                userId = response.getGraphObject().getInnerJSONObject().getString("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            mFaceBookUserId = userId;
+            Log.d(TAG, "USER ID IS " + mFaceBookUserId);
+            mValues.setFacebookID(mFaceBookUserId);
+        //}
     }
 
     @Override
     public ArrayList<SUser> getListOfUsers() {
         Log.d(TAG, "getListOfUsers");
         mListUserMess = new ArrayList<SUser>();
-        // mProgressBar.setVisibility(View.VISIBLE);
+// mProgressBar.setVisibility(View.VISIBLE);
+        getFacebookUserId();
         mFaceBookUserId = mValues.getFacebookID();
-        // Make an API call to get user data and define a
-        // new callback to handle the response.
+// Make an API call to get user data and define a
+// new callback to handle the response.
         Bundle params = new Bundle();
         params.putString("fields",
                 "id,to.fields(id,name,picture),comments.order(chronological).limit(1)");
-        // params.putString("limit", "1");
+// params.putString("limit", "1");
         Request request = Request.newGraphPathRequest(mSession, "me/inbox",
                 null);
         request.setParameters(params);
@@ -269,7 +272,6 @@ public class FaceBookGrabberService extends Fragment implements
         try {
             listUsersWithLastMessage = response.getGraphObject()
                     .getInnerJSONObject().getJSONArray("data");
-
             for (int i = 0; i < listUsersWithLastMessage.length(); i++) {
                 SUser sUser = new SUser();
                 JSONObject dialog = listUsersWithLastMessage.getJSONObject(i);
@@ -287,7 +289,6 @@ public class FaceBookGrabberService extends Fragment implements
                         sUser.setUrlToAvatar(pic.getString("url"));
                         break;
                     }
-
                 }
                 JSONObject comment = dialog.getJSONObject("comments")
                         .getJSONArray("data").getJSONObject(0);
@@ -295,7 +296,6 @@ public class FaceBookGrabberService extends Fragment implements
                     sUser.setLastUserMess(comment.getString("message"));
                 } else {
                     sUser.setLastUserMess("");
-
                 }
                 mListUserMess.add(sUser);
             }
@@ -304,7 +304,6 @@ public class FaceBookGrabberService extends Fragment implements
         }
         return mListUserMess;
     }
-
     @Override
     public Map<String, Object> getListOfMessages(String dialogID) {
         Log.d(TAG, "Access Token >>> " + mSession.getAccessToken());
@@ -317,7 +316,6 @@ public class FaceBookGrabberService extends Fragment implements
                 "comments.fields(from.fields(id,picture),message,created_time)");
         Request request = Request.newGraphPathRequest(mSession, dialogID, null);
         request.setParameters(params);
-
         final Response response = request.executeAndWait();
         if (response.getError() != null) {
             Log.e(TAG, response.getError().getErrorMessage());
@@ -346,12 +344,10 @@ public class FaceBookGrabberService extends Fragment implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         res.put(ARRAY, listOfUsersMessage);
         res.put(NEXTLINK, nextUrlForLoadingMessages);
         return res;
     }
-
     @Override
     public Map<String, Object> fetchNextMessages(String url) {
         String nextUrlForLoadingMessages = "";
@@ -359,14 +355,13 @@ public class FaceBookGrabberService extends Fragment implements
         Map<String, Object> res = new HashMap<String, Object>();
         String fbResponse = "";
         try {
-            // Make GET Request
+// Make GET Request
             HttpClient client = new DefaultHttpClient();
             HttpGet get = new HttpGet(url);
             HttpResponse responseGet = client.execute(get);
             HttpEntity resEntityGet = responseGet.getEntity();
             if (resEntityGet != null) {
                 fbResponse = EntityUtils.toString(resEntityGet);
-
             }
             JSONObject jsonObjectComments = new JSONObject(fbResponse);
             JSONArray comments = jsonObjectComments.getJSONArray("data");
@@ -388,7 +383,6 @@ public class FaceBookGrabberService extends Fragment implements
         res.put(NEXTLINK, nextUrlForLoadingMessages);
         return res;
     }
-
     @Override
     public void logout(FragmentActivity fragmentActivity) {
         mSession.closeAndClearTokenInformation();
@@ -404,10 +398,8 @@ public class FaceBookGrabberService extends Fragment implements
         transaction.replace(R.id.container, messageFragment);
         transaction.commit();
     }
-
     @Override
     public void setTitle(FragmentActivity fragmentActivity) {
         fragmentActivity.setTitle(R.string.privly_Facebook);
     }
-
 }
