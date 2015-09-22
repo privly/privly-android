@@ -33,12 +33,7 @@ import ly.priv.mobile.utils.Utilities;
  * </ul>
  * </p>
  * <p/>
- * <p>
- * Dependencies :
- * <ul>
- * <li>/privly-android/libs/android-support-v4.jar</li>
- * </ul>
- * </p>
+ * <p/>
  *
  * @author Ivan Metla e-mail: metlaivan@gmail.com
  */

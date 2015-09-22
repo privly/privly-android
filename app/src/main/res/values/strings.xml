@@ -27,7 +27,6 @@
     <string name="defaultContentServer">https://privlyalpha.org</string>
     <string name="saveButtonLabel">Save</string>
     <string name="loginUnsure">This is the web address of the server where your Privly data is stored. If you\'re unsure of what this means, please leave the default setting.</string>
-    <string name="facebook_app_id">1039353969425223</string>
     <string name="logout_twitter"> Logout From Twitter</string>
     <string name="logout_facebook"> Logout From Facebook</string>
     <string name="set_content_server">Content Server Location</string>
@@ -58,8 +57,8 @@
     <string name="saved_please_login_now">Saved! Please login now</string>
     <string name="share_privly_url">Share Privly Url</string>
     <string name="show_content">Show content</string>
-    <string name="pref_header_general">SERVER</string>
-    <string name="pref_header_logout">LOGOUT OPTIONS</string>
+    <string name="pref_header_general">General Settings</string>
+    <string name="pref_header_logout">Connected Applications</string>
     <string name="settings">Settings</string>
     <string name="title_activity_facebook_content">Privly Facebook</string>
 

@@ -22,17 +22,15 @@ import com.facebook.model.GraphUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +62,6 @@ import ly.priv.mobile.utils.Values;
  * <p>
  * Dependencies :
  * <ul>
- * <li>/privly-android/libs/gson.jar</li>
  * <li>FaceBookSDK</li>
  * </ul>
  * </p>
@@ -95,7 +92,7 @@ public class FaceBookGrabberService extends Fragment implements
         setTitle(getActivity());
         mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
         mProgressBar.setVisibility(View.VISIBLE);
-        mValues = new Values(getActivity());
+        mValues = Values.getInstance();
         mSessionStatusCallback = new Session.StatusCallback() {
 
             @Override
@@ -357,18 +354,15 @@ public class FaceBookGrabberService extends Fragment implements
         String nextUrlForLoadingMessages = "";
         ArrayList<SMessage> listOfUsersMessage = new ArrayList<SMessage>();
         Map<String, Object> res = new HashMap<String, Object>();
-        String fbResponse = "";
         try {
             // Make GET Request
-            HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(url);
-            HttpResponse responseGet = client.execute(get);
-            HttpEntity resEntityGet = responseGet.getEntity();
-            if (resEntityGet != null) {
-                fbResponse = EntityUtils.toString(resEntityGet);
-
+            InputStream inputStream = new URL(url).openStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String response = "";
+            for (String line; (line = reader.readLine()) != null; ) {
+                response += line;
             }
-            JSONObject jsonObjectComments = new JSONObject(fbResponse);
+            JSONObject jsonObjectComments = new JSONObject(response);
             JSONArray comments = jsonObjectComments.getJSONArray("data");
             if (comments.length() != 0) {
                 Gson gson = new Gson();

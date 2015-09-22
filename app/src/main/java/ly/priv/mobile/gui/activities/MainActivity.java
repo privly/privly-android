@@ -222,7 +222,7 @@ public class MainActivity extends ActionBarActivity {
                     startActivity(intent);
                     return true;
                 case R.id.logout:
-                    Values values = new Values(MainActivity.this);
+                    Values values = Values.getInstance();
                     values.setAuthToken(null);
                     Intent gotoLogin = new Intent(MainActivity.this, LoginActivity.class);
                     gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

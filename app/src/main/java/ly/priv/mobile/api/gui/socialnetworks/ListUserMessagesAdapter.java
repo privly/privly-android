@@ -42,7 +42,7 @@ public class ListUserMessagesAdapter extends BaseAdapter {
     public ListUserMessagesAdapter(Activity activity, ArrayList<SMessage> list) {
         this.mActivity = activity;
         this.mListUsserMessages = list;
-        this.mValues = new Values(mActivity);
+        this.mValues = Values.getInstance();
         this.mFaceBookId = mValues.getFacebookID();
         this.mInflater = (LayoutInflater) mActivity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

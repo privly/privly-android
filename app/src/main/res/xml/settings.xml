@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+    <PreferenceCategory android:title="@string/pref_header_general">
+
+
+        <EditTextPreference
+            android:defaultValue="@string/defaultContentServer"
+            android:inputType="textUri"
+            android:key="base_url"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/changeContentServer" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_header_logout">
+        <Preference
+            android:key="fbLogout"
+            android:title="Logout Facebook" />
+        <Preference
+            android:key="gmailLogout"
+            android:title="Logout Gmail" />
+        <Preference
+            android:key="twitterLogout"
+            android:title="Logout Twitter" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
