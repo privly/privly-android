@@ -21,13 +21,30 @@
         android:text="@string/sample_privly_url"
         android:textAppearance="?android:attr/textAppearance" />
 
-    <Button
-        android:id="@+id/share_url_btn"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/url_text_view"
         android:layout_centerHorizontal="true"
-        android:drawablePadding="8dp"
-        android:drawableRight="@drawable/share_black_24dp"
-        android:text="@string/message_btn_share" />
+        android:orientation="horizontal"
+        android:layout_below="@id/url_text_view">
+
+        <Button
+            android:id="@+id/share_url_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/share_black_24dp"
+            android:text="@string/message_btn_share" />
+
+        <Button
+            android:id="@+id/copy_url_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_content_copy_black_24dp"
+            android:text="@string/message_btn_copy" />
+
+
+    </LinearLayout>
+
 </RelativeLayout>

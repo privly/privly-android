@@ -36,8 +36,8 @@ public class ConstantValues {
     // Constant for FaceBook
     public static String PREFERENCE_FACEBOOK_USER_ID = "FacebookID";
     // Constant for Twitter
-    public static String TWITTER_CONSUMER_KEY = "PnqSdRVqsoLQu11WA0GZfjKhk";
-    public static String TWITTER_CONSUMER_SECRET = "iMWhbFshbL5henHOsJSBCrsc7SLNZ5fOmJ9eVcRgk2DuPy7FnN";
+    public static String TWITTER_CONSUMER_KEY = "9C0j9rlHFXvnNVeoNnbA";
+    public static String TWITTER_CONSUMER_SECRET = "mHw3TWz63Eemq9Jk8SoIBLeYyGWGWmsgHs7KIkA";
     public static String TWITTER_CALLBACK_URL = "oauth://privlyT4JCallback";
     public static String URL_PARAMETER_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static String PREFERENCE_TWITTER_OAUTH_TOKEN = "TWITTER_OAUTH_TOKEN";
