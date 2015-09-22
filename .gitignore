@@ -22,3 +22,4 @@ build/
 *.iml
 
 creds_local.xml
+manifest-merger-release-report.txt
