@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 23
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "ly.priv.mobile"
-        minSdkVersion 10
+        minSdkVersion 11
         targetSdkVersion 21
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -31,7 +32,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'org.twitter4j:twitter4j-core:4.0.2'
     compile 'com.joanzapata.android:android-iconify:1.0.8'
-    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.squareup.picasso:picasso:2.5.0'
     compile 'com.google.android.gms:play-services:+'
     compile 'com.google.apis:google-api-services-gmail:v1-rev24-1.19.1'

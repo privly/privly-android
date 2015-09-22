@@ -56,7 +56,7 @@ public class Utilities {
     public static Set<String> emailIdSuggestor(Context context) {
         Account[] accounts = AccountManager.get(context).getAccounts();
         Set<String> emailSet = new HashSet<String>();
-        String username = new Values(context).getLastLoginEmailAddress();
+        String username = Values.getInstance().getLastLoginEmailAddress();
         if (username != null) {
             if (Utilities.isValidEmail(username)) {
                 emailSet.add(username);
@@ -145,8 +145,7 @@ public class Utilities {
      * @return {Boolean}
      */
     public static String getGetRequestUrl(String url, Context context) {
-        Values values = new Values(context);
-        String authTokenString = "auth_token=" + values.getAuthToken();
+        String authTokenString = "auth_token=" + Values.getInstance().getAuthToken();
         if (url.indexOf("?") >= 0
                 && (url.indexOf("?") < url.indexOf("#") || url.indexOf("#") == -1)) {
             return url.replace("?", "?" + authTokenString + "&");

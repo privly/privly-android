@@ -3,11 +3,12 @@ package ly.priv.mobile.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import android.view.ViewConfiguration;
 
 import java.util.HashMap;
 
-import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.R;
 
 /**
  * Used to set/get values that should be accessible to all classes throughout
@@ -27,13 +28,28 @@ import ly.priv.mobile.utils.ConstantValues;
  * @author Shivam Verma
  */
 public final class Values {
-    private SharedPreferences mSharedPrefs;
-    private Context mContext;
+    private static SharedPreferences mSharedPrefs;
+    private static Context mContext;
+    private static Values values;
 
-    public Values(Context callingContext) {
-        mContext = callingContext;
-        mSharedPrefs = mContext.getSharedPreferences(
-                ConstantValues.APP_PREFERENCES, 0);
+    /* We do not want classes to create an object of this class, so make this contructor private */
+    private Values() {
+
+    }
+
+    public static void init(Context context) {
+        if (values == null) {
+            Log.d("Values", "Initing Values");
+            values = new Values();
+            mContext = context;
+            mSharedPrefs = context.getSharedPreferences(ConstantValues.APP_PREFERENCES, Context.MODE_PRIVATE);
+        } else {
+            Log.d("Values", "Already Inited");
+        }
+    }
+
+    public static Values getInstance() {
+        return values;
     }
 
     /**
@@ -187,6 +203,22 @@ public final class Values {
     // / -------- Twitter------------------------
 
     /**
+     *
+     */
+
+    public String getTwitterConsumerKey() {
+        return mContext.getResources().getString(R.string.twitter_consumer_key);
+    }
+
+    /**
+     *
+     */
+
+    public String getTwitterConsumerSecret() {
+        return mContext.getResources().getString(R.string.twitter_consumer_secret);
+    }
+
+    /**
      * Set Twitter Logged in
      *
      * @param loggedIn
@@ -249,5 +281,17 @@ public final class Values {
     public String getTwitterOauthTokenSecret() {
         return mSharedPrefs.getString(
                 ConstantValues.PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET, "");
+    }
+
+    public String getGmailId() {
+        return mSharedPrefs.getString(ConstantValues.APP_PREFERENCE_GMAIL_ID, null);
+    }
+
+    public void setGmailId(String gmailId) {
+        mSharedPrefs.edit().putString(ConstantValues.APP_PREFERENCE_GMAIL_ID, gmailId).commit();
+    }
+
+    public void clearGmailId() {
+        mSharedPrefs.edit().remove(ConstantValues.APP_PREFERENCE_GMAIL_ID).commit();
     }
 }

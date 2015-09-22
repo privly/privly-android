@@ -1,10 +1,7 @@
 package ly.priv.mobile.gui.activities;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,32 +16,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.SingleClientConnManager;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
 import ly.priv.mobile.R;
 import ly.priv.mobile.utils.ConstantValues;
-import ly.priv.mobile.utils.LobsterTextView;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
@@ -65,7 +55,7 @@ public class LoginActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-        mValues = new Values(LoginActivity.this);
+        mValues = Values.getInstance();
         switcher = (ViewSwitcher) findViewById(R.id.content_server_switcher);
         contentServerTextView = (TextView) findViewById(R.id.content_server_view);
         saveContentServerButton = (ImageButton) findViewById(R.id.save_content_server);
@@ -171,35 +161,54 @@ public class LoginActivity extends Activity {
 
         @Override
         protected String doInBackground(String... urls) {
-            String mLoginResponse = null;
+            String mLoginResponse = "";
+            String charset = "UTF-8";
             for (String url : urls) {
-                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                // NameValuePairs for POST Request
-                nameValuePairs.add(new BasicNameValuePair(ConstantValues.POST_PARAM_NAME_EMAIL, mUserName));
-                nameValuePairs
-                        .add(new BasicNameValuePair(ConstantValues.POST_PARAM_NAME_PWD, mPassword));
+                Log.d(LOGTAG, "URL : " + url);
                 try {
-                    // Setting Up for a secure connection
-                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-                    DefaultHttpClient client = new DefaultHttpClient();
-                    SchemeRegistry registry = new SchemeRegistry();
-                    SSLSocketFactory socketFactory = SSLSocketFactory
-                            .getSocketFactory();
-                    socketFactory
-                            .setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                    registry.register(new Scheme("https", socketFactory, 443));
-                    SingleClientConnManager mgr = new SingleClientConnManager(
-                            client.getParams(), registry);
-                    DefaultHttpClient httpClient = new DefaultHttpClient(mgr,
-                            client.getParams());
-                    HttpsURLConnection
-                            .setDefaultHostnameVerifier(hostnameVerifier);
-                    HttpPost httpPost = new HttpPost(url);
-                    httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = httpClient.execute(httpPost);
-                    HttpEntity entity = response.getEntity();
-                    mLoginResponse = EntityUtils.toString(entity);
-                } catch (Exception e) {
+                    String query = String.format(ConstantValues.POST_PARAM_NAME_EMAIL + "=%s&" + ConstantValues.POST_PARAM_NAME_PWD + "=%s",
+                            URLEncoder.encode(mUserName, charset),
+                            URLEncoder.encode(mPassword, charset));
+                    Log.d(LOGTAG, query);
+
+                    HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+                    //Disabling auto redirect. Causes issues while generating new token.
+                    connection.setInstanceFollowRedirects(false);
+                    connection.setRequestMethod("POST");
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;");
+                    connection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+                    OutputStream output = connection.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8"));
+                    writer.write(query);
+                    writer.flush();
+                    writer.close();
+
+                    int responseCode = connection.getResponseCode();
+                    if (responseCode == 302) {
+                        String redirectUrl = connection.getHeaderField("Location");
+                        Log.d(LOGTAG, "Redirecting to : " + redirectUrl);
+                        String cookies = connection.getHeaderField("Set-Cookie");
+                        connection = (HttpsURLConnection) new URL(redirectUrl).openConnection();
+                        connection.setRequestProperty("Cookie", cookies);
+                        connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                        if (connection.getResponseCode() == 200) {
+                            for (String line; (line = reader.readLine()) != null; ) {
+                                Log.d(LOGTAG, line);
+                                mLoginResponse += line;
+                            }
+                        }
+                    } else {
+                        Log.d(LOGTAG, "Response Code : " + responseCode);
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

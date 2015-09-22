@@ -67,7 +67,7 @@ public class TwitterGrabberService extends Fragment implements
         View view = inflater.inflate(R.layout.activity_login_twitter,
                 container, false);
         setTitle(getActivity());
-        mValues = new Values(getActivity());
+        mValues = Values.getInstance();
         mProgressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
         twitterLoginWebView = (WebView) view.findViewById(R.id.wvLoginTwitters);
         twitterLoginWebView.setBackgroundColor(Color.TRANSPARENT);

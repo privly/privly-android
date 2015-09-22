@@ -25,6 +25,7 @@ public class JsObject {
     private static final String TAG = "JsObject";
     private Context mContext;
     static ProgressDialog dialog;
+    Values mValues;
 
     /**
      * sets current context as the context of the calling class.
@@ -32,6 +33,7 @@ public class JsObject {
      * @param callingContext
      */
     public JsObject(Context callingContext) {
+        mValues = Values.getInstance();
         mContext = callingContext;
     }
 
@@ -82,8 +84,7 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchAuthToken() {
-        Values values = new Values(mContext);
-        String auth_token = values.getAuthToken();
+        String auth_token = mValues.getAuthToken();
         return auth_token;
     }
 
@@ -94,8 +95,7 @@ public class JsObject {
      */
     @JavascriptInterface
     public String fetchDomainName() {
-        Values values = new Values(mContext);
-        String domainName = values.getContentServer();
+        String domainName = mValues.getContentServer();
         return domainName;
     }
 
@@ -114,8 +114,7 @@ public class JsObject {
     @JavascriptInterface
     public void showLoginActivity() {
         // Set authToken null.
-        Values values = new Values(mContext);
-        values.setAuthToken(null);
+        mValues.setAuthToken(null);
         Intent gotoLogin = new Intent(mContext, LoginActivity.class);
         mContext.startActivity(gotoLogin);
         Activity activity = (Activity) mContext;

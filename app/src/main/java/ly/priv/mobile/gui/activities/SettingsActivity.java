@@ -1,23 +1,31 @@
 package ly.priv.mobile.gui.activities;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.facebook.Session;
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import ly.priv.mobile.R;
-import ly.priv.mobile.gui.activities.LoginActivity;
-import ly.priv.mobile.gui.activities.MainActivity;
-import ly.priv.mobile.utils.ConstantValues;
+import ly.priv.mobile.utils.TwitterUtil;
 import ly.priv.mobile.utils.Values;
 
 /**
@@ -25,7 +33,7 @@ import ly.priv.mobile.utils.Values;
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
- * <p>
+ * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
@@ -33,291 +41,225 @@ import ly.priv.mobile.utils.Values;
  */
 public class SettingsActivity extends PreferenceActivity {
 
-	private EditTextPreference changeContentServer;
-	private Preference logoutFb;
-	private Preference logoutGmail;
-	private Preference logoutTwitter;
-	private Values mValues;
-	/**
-	 * Determines whether to always show the simplified settings UI, where
-	 * settings are presented in a single list. When false, settings are shown
-	 * as a master/detail two-pane view on tablets. When true, a single pane is
-	 * shown on tablets.
-	 */
-	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+    private EditTextPreference changeContentServer;
+    private Preference logoutFb;
+    private Preference logoutGmail;
+    private Preference logoutTwitter;
+    private Values mValues;
 
-	@SuppressLint("NewApi")
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-//		getActionBar().setDisplayHomeAsUpEnabled(true);
-//		getActionBar().setHomeButtonEnabled(true);
-		mValues = new Values(this);
-		setupSimplePreferencesScreen();
-	}
+    /**
+     * Refer : http://stackoverflow.com/questions/17849193/how-to-add-action-bar-from-support-library-into-preferenceactivity
+     * Refer : https://chromium.googlesource.com/android_tools/+/7200281446186c7192cb02f54dc2b38e02d705e5/sdk/extras/android/support/samples/Support7Demos/src/com/example/android/supportv7/app/AppCompatPreferenceActivity.java
+     */
+    private AppCompatDelegate mDelegate;
 
-	/**
-	 * Shows the simplified settings UI if the device configuration if the
-	 * device configuration dictates that a simplified, single-pane UI should be
-	 * shown.
-	 */
-	@SuppressWarnings("deprecation")
-	private void setupSimplePreferencesScreen() {
-		if (!isSimplePreferences(this)) {
-			return;
-		}
+    private AppCompatDelegate getDelegate() {
+        if (mDelegate == null) {
+            mDelegate = AppCompatDelegate.create(this, null);
+        }
+        return mDelegate;
+    }
 
-		// In the simplified UI, fragments are not used at all and we instead
-		// use the older PreferenceActivity APIs.
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getDelegate().installViewFactory();
+        getDelegate().onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        mValues = Values.getInstance();
+        setupSimplePreferencesScreen();
+    }
 
-		// Add 'general' preferences.
-		addPreferencesFromResource(R.xml.pref_general);
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        getDelegate().onPostCreate(savedInstanceState);
+    }
 
-		// Add 'logout' preferences, and a corresponding header.
-		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-		fakeHeader.setTitle(R.string.pref_header_logout);
-		getPreferenceScreen().addPreference(fakeHeader);
-		addPreferencesFromResource(R.xml.pref_notification);
+    @SuppressWarnings("deprecation")
+    private void setupSimplePreferencesScreen() {
+        addPreferencesFromResource(R.xml.settings);
 
-		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-		// their values. When their values change, their summaries are updated
-		// to reflect the new value, per the Android Design guidelines.
-		changeContentServer = (EditTextPreference) getPreferenceManager()
-				.findPreference("base_url");
-		logoutFb = (Preference) getPreferenceManager().findPreference(
-				"fbLogout");
-		logoutGmail = (Preference) getPreferenceManager().findPreference(
-				"gmailLogout");
-		logoutTwitter = (Preference) getPreferenceManager().findPreference(
-				"twitterLogout");
-		changeContentServer.setSummary(changeContentServer.getText());
-		changeContentServer.setPositiveButtonText("Re-login");
-		changeContentServer
-				.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+        changeContentServer = (EditTextPreference) getPreferenceManager()
+                .findPreference("base_url");
+        logoutFb = getPreferenceManager().findPreference(
+                "fbLogout");
+        logoutGmail = getPreferenceManager().findPreference(
+                "gmailLogout");
+        logoutTwitter = getPreferenceManager().findPreference(
+                "twitterLogout");
 
-					@Override
-					public boolean onPreferenceChange(Preference preference,
-							Object newValue) {
-						String baseUrl = (String) newValue;
-						if (!baseUrl.equalsIgnoreCase("")) {
-							changeContentServer.setSummary((String) newValue);
-							mValues = new Values(getApplicationContext());
-							mValues.setContentServer((String) newValue);
-							mValues.setAuthToken(null);
-							Intent goToLogin = new Intent(
-									getApplicationContext(),
-									LoginActivity.class);
-							goToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-									| Intent.FLAG_ACTIVITY_CLEAR_TASK);
-							startActivity(goToLogin);
-						}
-						return true;
-					}
-				});
-		if (!getSharedPreferences(ConstantValues.APP_PREFERENCES, 0).contains("gmailId")) {
-			logoutGmail.setEnabled(false);
-		} else {
-			logoutGmail
-					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        changeContentServer.setText(mValues.getContentServer());
+        changeContentServer.setSummary(mValues.getContentServer());
+        changeContentServer.setPositiveButtonText("Re-login");
+        changeContentServer
+                .setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 
-						@Override
-						public boolean onPreferenceClick(Preference preference) {
-							// TODO Auto-generated method stub
-							getSharedPreferences(
-									ConstantValues.APP_PREFERENCES, 0).edit()
-									.remove("gmailId").commit();
-							Intent goToIndex = new Intent(
-									getApplicationContext(), MainActivity.class);
-							startActivity(goToIndex);
-							return true;
-						}
-					});
-		}
-//		if (Session.getActiveSession() == null) {
-//			logoutFb.setEnabled(false);
-//		} else {
-//			logoutFb.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-//
-//				@Override
-//				public boolean onPreferenceClick(Preference preference) {
-//					// TODO Auto-generated method stub
-//					Session mSession = Session.getActiveSession();
-//					if (mSession != null) {
-//						mSession.closeAndClearTokenInformation();
-//						mSession = null;
-//						Session.setActiveSession(mSession);
-//						mValues.setFacebookID("");
-//						Intent goToIndex = new Intent(getApplicationContext(),
-//								MainActivity.class);
-//						startActivity(goToIndex);
-//					}
-//					return true;
-//				}
-//			});
-//		}
-//		if (mValues.getTwitterLoggedIn()) {
-//			logoutTwitter.setEnabled(false);
-//		} else {
-//			logoutTwitter
-//					.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-//
-//						@Override
-//						public boolean onPreferenceClick(Preference preference) {
-//							// TODO Auto-generated method stub
-//							mValues.setTwitterLoggedIn(false);
-//							mValues.setTwitterOauthToken("");
-//							mValues.setTwitterOauthTokenSecret("");
-//							TwitterUtil.getInstance().reset();
-//							Intent goToIndex = new Intent(
-//									getApplicationContext(), MainActivity.class);
-//							startActivity(goToIndex);
-//							return true;
-//						}
-//					});
-//		}
-	}
+                    @Override
+                    public boolean onPreferenceChange(Preference preference,
+                                                      Object newValue) {
+                        String contentServer = (String) newValue;
+                        if (!contentServer.equalsIgnoreCase("")) {
+                            mValues.setContentServer((String) newValue);
+                            mValues.setAuthToken(null);
+                            Intent goToLogin = new Intent(
+                                    SettingsActivity.this,
+                                    LoginActivity.class);
+                            goToLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(goToLogin);
+                            return true;
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "Please enter a valid content server address", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    }
+                });
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean onIsMultiPane() {
-		return isXLargeTablet(this) && !isSimplePreferences(this);
-	}
+        if (mValues.getGmailId() == null) {
+            logoutGmail.setEnabled(false);
+        } else {
+            logoutGmail
+                    .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            mValues.clearGmailId();
+                            logoutGmail.setEnabled(false);
+                            return true;
+                        }
+                    });
+        }
 
-	/**
-	 * Helper method to determine if the device has an extra-large screen. For
-	 * example, 10" tablets are extra-large.
-	 */
-	private static boolean isXLargeTablet(Context context) {
-		return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-	}
 
-	/**
-	 * Determines whether the simplified settings UI should be shown. This is
-	 * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
-	 * doesn't have newer APIs like {@link PreferenceFragment}, or the device
-	 * doesn't have an extra-large screen. In these cases, a single-pane
-	 * "simplified" settings UI should be shown.
-	 */
-	private static boolean isSimplePreferences(Context context) {
-		return ALWAYS_SIMPLE_PREFS
-				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-				|| !isXLargeTablet(context);
-	}
-	//
-	// /** {@inheritDoc} */
-	// @Override
-	// @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	// public void onBuildHeaders(List<Header> target) {
-	// if (!isSimplePreferences(this)) {
-	// loadHeadersFromResource(R.xml.pref_headers, target);
-	// }
-	// }
+        if (Session.getActiveSession() == null) {
+            logoutFb.setEnabled(false);
+        } else {
+            logoutFb.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
-	/**
-	 * A preference value change listener that updates the preference's summary
-	 * to reflect its new value.
-	 */
-	/*
-	 * private static Preference.OnPreferenceChangeListener
-	 * sBindPreferenceSummaryToValueListener = new
-	 * Preference.OnPreferenceChangeListener() {
-	 * 
-	 * @Override public boolean onPreferenceChange(Preference preference, Object
-	 * value) { String stringValue = value.toString();
-	 * 
-	 * if (preference instanceof ListPreference) { // For list preferences, look
-	 * up the correct display value in // the preference's 'entries' list.
-	 * ListPreference listPreference = (ListPreference) preference; int index =
-	 * listPreference.findIndexOfValue(stringValue);
-	 * 
-	 * // Set the summary to reflect the new value. preference .setSummary(index
-	 * >= 0 ? listPreference.getEntries()[index] : null);
-	 * 
-	 * } else if (preference instanceof RingtonePreference) { // For ringtone
-	 * preferences, look up the correct display value // using RingtoneManager.
-	 * if (TextUtils.isEmpty(stringValue)) { // Empty values correspond to
-	 * 'silent' (no ringtone).
-	 * preference.setSummary(R.string.pref_ringtone_silent);
-	 * 
-	 * } else { Ringtone ringtone = RingtoneManager.getRingtone(
-	 * preference.getContext(), Uri.parse(stringValue));
-	 * 
-	 * if (ringtone == null) { // Clear the summary if there was a lookup error.
-	 * preference.setSummary(null); } else { // Set the summary to reflect the
-	 * new ringtone display // name. String name = ringtone
-	 * .getTitle(preference.getContext()); preference.setSummary(name); } }
-	 * 
-	 * } else { // For all other preferences, set the summary to the value's //
-	 * simple string representation. preference.setSummary(stringValue); }
-	 * return true; } };
-	 * 
-	 * /** Binds a preference's summary to its value. More specifically, when
-	 * the preference's value is changed, its summary (line of text below the
-	 * preference title) is updated to reflect the value. The summary is also
-	 * immediately updated upon calling this method. The exact display format is
-	 * dependent on the type of preference.
-	 * 
-	 * @see #sBindPreferenceSummaryToValueListener
-	 */
-	/*
-	 * private static void bindPreferenceSummaryToValue(Preference preference) {
-	 * // Set the listener to watch for value changes. preference
-	 * .setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-	 * 
-	 * // Trigger the listener immediately with the preference's // current
-	 * value. sBindPreferenceSummaryToValueListener.onPreferenceChange(
-	 * preference, PreferenceManager.getDefaultSharedPreferences(
-	 * preference.getContext()).getString(preference.getKey(), "")); }
-	 * 
-	 * /** This fragment shows general preferences only. It is used when the
-	 * activity is showing a two-pane settings UI.
-	 */
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Session mSession = Session.getActiveSession();
+                    if (mSession != null) {
+                        mSession.closeAndClearTokenInformation();
+                        mSession = null;
+                        Session.setActiveSession(mSession);
+                        mValues.setFacebookID("");
+                        logoutFb.setEnabled(false);
+                    }
+                    return true;
+                }
+            });
+        }
 
-	/*
-	 * @TargetApi(Build.VERSION_CODES.HONEYCOMB) public static class
-	 * GeneralPreferenceFragment extends PreferenceFragment {
-	 * 
-	 * @Override public void onCreate(Bundle savedInstanceState) {
-	 * super.onCreate(savedInstanceState);
-	 * addPreferencesFromResource(R.xml.pref_general);
-	 * 
-	 * // Bind the summaries of EditText/List/Dialog/Ringtone preferences // to
-	 * their values. When their values change, their summaries are // updated to
-	 * reflect the new value, per the Android Design // guidelines.
-	 * bindPreferenceSummaryToValue(findPreference("example_text"));
-	 * bindPreferenceSummaryToValue(findPreference("example_list")); } }
-	 * 
-	 * /** This fragment shows notification preferences only. It is used when
-	 * the activity is showing a two-pane settings UI.
-	 */
-	/*
-	 * @TargetApi(Build.VERSION_CODES.HONEYCOMB) public static class
-	 * NotificationPreferenceFragment extends PreferenceFragment {
-	 * 
-	 * @Override public void onCreate(Bundle savedInstanceState) {
-	 * super.onCreate(savedInstanceState);
-	 * addPreferencesFromResource(R.xml.pref_notification);
-	 * 
-	 * // Bind the summaries of EditText/List/Dialog/Ringtone preferences // to
-	 * their values. When their values change, their summaries are // updated to
-	 * reflect the new value, per the Android Design // guidelines.
-	 * bindPreferenceSummaryToValue
-	 * (findPreference("notifications_new_message_ringtone")); } }
-	 * 
-	 * /** This fragment shows data and sync preferences only. It is used when
-	 * the activity is showing a two-pane settings UI.
-	 */
-	/*
-	 * @TargetApi(Build.VERSION_CODES.HONEYCOMB) public static class
-	 * DataSyncPreferenceFragment extends PreferenceFragment {
-	 * 
-	 * @Override public void onCreate(Bundle savedInstanceState) {
-	 * super.onCreate(savedInstanceState);
-	 * addPreferencesFromResource(R.xml.pref_data_sync);
-	 * 
-	 * // Bind the summaries of EditText/List/Dialog/Ringtone preferences // to
-	 * their values. When their values change, their summaries are // updated to
-	 * reflect the new value, per the Android Design // guidelines.
-	 * bindPreferenceSummaryToValue(findPreference("sync_frequency")); } }
-	 */
+        if (!mValues.getTwitterLoggedIn()) {
+            logoutTwitter.setEnabled(false);
+        } else {
+            logoutTwitter
+                    .setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            mValues.setTwitterLoggedIn(false);
+                            mValues.setTwitterOauthToken("");
+                            mValues.setTwitterOauthTokenSecret("");
+                            TwitterUtil.getInstance().reset();
+                            logoutTwitter.setEnabled(false);
+                            return true;
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_layout_settings, menu);
+        menu.findItem(R.id.logout).setIcon(
+                new IconDrawable(this, Iconify.IconValue.fa_sign_out)
+                        .colorRes(R.color.gray)
+                        .actionBarSize());
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mValues.setAuthToken(null);
+                Intent gotoLogin = new Intent(SettingsActivity.this, LoginActivity.class);
+                gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(gotoLogin);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public ActionBar getSupportActionBar() {
+        return getDelegate().getSupportActionBar();
+    }
+
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        getDelegate().setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public MenuInflater getMenuInflater() {
+        return getDelegate().getMenuInflater();
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        getDelegate().setContentView(layoutResID);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        getDelegate().setContentView(view);
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().setContentView(view, params);
+    }
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().addContentView(view, params);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        getDelegate().onPostResume();
+    }
+
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        super.onTitleChanged(title, color);
+        getDelegate().setTitle(title);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getDelegate().onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getDelegate().onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getDelegate().onDestroy();
+    }
+
+    public void invalidateOptionsMenu() {
+        getDelegate().invalidateOptionsMenu();
+    }
+
 }

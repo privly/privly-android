@@ -16,10 +16,6 @@ public class ConstantValues {
     final public static String PRIVLY_APPLICATION_KEY = "Privly_Application_Key";
     final public static String PRIVLY_URL_KEY = "Privly_Url_Key";
 
-
-    // Constant for Privly
-    public static String NEW_PRIVLY_URL = "newPrivlyUrl";
-    public static final String JS_APP_NAME = "JsAppName";
     // Constant for Privly Preferences
     public static String APP_PREFERENCES = "prefsFile";
     public static String APP_PREFERENCES_BASE_URL = "base_url";
@@ -27,6 +23,7 @@ public class ConstantValues {
     public static String APP_PREFERENCES_UNAME = "uname";
     public static String APP_PREFERENCES_VERIFIED_AT_LOGIN = "verified_at_login";
     public static String APP_PREFERENCE_LAST_LOGIN = "lastlogin";
+    public static String APP_PREFERENCE_GMAIL_ID = "gmailId";
 
     // Swipe options
     public static String SWIPE_MIN_DISTANCE = "swipeMinDistance";
@@ -36,12 +33,11 @@ public class ConstantValues {
     // Constant for FaceBook
     public static String PREFERENCE_FACEBOOK_USER_ID = "FacebookID";
     // Constant for Twitter
-    public static String TWITTER_CONSUMER_KEY = "PnqSdRVqsoLQu11WA0GZfjKhk";
-    public static String TWITTER_CONSUMER_SECRET = "iMWhbFshbL5henHOsJSBCrsc7SLNZ5fOmJ9eVcRgk2DuPy7FnN";
+//    public static String TWITTER_CONSUMER_KEY = "PnqSdRVqsoLQu11WA0GZfjKhk";
+//    public static String TWITTER_CONSUMER_SECRET = "iMWhbFshbL5henHOsJSBCrsc7SLNZ5fOmJ9eVcRgk2DuPy7FnN";
     public static String TWITTER_CALLBACK_URL = "oauth://privlyT4JCallback";
     public static String URL_PARAMETER_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     public static String PREFERENCE_TWITTER_OAUTH_TOKEN = "TWITTER_OAUTH_TOKEN";
     public static String PREFERENCE_TWITTER_OAUTH_TOKEN_SECRET = "TWITTER_OAUTH_TOKEN_SECRET";
     public static String PREFERENCE_TWITTER_IS_LOGGED_IN = "TWITTER_IS_LOGGED_IN";
-    public static String STRING_EXTRA_AUTHENCATION_URL = "AuthencationUrl";
 }

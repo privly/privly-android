@@ -1,6 +1,5 @@
 package ly.priv.mobile.gui.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
@@ -54,9 +53,6 @@ public class ShowContentFragment extends Fragment {
     private static final String TAG = "ShowContent";
     private GestureDetector mGestureDetector;
     private View.OnTouchListener mGestureListener;
-    public int swipeMinDistance;
-    public int swipeThresholdVelocity;
-    public int swipeMaxOffPath;
     private WebView mUrlContentWebView;
     private ArrayList<String> mListOfLinks;
     private Integer mId = 0;
@@ -119,7 +115,7 @@ public class ShowContentFragment extends Fragment {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
             try {
-                Values values = new Values(getActivity());
+                Values values = Values.getInstance();
                 HashMap<String, Integer> valuesForSwipe = values
                         .getValuesForSwipe();
                 if (Math.abs(e1.getY() - e2.getY()) > valuesForSwipe
@@ -215,9 +211,7 @@ public class ShowContentFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        // MenuInflater menuInflater = getMenuInflater();
         inflater.inflate(R.menu.menu_layout_show_content, menu);
-        // return true;
     }
 
     /**
@@ -233,7 +227,7 @@ public class ShowContentFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.logout:
                 // Logs out User from Privly Application
-                Values values = new Values(getActivity());
+                Values values = Values.getInstance();
                 values.setAuthToken(null);
                 Intent gotoLogin = new Intent(getActivity(), LoginActivity.class);
                 gotoLogin.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

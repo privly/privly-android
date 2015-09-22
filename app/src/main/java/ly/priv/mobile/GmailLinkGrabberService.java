@@ -4,8 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,6 +43,7 @@ import ly.priv.mobile.gui.drawer.PrivlyApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
+import ly.priv.mobile.utils.Values;
 
 /**
  * Authenticates user with Gmail and grabs Privly links from message inbox.
@@ -67,11 +66,8 @@ public class GmailLinkGrabberService extends Fragment {
     ListView threadListView;
     ArrayList<EmailThreadObject> mailThreads;
     ProgressBar progressBar;
-    OnItemClickListener listener;
-    Thread currentThread;
-    SharedPreferences sharedPrefs;
-    String prefsName;
     ListMailThreadsAdapter threadAdapter;
+    Values mValues;
 
     public GmailLinkGrabberService() {
 
@@ -85,8 +81,7 @@ public class GmailLinkGrabberService extends Fragment {
         getActivity().setTitle("Gmail");
         threadListView = (ListView) view.findViewById(R.id.lView);
         progressBar = (ProgressBar) view.findViewById(R.id.pbLoadingData);
-        prefsName = ConstantValues.APP_PREFERENCES;
-        sharedPrefs = getActivity().getSharedPreferences(prefsName, 0);
+        mValues = Values.getInstance();
         threadListView.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -109,10 +104,10 @@ public class GmailLinkGrabberService extends Fragment {
         // Shows Account Picker with google accounts if not stored in shared
         // preferences
         Boolean accountFound = false;
-        if (sharedPrefs.contains("gmailId")) {
+        if (mValues.getGmailId() != null) {
             Account[] accounts = AccountManager.get(getActivity())
                     .getAccounts();
-            accountName = sharedPrefs.getString("gmailId", null);
+            accountName = mValues.getGmailId();
             Log.d("accountName", accountName);
             for (Account a : accounts) {
                 if (a.type.equals(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE)
@@ -143,9 +138,7 @@ public class GmailLinkGrabberService extends Fragment {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             progressBar.setVisibility(View.VISIBLE);
             accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            Editor editor = sharedPrefs.edit();
-            editor.putString("gmailId", accountName);
-            editor.commit();
+            mValues.setGmailId(accountName);
             new getAuthToken().execute();
         } else {
             PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();

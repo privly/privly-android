@@ -20,3 +20,5 @@ build/
 /*/build/
 .idea/
 *.iml
+
+creds_local.xml
