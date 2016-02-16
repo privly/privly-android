@@ -174,7 +174,6 @@ public class GmailLinkGrabberService extends Fragment {
                             .execute();
                     threads = threadsResponse.getThreads();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 return threads;

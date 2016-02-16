@@ -1,11 +1,11 @@
 package ly.priv.mobile;
 
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.api.services.gmail.model.Message;
+
+import java.util.List;
 
 public class EmailThreadObject implements Parcelable {
 	String mailSnippet;
@@ -89,13 +89,11 @@ public class EmailThreadObject implements Parcelable {
 
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
 		dest.writeString(mailCount);
 		dest.writeString(mailSender);
 		dest.writeString(mailSnippet);
@@ -108,13 +106,11 @@ public class EmailThreadObject implements Parcelable {
 
 		@Override
 		public EmailThreadObject createFromParcel(Parcel source) {
-			// TODO Auto-generated method stub
 			return new EmailThreadObject(source);
 		}
 
 		@Override
 		public EmailThreadObject[] newArray(int size) {
-			// TODO Auto-generated method stub
 			return new EmailThreadObject[size];
 		}
 
