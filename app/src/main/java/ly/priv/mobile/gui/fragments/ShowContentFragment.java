@@ -1,6 +1,8 @@
 package ly.priv.mobile.gui.fragments;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
@@ -27,6 +31,7 @@ import ly.priv.mobile.R;
 import ly.priv.mobile.gui.activities.LoginActivity;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.JsObject;
+import ly.priv.mobile.utils.LobsterTextView;
 import ly.priv.mobile.utils.Values;
 
 /**
@@ -54,8 +59,10 @@ public class ShowContentFragment extends Fragment {
     private GestureDetector mGestureDetector;
     private View.OnTouchListener mGestureListener;
     private WebView mUrlContentWebView;
+    private LobsterTextView mPositionTV;
     private ArrayList<String> mListOfLinks;
     private Integer mId = 0;
+    private ArrayList<ImageView> mIndicators;
 
     public ShowContentFragment() {
 
@@ -70,6 +77,7 @@ public class ShowContentFragment extends Fragment {
         mListOfLinks = getArguments().getStringArrayList("listOfLinks");
         View webView = view.findViewById(R.id.urlContentWebview);
         mUrlContentWebView = (WebView) webView;
+        mPositionTV = (LobsterTextView) view.findViewById(R.id.position_tv);
         setHasOptionsMenu(true);
         mUrlContentWebView.getSettings().setJavaScriptEnabled(true);
 
@@ -97,6 +105,8 @@ public class ShowContentFragment extends Fragment {
         webView.setOnTouchListener(mGestureListener);
 
         loadUrlInWebview(mId);
+        addIndicators(view);
+        selectIndicator(mId);
         Log.d(TAG, "Inside Show");
         return view;
     }
@@ -111,9 +121,17 @@ public class ShowContentFragment extends Fragment {
      * </p>
      */
     class SwipeGestureDetector extends SimpleOnGestureListener {
+
+        // Touch events to the webview will be intercepted by the GestureListener
+        // To ensure that scrolling of the webview is being done properly, we intercept the onScroll event and the parameters onto the webview to scroll
+        // Similarly, we do the same for the onFling event
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                float velocityY) {
+
+            // Passing the onFling parameters to flingScroll the webview
+            mUrlContentWebView.flingScroll(-1*(int)velocityX,-1*(int)velocityY);
+
             try {
                 Values values = Values.getInstance();
                 HashMap<String, Integer> valuesForSwipe = values
@@ -157,6 +175,7 @@ public class ShowContentFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            selectIndicator(mId);
             return false;
         }
 
@@ -166,6 +185,12 @@ public class ShowContentFragment extends Fragment {
             return true;
         }
 
+        // This method is required for horizontally scrolling in the web view (When content of the Privly Message/Plain Post is long)
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            mUrlContentWebView.scrollBy((int)distanceX,(int)distanceY);
+            return super.onScroll(e1, e2, distanceX, distanceY);
+        }
     }
 
     /**
@@ -238,6 +263,41 @@ public class ShowContentFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // Adding Visual Clue Indicator elements so the user will know how many messages are present
+    public void addIndicators(View view) {
+        mIndicators = new ArrayList<ImageView>();
+        LinearLayout indicatorContainer = (LinearLayout)view.findViewById(R.id.indicator_container);
+
+        for(int i = 0; i < mListOfLinks.size(); i++) {
+            ImageView indicator = new ImageView(getActivity());
+            indicator.setImageDrawable(getResources().getDrawable(R.drawable.unselected_indicator));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            indicatorContainer.addView(indicator, params);
+            mIndicators.add(indicator);
+        }
+    }
+
+    // Setting the visual indicator
+    public void selectIndicator(int index) {
+        Resources res = getResources();
+        Drawable selected = res.getDrawable(R.drawable.selected_indicator);
+        Drawable unselected = res.getDrawable(R.drawable.unselected_indicator);
+        for(int i = 0; i < mListOfLinks.size(); i++) {
+            if(i == index)
+                mIndicators.get(i).setImageDrawable(selected);
+            else
+                mIndicators.get(i).setImageDrawable(unselected);
+        }
+
+        String positionString = (index+1) + "/" + mListOfLinks.size();
+        mPositionTV.setText(positionString);
     }
 
 }
