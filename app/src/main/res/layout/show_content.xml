@@ -3,6 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:background="@color/privlyBackgroundColor"
+        android:elevation="4dp">
+
+        <ly.priv.mobile.utils.LobsterTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:text="1/1"
+            android:id="@+id/position_tv"
+            android:textSize="16sp"
+            android:layout_centerInParent="true"/>
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/right_arrow"
+            android:layout_toRightOf="@id/position_tv"
+            android:layout_marginLeft="3dp"
+            />
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/left_arrow"
+            android:layout_toLeftOf="@id/position_tv"
+            android:layout_marginRight="3dp"
+            />
+    </RelativeLayout>
     <WebView
         android:id="@+id/urlContentWebview"
         android:layout_width="match_parent"
