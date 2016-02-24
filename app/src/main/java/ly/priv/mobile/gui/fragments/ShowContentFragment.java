@@ -16,7 +16,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -27,6 +31,7 @@ import ly.priv.mobile.R;
 import ly.priv.mobile.gui.activities.LoginActivity;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.JsObject;
+import ly.priv.mobile.utils.LobsterTextView;
 import ly.priv.mobile.utils.Values;
 
 /**
@@ -54,7 +59,9 @@ public class ShowContentFragment extends Fragment {
     private GestureDetector mGestureDetector;
     private View.OnTouchListener mGestureListener;
     private WebView mUrlContentWebView;
+    private LobsterTextView mPositionTV;
     private ArrayList<String> mListOfLinks;
+    private ImageView mLeftArrow, mRightArrow;
     private Integer mId = 0;
 
     public ShowContentFragment() {
@@ -69,6 +76,9 @@ public class ShowContentFragment extends Fragment {
         getActivity().setTitle(R.string.show_content);
         mListOfLinks = getArguments().getStringArrayList("listOfLinks");
         View webView = view.findViewById(R.id.urlContentWebview);
+        mPositionTV = (LobsterTextView) view.findViewById(R.id.position_tv);
+        mRightArrow = (ImageView) view.findViewById(R.id.right_arrow);
+        mLeftArrow = (ImageView) view.findViewById(R.id.left_arrow);
         mUrlContentWebView = (WebView) webView;
         setHasOptionsMenu(true);
         mUrlContentWebView.getSettings().setJavaScriptEnabled(true);
@@ -91,13 +101,23 @@ public class ShowContentFragment extends Fragment {
         mGestureListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
+                //if the event is not consumed by the gesture detector then it is sent to the webview
+                return mGestureDetector.onTouchEvent(event) || mUrlContentWebView.onTouchEvent(event);
             }
         };
         webView.setOnTouchListener(mGestureListener);
 
+        //setting icons for the indicators
+        mRightArrow.setImageDrawable(
+                new IconDrawable(getActivity(), Iconify.IconValue.fa_angle_right)
+                        .colorRes(R.color.privlyDark));
+
+        mLeftArrow.setImageDrawable(
+                new IconDrawable(getActivity(), Iconify.IconValue.fa_angle_left)
+                        .colorRes(R.color.privlyDark));
+
         loadUrlInWebview(mId);
-        Log.d(TAG, "Inside Show");
+        setPagePosition();
         return view;
     }
 
@@ -127,16 +147,17 @@ public class ShowContentFragment extends Fragment {
                         .get(ConstantValues.SWIPE_THRESHOLD_VELOCITY)) {
                     if (mId < mListOfLinks.size() - 1) {
                         mId++;
-                        loadUrlInWebview(mId);
                         Toast.makeText(getActivity(),
                                 getString(R.string.loading_next_post),
                                 Toast.LENGTH_SHORT).show();
+                        loadUrlInWebview(mId);
+                        setPagePosition();
                     } else {
                         Toast.makeText(getActivity(),
-                                getString(R.string.this_is_a_last_post),
+                                getString(R.string.this_is_the_last_post),
                                 Toast.LENGTH_SHORT).show();
                     }
-
+                    return true;
                 } else if (e2.getX() - e1.getX() > valuesForSwipe
                         .get(ConstantValues.SWIPE_MIN_DISTANCE)
                         && Math.abs(velocityX) > valuesForSwipe
@@ -148,24 +169,19 @@ public class ShowContentFragment extends Fragment {
                                 getString(R.string.loading_previous_post),
                                 Toast.LENGTH_SHORT).show();
                         loadUrlInWebview(mId);
+                        setPagePosition();
                     } else {
                         Toast.makeText(getActivity(),
-                                getString(R.string.this_is_a_first_post),
+                                getString(R.string.this_is_the_first_post),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    return true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return false;
         }
-
-        // This method should always return true to detect swipes.
-        @Override
-        public boolean onDown(MotionEvent event) {
-            return true;
-        }
-
     }
 
     /**
@@ -180,7 +196,7 @@ public class ShowContentFragment extends Fragment {
      * </ul>
      * </p>
      */
-    void loadUrlInWebview(Integer id) {
+    private void loadUrlInWebview(Integer id) {
         Log.d(TAG, "loadUrlInWebview");
         String url = mListOfLinks.get(id);
         try {
@@ -234,10 +250,24 @@ public class ShowContentFragment extends Fragment {
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(gotoLogin);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setPagePosition() {
+        String positionString = (mId + 1) + "/" + mListOfLinks.size();
+        mPositionTV.setText(positionString);
+
+        if (mId == 0)
+            mLeftArrow.setVisibility(View.INVISIBLE);
+        else
+            mLeftArrow.setVisibility(View.VISIBLE);
+
+        if (mId == mListOfLinks.size() - 1)
+            mRightArrow.setVisibility(View.INVISIBLE);
+        else
+            mRightArrow.setVisibility(View.VISIBLE);
     }
 
 }

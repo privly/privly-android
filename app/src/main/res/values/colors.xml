@@ -3,7 +3,7 @@
 
     <color name="privlyBackgroundColor">#E0D8C9</color>
     <color name="hederprivlyBackgroundColor">#222222</color>
-    <color name="hederText">#999999</color>
+    <color name="headerText">#999999</color>
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
     <color name="light_gray">#ff6a7180</color>

@@ -2,11 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/page_position_header_height"
+        android:background="@color/privlyBackgroundColor">
+
+        <ly.priv.mobile.utils.LobsterTextView
+            android:id="@+id/position_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/page_position_text_margin"
+            android:layout_marginRight="@dimen/page_position_text_margin"
+            android:gravity="center"
+            android:text="@string/page_position_default_text"
+            android:textSize="@dimen/content_text_size" />
+
+        <ImageView
+            android:id="@+id/right_arrow"
+            android:layout_width="@dimen/icon_height"
+            android:layout_height="@dimen/icon_width"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/position_tv" />
+
+        <ImageView
+            android:id="@+id/left_arrow"
+            android:layout_width="@dimen/icon_height"
+            android:layout_height="@dimen/icon_width"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/position_tv" />
+    </RelativeLayout>
+
     <WebView
         android:id="@+id/urlContentWebview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>
