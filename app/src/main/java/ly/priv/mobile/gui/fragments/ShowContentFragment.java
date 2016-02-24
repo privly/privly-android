@@ -101,11 +101,8 @@ public class ShowContentFragment extends Fragment {
         mGestureListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                boolean eventConsumed = mGestureDetector.onTouchEvent(event);
-                //if event is not consumed by the gesture detector then it is sent the webview
-                if(!eventConsumed)
-                    mUrlContentWebView.onTouchEvent(event);
-                return eventConsumed;
+                //if the event is not consumed by the gesture detector then it is sent to the webview
+                return mGestureDetector.onTouchEvent(event) || mUrlContentWebView.onTouchEvent(event);
             }
         };
         webView.setOnTouchListener(mGestureListener);
@@ -120,8 +117,7 @@ public class ShowContentFragment extends Fragment {
                         .colorRes(R.color.privlyDark));
 
         loadUrlInWebview(mId);
-        setIndicator();
-        Log.d(TAG, "Inside Show");
+        setPagePosition();
         return view;
     }
 
@@ -151,16 +147,17 @@ public class ShowContentFragment extends Fragment {
                         .get(ConstantValues.SWIPE_THRESHOLD_VELOCITY)) {
                     if (mId < mListOfLinks.size() - 1) {
                         mId++;
-                        loadUrlInWebview(mId);
                         Toast.makeText(getActivity(),
                                 getString(R.string.loading_next_post),
                                 Toast.LENGTH_SHORT).show();
+                        loadUrlInWebview(mId);
+                        setPagePosition();
                     } else {
                         Toast.makeText(getActivity(),
-                                getString(R.string.this_is_a_last_post),
+                                getString(R.string.this_is_the_last_post),
                                 Toast.LENGTH_SHORT).show();
                     }
-
+                    return true;
                 } else if (e2.getX() - e1.getX() > valuesForSwipe
                         .get(ConstantValues.SWIPE_MIN_DISTANCE)
                         && Math.abs(velocityX) > valuesForSwipe
@@ -172,16 +169,17 @@ public class ShowContentFragment extends Fragment {
                                 getString(R.string.loading_previous_post),
                                 Toast.LENGTH_SHORT).show();
                         loadUrlInWebview(mId);
+                        setPagePosition();
                     } else {
                         Toast.makeText(getActivity(),
-                                getString(R.string.this_is_a_first_post),
+                                getString(R.string.this_is_the_first_post),
                                 Toast.LENGTH_SHORT).show();
                     }
+                    return true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            setIndicator();
             return false;
         }
     }
@@ -198,7 +196,7 @@ public class ShowContentFragment extends Fragment {
      * </ul>
      * </p>
      */
-    void loadUrlInWebview(Integer id) {
+    private void loadUrlInWebview(Integer id) {
         Log.d(TAG, "loadUrlInWebview");
         String url = mListOfLinks.get(id);
         try {
@@ -252,22 +250,21 @@ public class ShowContentFragment extends Fragment {
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(gotoLogin);
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void setIndicator(){
-        String positionString = (mId+1) + "/" + mListOfLinks.size();
+    private void setPagePosition() {
+        String positionString = (mId + 1) + "/" + mListOfLinks.size();
         mPositionTV.setText(positionString);
 
-        if(mId == 0)
+        if (mId == 0)
             mLeftArrow.setVisibility(View.INVISIBLE);
         else
             mLeftArrow.setVisibility(View.VISIBLE);
 
-        if(mId == mListOfLinks.size()-1)
+        if (mId == mListOfLinks.size() - 1)
             mRightArrow.setVisibility(View.INVISIBLE);
         else
             mRightArrow.setVisibility(View.VISIBLE);

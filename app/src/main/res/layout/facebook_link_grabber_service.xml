@@ -17,8 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_header_text"
             android:layout_marginTop="@dimen/margin_header_text"
-            android:text="@string/hederText"
-            android:textColor="@color/hederText"
+            android:text="@string/headerText"
+            android:textColor="@color/headerText"
             android:textSize="@dimen/header_text_size" />
 
     </LinearLayout>
