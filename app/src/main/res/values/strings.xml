@@ -12,6 +12,7 @@
     <string name="message_sign_up">Sign Up for Privly</string>
     <string name="message_btn_share">Share</string>
     <string name="message_btn_copy">Copy</string>
+    <string name="message_btn_create">Create</string>
     <string name="message_share_fragment_header">Here\'s your new Privly URL</string>
     <string name="sample_privly_url">https://privlyalpha.org/apps/Message/show?privlyApp=Message&amp;privlyInject1=true&amp;random_token=ccb77876bd&amp;privlyDataURL=https%3A%2F%2Fprivlyalpha.org%2Fposts%2F1921.json%3Frandom_token%3Dccb77876bd#privlyLinkKey=9B+aMkWgbhyT4Agt782WvpEtOLiRAvaz+LXskzhIPlw=</string>
 

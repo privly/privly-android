@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,12 +33,13 @@ import ly.priv.mobile.gui.drawer.NavDrawerItemType;
 import ly.priv.mobile.gui.drawer.PrivlyApplication;
 import ly.priv.mobile.gui.drawer.ReadingApplication;
 import ly.priv.mobile.gui.fragments.PrivlyApplicationFragment;
+import ly.priv.mobile.gui.fragments.SharePrivlyURLFragment;
 import ly.priv.mobile.gui.fragments.ShowContentFragment;
 import ly.priv.mobile.utils.ConstantValues;
 import ly.priv.mobile.utils.Utilities;
 import ly.priv.mobile.utils.Values;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements SharePrivlyURLFragment.SharePrivlyFragInteractionListener {
     private final String TAG = getClass().getSimpleName();
     DrawerLayout mDrawerLayout;
     ListView mDrawerList;
@@ -232,5 +234,17 @@ public class MainActivity extends ActionBarActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Method for the SharePrivlyURLFragment to change the fragment and create new message post
+    @Override
+    public void createMessage() {
+        PrivlyApplicationFragment messageFragment = new PrivlyApplicationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ConstantValues.PRIVLY_APPLICATION_KEY, PrivlyApplication.MESSAGE_APP);
+        messageFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, messageFragment).addToBackStack(null)
+                .commit();
     }
 }

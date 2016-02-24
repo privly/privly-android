@@ -44,6 +44,13 @@
             android:drawableRight="@drawable/ic_content_copy_black_24dp"
             android:text="@string/message_btn_copy" />
 
+        <Button
+            android:id="@+id/create_msg_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/ic_note_add_black_24dp"
+            android:text="@string/message_btn_create" />
 
     </LinearLayout>
 
